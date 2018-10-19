@@ -4,3 +4,5 @@ This is a public repository for learning about coding &amp; front-end/back-end d
 1) First, install [Processing Version 2.2.1]("https://processing.org/download/"). I recommend version 2.2.1 as we haven't tested for other versions. 
 
 2) You're going to want to open the .pde file (called TeaPot) in Processing - in order to visualize the data. 
+
+3) Make sure that the MPU6050 library and the tools zip-file is installed in the libraries folder of Processing in order for it to work. 

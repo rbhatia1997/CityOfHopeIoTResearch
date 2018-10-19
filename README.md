@@ -7,8 +7,9 @@ This is a public repository for learning about coding &amp; front-end/back-end d
 
 3) Make sure that the MPU6050 library and the toxiclibs zip-file is installed in the libraries folder of Processing in order for it to work. Additionally, you will want the MPU6050 library to be installed in your Arduino sketchbook. The folder to put your libraries in should be under Users/UserName/Documents/Processing/libraries. Additionally, the folder to put your libraries in for Arduino is  Users/UserName/Documents/Arduino/libraries.
 
-4) Open the Arduino (.ino) file and run it for the microprocessor. Make sure the serial monitor is closed otherwise it will give issues. There is an unfixed issue where the serial monitor will show weird characters in serial monitor - we believe it's a Baud Rate issue, but we are unable to fix it as of now. 
+4) Open the Arduino (.ino) file and run it for the microprocessor. Make sure the serial monitor is closed otherwise it will give issues. If you want to see the specific numerical values (instead of strange characters) for the Yaw, Pitch, Roll, or accelerations, then you should uncomment those in the .ino file (e.g. uncomment //#define OUTPUT_YAWPITCHROLL if you want to see that data). 
 
 5) Run the code called MPU6050_Test and make sure the serial monitor is closed. Then, you're going to want to run your .pde file inside Processing 2. Make sure that in Processing, in the .pde file, that your serial port is properly identified (e.g. /cu.usbmodem/401435). 
 
 6) The data should be showing up as a visualization in real-time. 
+

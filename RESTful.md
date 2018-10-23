@@ -16,7 +16,9 @@ When we communicate, we need a message and a means to send the message. TCP hand
 
 The IP layer is concerned with transmision. A unique IP address (you may have heard of this!) is assigned to each and every active recipient on the network. TCP/IP is considered stateless - a new connection is made regardless of whether a previous connection was established. 
 
-Internet protocol (IP) is the method by which data is transferred across the Internet. It exchanges the packets, which has two parts (header and a body); the header states the destination and the body contains the IP transmitted. 
+Internet protocol (IP) is the method by which data is transferred across the Internet. It exchanges the packets, which has two parts (header and a body); the header states the destination and the body contains the IP transmitted. TCP can recognize problems where IP packets are lost, duplicated, or out of order. A TCP receiver will request retransmission if it detects problems; when it reassembles the data, it'll pass it to an application program. 
+
+Okay, great. We have HTTP, which is a TCP/IP based protocol. But how can uniquely identify a transaction over a network by specifying the host and service? A port is a number that uniquely identifies a transaction over a network by specifying both the host and service. So if someone is trying to connect to a server, they need the IP address but also with which service they want to use. 
 
 ### HTTP Methods
 

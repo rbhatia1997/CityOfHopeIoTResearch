@@ -1,4 +1,11 @@
 # CityOfHopeIoTResearch
+
+## Information about RESTful APIs 
+
+This can be found in the RESTful.md file. 
+
+## Information about MPU6050 Visualization 
+
 This is a public repository for learning about coding &amp; front-end/back-end development for the City of Hope Clinic. Currently, we have the ability to visualize sensor data from the MPU6050 6-dof IMU. The following are instructions on how to use the code:
 
 1) First, install [Processing Version 2.2.1]("https://processing.org/download/"). I recommend version 2.2.1 as we haven't tested for other versions. Additionally, we haven't figured out how to get around the I2C library/clock issues when using this on the MKR1000.

@@ -81,7 +81,9 @@ An HTTP client is a program that establishes a connection to a server in order t
 
 ### HTTP Methods
 
-There are many types of HTTP methods, which include GET, POST, PUT, and DELETE. 
+As we learned previously, an HTTP client will send an HTTP request to a server in the form of a request message which has the format listed above. Now, in a HTTP request message, there's a request-line that has a method token, a request-URI, and the protocol version. It looks like this: ```Request-Line = Method SP Request-URI SP HTTP-Version CRLF```. The request method indicates the method to be performed on the resource in the Request-URI. 
+
+There are many types of HTTP methods (I'm calling it this, I'm referring to reqeust methods), which include GET, POST, PUT, and DELETE. 
 
 **GET Method** is used to request data. It's a very popular HTTP method. Important to note that data is visible to everyone in the URL!
 
@@ -91,4 +93,67 @@ There are many types of HTTP methods, which include GET, POST, PUT, and DELETE.
 
 **DELETE Method** is used to delete a resource specified. That's pretty self-explanatory. 
 
-I could discuss the HEAD method or OPTIONS method, but the methods above are the most common. A quick google search solves most queries here. 
+I could discuss the HEAD method or OPTIONS method, but the methods above are the most common. A quick google search solves most queries here. There are several request methods that you could use. A request-URI has the form: ```Request-URI = "*" | absoluteURI | abs_path | authority```. 
+
+Now, putting everything together, a request message may look like the following (if I wanted to get information from a hello.htm page from the web server running tutorialspoint.com, where I got most of the information for this tutorial): 
+
+```
+GET /hello.htm HTTP/1.1
+User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+Host: www.tutorialspoint.com
+Accept-Language: en-us
+Accept-Encoding: gzip, deflate
+Connection: Keep-Alive
+``` 
+
+### Status Codes 
+
+After receiving and interpreting a request message, a server responds with an HTTP response message. A message status-line has the protocol version followed by a status code and textual phrase: ```Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF```. The status code will let the client know about the status of the response: 
+
+* 1xx: Informational: the request was received and the process is continuing. 
+* 2xx: Success: The action was understood and accepted. 
+* 3xx: Redirection: Further action must be taken to complete the request.
+* 4xx: Client error: Request had invalid syntax or can't be fulfilled. 
+* 5xx: Server error: Server failed to fulfill a valid request.
+
+We probably won't need this, but you can have custom response header fields that can indicate age, location, accept-ranges, etc. These are used if you're building your own server, which is unlikely. So, going off of the GET request from the previous section, let's say it didn't work. You could get something like this: 
+
+```
+HTTP/1.1 404 Not Found
+Date: Sun, 18 Oct 2012 10:36:20 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Length: 230
+Connection: Closed
+Content-Type: text/html; charset=iso-8859-1
+```
+
+```
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+   <title>404 Not Found</title>
+</head>
+<body>
+   <h1>Not Found</h1>
+   <p>The requested URL /t.html was not found on this server.</p>
+</body>
+</html>
+```
+
+If it works, we may get the following:
+
+```
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT
+ETag: "34aa387-d-1568eb00"
+Vary: Authorization,Accept
+Accept-Ranges: bytes
+Content-Length: 88
+Content-Type: text/html
+Connection: Closed
+``` 
+
+A fairly in depth look at various status codes can be found [here](https://www.tutorialspoint.com/http/http_status_codes.htm). 
+

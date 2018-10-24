@@ -44,8 +44,40 @@ URI or Uniform Resource Identifiers are simpy formatted, case insensitive string
 
 ```URI = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]``` 
 
-In this case, we note that if the port isn't given, we will use port 80, the default for HTTP. An empty abs_path means "/." In many/most cases, we may have the abs_path represent something we'd like. So, on YouTube, my abs_path would be ```youtube.com/watch?v=somecodethatidentifiestheuploadedvideo```. 
+In this case, we note that if the port isn't given, we will use port 80, the default for HTTP. An empty abs_path means "/." In many/most cases, we may have the abs_path represent something we'd like. So, on YouTube, my abs_path would be ```youtube.com/watch?v=somecodethatidentifiestheuploadedvideo```. Another fun fact - all HTTP date/time stamps must be in GMT. 
 
+#### Other HTTP Related Knowledge
+
+Character sets specify the character set the client prefers. For example, the default case is the US-ASCII character set. A content encoding value indicates that an encoding algorithm has been used to encode the content before passing it to a network. It's used primarly to allow a document to be compressed without losing its identity. Media types are used in the Content-Type or Accept header fields that allow it to have appropriate data typing and type negotiation (e.g. allow the server to accept a gif by doing image/gif). Language tags allow for multiple dialects or other types of languages to be interpreted. 
+
+### HTTP Messages
+
+An HTTP client is a program that establishes a connection to a server in order to send an HTTP request message. A server is a program that accepts connections in order to serve HTTP requests by sending HTTP response messages. HTTP uses the URI (Uniform Resource Identifiers) to identify a resource and establish a connection. The messages are passed in a format similar to that used by Internet mail; the messages include requests from client to server and responses from server to client that have the following format:
+ 
+ ```HTTP-message   = <Request> | <Response> ; HTTP/1.1 messages```
+
+ So the general format for HTTP requests and HTTP responses use a generic message format, which is the following: 
+ * A start-line: ```start-line = Request-Line | Status-Line```
+   * So a request line may look like: ```GET /hello.htm HTTP/1.1``` with a status-line as ```HTTP/1.1 200 OK```
+ * A header field
+   * Four types of HTTP message headers; they provide required information about the request or response. 
+     * General-header: General applicability for requests/response messages. 
+     * Request-header: These header fields have applicability for request messages. 
+     * Response-header: These header fields have applicability for response messages. 
+     * Entity-header: Used to define information about the entity-body. 
+        * Could look like this ```User-Agent: curl/7.16.3``` or ```Accept-Language: en, mi``` or ```Content-Length: 51```
+ * A message body if needed
+   * This is an optional part of an HTTP message; it's used to carry the entity-body associated with a request or response. It has two header lines (i.e. contentType and contentLength). A message body actually carries the HTTP request data and the HTTP response from the server. This may look familiar if you know HTML. 
+     * Example: 
+     ```
+         <html>
+            <body>
+        
+            <h1>Hello, World!</h1>
+        
+            </body>
+        </html>
+     ```
 
 ### HTTP Methods
 

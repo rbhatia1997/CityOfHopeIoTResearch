@@ -34,6 +34,19 @@ There are three features that make HTTP a simple yet powerful protocol.
 
 The HTTP Protocol is request/response based on client/server architecture. Thus, the web server is a server and things like search engines and robots can act as a client. In this case, a client is one in which a request is sent to the server in the form of a request method, protocol version, and other information needed to convey intent. Additionally, the HTTP server responds to the client's request with a status line, including the message's protocol version and a success or error code. 
 
+#### HTTP Version
+
+The version of HTTP is done by identifying the following scheme: ``` <major>.<minor>``` such that ```HTTP-Version   = "HTTP" "/" 1*DIGIT "." 1*DIGIT```. So, as mentioned before, I'm assuming we'll be using ```HTTP/1.1```. 
+
+#### Uniform Resource Identifiers
+
+URI or Uniform Resource Identifiers are simpy formatted, case insensitive strings that contain the name, location, etc. to identify a resource like a website or web service. You may be familiar with the concept of URLs (Uniform Resource Locators). Guess what - a URL is a specific type of URI. They're used interchangeably for some reason. Mind blown. So the format for URI is the following: 
+
+```URI = "http:" "//" host [ ":" port ] [ abs_path [ "?" query ]]``` 
+
+In this case, we note that if the port isn't given, we will use port 80, the default for HTTP. An empty abs_path means "/." In many/most cases, we may have the abs_path represent something we'd like. So, on YouTube, my abs_path would be ```youtube.com/watch?v=somecodethatidentifiestheuploadedvideo```. 
+
+
 ### HTTP Methods
 
 There are many types of HTTP methods, which include GET, POST, PUT, and DELETE. 

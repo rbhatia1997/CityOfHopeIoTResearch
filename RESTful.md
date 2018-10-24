@@ -157,3 +157,35 @@ Connection: Closed
 
 A fairly in depth look at various status codes can be found [here](https://www.tutorialspoint.com/http/http_status_codes.htm). 
 
+## Summary of HTTP 
+
+The internet can be considered a "massive distributed client/server information system." HTTP (HyperText Transfer Protocol) is the most popular application protocol (used to communicate between client and server); it sends a request message to an HTTP server that then gives a response message. HTTP is familiar from the internet browser when searching things up. When you use a URL (issue a URL) from the browser, it turns the URL to a request message, sends it to the HTTP server, and interprets the message (gives you the site you requested). While HTTP is a client-server application-level protocol, it runs over a TCP/IP (transmission control protocol/ internet protocol), which is a set of "transport and network-layer protocols for machines to communicate with each other over the network." You may be familiar with IP (internet protocol) from IP address, a unique address that each machine is assigned in an IP network; IP software routes messages from source to destination IP. 
+
+On the internet, we use domain names (e.g. google.com) instead of IP addresses for ease of use; we use DNS (domain name services) to translate domain names into the IP address. That being said, there is the IP address or localhost which refers to one's own machine and is good for testing. For each IP machine, TCP supports a large number of ports or sockets. An application (e.g. HTTP) listens at a particular port number for requests; ports 0 to 1023 are pre-assigned (e.g. 80 for HTTP), but 1024 and above are for users in general. Usually, people run test servers on 8000.
+
+HTTP clients and servers communicate by sending messages. Clients send request messages to servers and receive response messages, as mentioned above. An HTTP message contains a message header and (optionally) a message body. There is a particular syntax for each. The first line of the header is the request line. It contains information about the request method (e.g. GET, POST), the request-URI (what is requested), and the HTTP version. For the HTTP response messages, the first line is called the status line, which contains the HTTP version, the status-code (three digit number to show the status of the request), and an explanation of the status code. In regards to the request method, the HTTP protocol defines a set of them; a client can use these to send a request message to an HTTP server. The main ones are GET (requesting a web resource from a server), POST (used to post data to the web server), PUT (ask the server to store data), and DELETE (ask the server to delete the data). In the case for Arduino, a GET request can be made to a web server that Arduino is connected to in order to control remotely; alternatively, Arduino can POST information to a web server that can be accessed remotely. 
+
+### Quick Aside on JSON and XML-Encoded 
+
+In order to communicate properly with the HTTP server, one needs to format the data output. I recommend XML (Extensible Markup Language) or JSON (JavaScript Object Notation). These are the two most common formats for data interchange in the web. JSON is a lightweight format to exchange data - it’s used for serializing and transmitting data over a network. More information about JSON is [here](https://stackoverflow.com/questions/383692/what-is-json-and-why-would-i-use-it). XML describes data objects and partially describes the behavior of the programs that process these objects. More information about XML is [here](https://www.w3.org/TR/WD-xml-lang-970630). We will use JSON or XML-encoded to transfer data via HTTP requests. I would recommend using JSON, which looks like the following:
+
+```
+{
+     "firstName": "John",
+     "lastName": "Smith",
+     "address": {
+         "streetAddress": "21 2nd Street",
+         "city": "New York",
+         "state": "NY",
+         "postalCode": 10021
+     },
+     "phoneNumbers": [
+         "212 555-1234",
+         "646 555-4567"
+     ]
+ }
+``` 
+
+# RESTful API 
+
+An API is the tool that makes a website's data digestible for a computer. Through it, a computer can view and edit data just like a person can via loading pages/submitting forms. A well-designed format is dictated by what makes the information the easiest for the intended audience to understand. The most common formats found in APIs are JSON and XML. Referencing [here](https://restful.io/an-introduction-to-api-s-cee90581ca1b). To be continued :). 

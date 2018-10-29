@@ -276,7 +276,7 @@ Additionally, there is a library called [ArduinoHttpClient]("https://github.com/
 
 Finally, I have heard good words about the [ArduinoJSON]("https://github.com/bblanchon/ArduinoJson") library. I'm not sure about its functionality with the MKR1000, but it works for the ESP8266 and ESP32 IoT boards. 
 
-## Designing a REST API with Node.js and MongoDB Atlas
+## Designing a REST API with Node.js and MongoDB 
 
 So first, what is Node.js. It's a technology for developing web applications; it's open-source and executes JavaScript code outside of a browser. Node.js has a package ecosystem called npm - the largest open source ecosystem of libraries in the world. Npm is a command line client that handles packages, which are building blocks of code. 
 
@@ -293,7 +293,12 @@ I mentioned POSTman way back in this post. You should have this downloaded; it's
 
 Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query langauge (SQL) for defining and manipulating data. SQL is very powerful but it can be restrictive because you have to have preferred schema to determine the data structure even before working with it. There's a lot of up-front preparation. NoSQL has a dynamic schema for unstructured data and data can be stored in many ways. NoSQL is preferred for large or ever-changing data sets whereas SQL is vertically scalable (increase the load through CPU, RAM, or SSD changes). SQL structures are table-based and NoSQL databases are document-based. Although MySQL is free and has good documentation (and versatility), I believe that NoSQL is a good choice for a start-up or for clinic because of the potential for rapid data growth and for databases with no clear schema definition. 
 
-Now, make sure you have an IDE (e.g. Sublime or Visual Studio) and we should be good to go for the rest of this tutorial. 
+## Designing a REST API with Node.js and MongoDB Continued
+
+So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wante dto build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. 
+
+May use this as a [guide]("https://codeburst.io/building-a-rest-api-using-mongo-db-75cac3403fab"). 
+
 
 
 ### Aside on REST vs. GraphQL

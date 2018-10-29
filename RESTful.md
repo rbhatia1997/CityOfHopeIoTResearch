@@ -188,4 +188,29 @@ In order to communicate properly with the HTTP server, one needs to format the d
 
 # RESTful API 
 
-An API is the tool that makes a website's data digestible for a computer. Through it, a computer can view and edit data just like a person can via loading pages/submitting forms. A well-designed format is dictated by what makes the information the easiest for the intended audience to understand. The most common formats found in APIs are JSON and XML. Referencing [here](https://restful.io/an-introduction-to-api-s-cee90581ca1b). To be continued :). 
+An API is the tool that makes a website's data digestible for a computer. Through it, a computer can view and edit data just like a person can via loading pages/submitting forms. A well-designed format is dictated by what makes the information the easiest for the intended audience to understand. The most common formats found in APIs are JSON and XML. The rest of this intorduction will be referencing the following [link](https://restful.io/an-introduction-to-api-s-cee90581ca1b). 
+
+Systems that use APIs or connectusing them are considered **integrated**. The server will host the API whereas the client can manipulate and use the API. As mentioned previously, the HTTP protocol uses a request-response cycle. A valid request has four things:
+
+* URL (Uniform Resource Locator) or URI (Uniform Resource Identifier) 
+* Method 
+* List of Headers
+* Body 
+
+Previously, we discussed methods or HTTP requests, of which the most common are GET, POST,PUT, and DELETE. Headers provide meta-information on a request and the body is the data that a client wants to send a server, which responds with a status code that informs the progress of the request. This is explained in more detail in the previous sections. 
+
+## JSON & XML 
+
+A well-designed format is dictated by what information is the easiest for people to understand. The most used formats in APIs are JSON and XML. 
+
+JSON consists of two pieces that are important: ```key``` and ```value```. On the other hand, XML consists of a few building blocks, of which the main block is called a node. The name of the node tells us the attribute of the order; the data inside is the details. Let's show what each looks like. 
+
+* JSON looks like: ```{"Key": "TheValue"}```
+* XML looks like: ```<key>TheValue</key>``` 
+
+So tying things together. We use headers in our request to tell a server what type of information we're sending it and what we expect back. In the header called ```content-type```, we are saying what format our data is in. The ```accept``` header tells the server what data-format it can accept. So it would look like the following if our server and front-end application (client) wanted to send JSON information: 
+
+* Accept: "application/json"
+* Content-Type: "application/json" 
+
+## Authentication

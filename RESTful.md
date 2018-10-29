@@ -214,3 +214,65 @@ So tying things together. We use headers in our request to tell a server what ty
 * Content-Type: "application/json" 
 
 ## Authentication
+
+There are techniques in APIs to authenticate a client. From the server side, this is important because we want to know who is accessing information. Clients use authentification to verify that the server is the one it claims to be. The act of authentification is ensuring identity is accurate. 
+
+### Types of Authentification 
+
+Basic authentification or Basic Auth only requires username and password for verification. The client will take two credentials, convert them to one value, and pass them to an HTTP header called authentification. The server will check the authentification header to the credential it was stored; if there's a match, the server allows the HTTP request to go through, otherwise it returns 401 status code. 
+
+API Key Authentification is a technique that overcomes the insecurity of sharing credentials because it requires a specific key must be used. When we say key, we mean a code passed in by computer programs that call an API. A lot of times, people have a special URL that will allow access: ```http://example.com?apikey=mysecret_key```. 
+
+Open Authorization (OAuth) will automate a key exchange; it only requires user credentials and will secretly have client-server dialogue to get a valid key. There are two versions of OAuth. In OAuth2, the user tells the client to connect to a server. The next step is to have client direct the user to a server once authentification happens - a callback URL is sent from the server to client. Next, a user logs-in and gets access; users are given a unique authorization code for their client. Then, the client gives that code and a secret key for access. The server responds with an access code. Finally, a client can get data from a server. The access code allows for direct authentification. Tokens can expire for OAuth2. The time is set by the server. 
+
+## Types of API Design
+
+The two most common architectures for web-based APIs are SOAP and REST. 
+
+* SOAP 
+   * XML-based design that has a standardized structure for requests and responses. 
+* REST (Representation State Transfer) 
+   * Open approach with many conventions; leave many decisions to person designing API. 
+
+I will focus on REST for the tutorial, as I think it's valuable to have the ability to control more. When talking about APIs, we use the word resources, which is what is interacted with in an API. Let's say that we are designing an API for a pizza company. For the client to interact with the company, there needs to be several decisions made: 
+
+1. Decide what resources need to be available 
+2. Assign URLs to those resources
+3. Decide what actions the client should be allowed to perform on those resources
+4. Figure out what pieces of data are required for each action & what format they're in
+
+For REST APIs, a resource will have two URL patterns: (1) the plural of the resource name,like ```orders/``` and (2) the plural of the resource name + identifier for an order, which is ```orders/bhatia12323```. These are the endpoints that the API supports; an endpoint is what goes at the **end** of a URL after the ```\```. 
+
+Now that the resources have URLs, a client needs to have actions it can do. We say that the endpoints, such as orders, list existing orders and can create new ones. The unique identifier endpoint for orders (e.g. orders/bhatia12323) can retrieve, update, or cancel a specific order. The client tells the server what to do by using the HTTP reqeust methods (e.g. GET, POST, PUT, DELETE). I can use a DELETE method to www.pizzacompany.com/orders/1 to cancel order one for example. 
+
+Now, we need to decide what data is exchanged. If we say a pizza has crust and toppings, we need to select a data format (JSON for example). Therefore, an interaction between client and server will look like the following. A client will POST the following:
+
+```
+{
+    "crust": "thin",
+    "toppings" : ["cheese"]
+}
+``` 
+
+It will then get the following response from the server that will indicate progress:
+
+```
+HTTP/1.1 201 Created
+{
+    "id": 5
+}
+```
+
+What if we want to associate orders with customers (assuming we have a customer resource)?
+Sometimes, people will add to the endpoint: ```/customers/5/orders``` for the 5th customer's order and then add /3 to indicate the third order for that customer. However, people may use an additional field in the body of the HTTP request that will be sent with order details (POST) that includes a customer_id. 
+
+URLs have a component called a query string. REST APIs use these to define details of a search. These details are query parameters. The API dictates what parameters are accepted. You can use this in the pizza API to search for pizza with certain crust or toppings. Additionally, query strings can limit the amount of data in each request. Splitting data like this is called pagination - so if I called GET to get all the orders made I can only view a limited selection (e.g. orders from 200 - 400). 
+
+## RESTful API and Arduino
+
+Arduino has great resources for implementing RESTful API. One example is using REST calls via HTTP and the Arduino WiFi 101 Library (assuming one is using the MKR1000). One such library is the [aREST]("https://arest.io/") library (which is free to a certain extent). In using this library, boards running aREST can be accessed from anywhere using  ```cloud.arest.io```. 
+
+Additionally, there is a library called [ArduinoHttpClient]("https://github.com/arduino-libraries/ArduinoHttpClient") that makes it easier to interact with web servers using Arduino. It can handle POST, PUT, GET, and DELETE. 
+
+Finally, I have heard good words about the [ArduinoJSON]("https://github.com/bblanchon/ArduinoJson") library. I'm not sure about its functionality with the MKR1000, but it works for the ESP8266 and ESP32 IoT boards. 
+

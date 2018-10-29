@@ -276,3 +276,24 @@ Additionally, there is a library called [ArduinoHttpClient]("https://github.com/
 
 Finally, I have heard good words about the [ArduinoJSON]("https://github.com/bblanchon/ArduinoJson") library. I'm not sure about its functionality with the MKR1000, but it works for the ESP8266 and ESP32 IoT boards. 
 
+## Designing a REST API with Node.js and MongoDB Atlas
+
+So first, what is Node.js. It's a technology for developing web applications; it's open-source and executes JavaScript code outside of a browser. Node.js has a package ecosystem called npm - the largest open source ecosystem of libraries in the world. Npm is a command line client that handles packages, which are building blocks of code. 
+
+Applications that use REST APIs perform four functions that are known as CRUD. I'm being completely serious, that is the literal name for it. CRUD stands for the following:
+
+* C: Creating Data
+* R: Reading Data
+* U: Updating Data
+* D: Deleting or removing Data 
+
+I mentioned POSTman way back in this post. You should have this downloaded; it's a tool for testing API. Additionally, you should have [node.js]("https://nodejs.org/en/") installed on your computer. Finally, make sure to download [MongoDB]("https://www.mongodb.com/"), which is a noSQL database. 
+
+### Aside on Databases
+
+Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query langauge (SQL) for defining and manipulating data. SQL is very powerful but it can be restrictive because you have to have preferred schema to determine the data structure even before working with it. There's a lot of up-front preparation. NoSQL has a dynamic schema for unstructured data and data can be stored in many ways. NoSQL is preferred for large or ever-changing data sets whereas SQL is vertically scalable (increase the load through CPU, RAM, or SSD changes). SQL structures are table-based and NoSQL databases are document-based. Although MySQL is free and has good documentation (and versatility), I believe that NoSQL is a good choice for a start-up or for clinic because of the potential for rapid data growth and for databases with no clear schema definition. 
+
+
+### Aside on REST vs. GraphQL
+
+There is another way to handle requests/responses and it's called [Graphql]("https://www.howtographql.com/"). Although REST is industry standard, Graphql will eventually take over the world and is much faster. For the sake of documentation, I refrain from getting into GraphQl. A [whitepaper]("https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm") from Roy Fielding explains why I used REST for the tutorial and for the project. 

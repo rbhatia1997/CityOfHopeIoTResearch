@@ -293,6 +293,8 @@ I mentioned POSTman way back in this post. You should have this downloaded; it's
 
 Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query langauge (SQL) for defining and manipulating data. SQL is very powerful but it can be restrictive because you have to have preferred schema to determine the data structure even before working with it. There's a lot of up-front preparation. NoSQL has a dynamic schema for unstructured data and data can be stored in many ways. NoSQL is preferred for large or ever-changing data sets whereas SQL is vertically scalable (increase the load through CPU, RAM, or SSD changes). SQL structures are table-based and NoSQL databases are document-based. Although MySQL is free and has good documentation (and versatility), I believe that NoSQL is a good choice for a start-up or for clinic because of the potential for rapid data growth and for databases with no clear schema definition. 
 
+Now, make sure you have an IDE (e.g. Sublime or Visual Studio) and we should be good to go for the rest of this tutorial. 
+
 
 ### Aside on REST vs. GraphQL
 

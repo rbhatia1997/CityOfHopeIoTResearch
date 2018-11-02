@@ -378,6 +378,172 @@ Now, if your server is still running in the command line, use ```cntrl + C``` to
 
 Instead of restarting the server every time we make changes to our files or adding new ones, we can use a node module called nodemon which restarts the server every time changes are made. Install this globally for every project you have through the following command-line prompt: ```npm install -g nodemon```. 
 
+**Important to note that we will run our server with nodemon index rather than node index** 
+
+Now, let's set-up MongoDB. We run this, after installation, using ```mongod``` in the command line. Now, we're going to install a few packages: (1) ```npm install mongoose --save``` and (2) ```npm install body-parser --save```. 
+
+What did we do here? Mongoose is a NodeJs package for modeling MongoDB and handle validation/business logic for mongoDB on NodeJs. Body-parser enables an application to parse data from incoming request (e.g. XML, JSON data). Let's modify index.js with the following lines, enabling these packages: 
+
+```Javascript
+// Import Body parser
+let bodyParser = require('body-parser');
+// Import Mongoose
+let mongoose = require('mongoose');
+// Configure bodyparser to handle post requests
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+app.use(bodyParser.json());
+// Connect to Mongoose and set connection variable
+mongoose.connect('mongodb://localhost/resthub');
+var db = mongoose.connection;
+```
+Now, we need to set up our controller to handle API requests and Model which will save/retrieve data from the database. So, if we want to store a few pieces of information on a user, we'd have to add two more files to our directory: ```contactController.js``` and ```contactModel.js``` which can be done also using the ```touch``` command in command line. 
+
+The controller defines a method that handles requests and responses from different API endpoints. Additionally, we can import the contactModel and handle CRUD functions. So, contactController.js has:
+
+```Javascript
+// contactController.js
+// Import contact model
+Contact = require('./contactModel');
+// Handle index actions
+exports.index = function (req, res) {
+    Contact.get(function (err, contacts) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        }
+        res.json({
+            status: "success",
+            message: "Contacts retrieved successfully",
+            data: contacts
+        });
+    });
+};
+// Handle create contact actions
+exports.new = function (req, res) {
+    var contact = new Contact();
+    contact.name = req.body.name ? req.body.name : contact.name;
+    contact.gender = req.body.gender;
+    contact.email = req.body.email;
+    contact.phone = req.body.phone;
+// save the contact and check for errors
+    contact.save(function (err) {
+        // if (err)
+        //     res.json(err);
+res.json({
+            message: 'New contact created!',
+            data: contact
+        });
+    });
+};
+// Handle view contact info
+exports.view = function (req, res) {
+    Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+        res.json({
+            message: 'Contact details loading..',
+            data: contact
+        });
+    });
+};
+// Handle update contact info
+exports.update = function (req, res) {
+Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+contact.name = req.body.name ? req.body.name : contact.name;
+        contact.gender = req.body.gender;
+        contact.email = req.body.email;
+        contact.phone = req.body.phone;
+// save the contact and check for errors
+        contact.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                message: 'Contact Info updated',
+                data: contact
+            });
+        });
+    });
+};
+// Handle delete contact
+exports.delete = function (req, res) {
+    Contact.remove({
+        _id: req.params.contact_id
+    }, function (err, contact) {
+        if (err)
+            res.send(err);
+res.json({
+            status: "success",
+            message: 'Contact deleted'
+        });
+    });
+};
+```
+
+And for contactModel.js: 
+
+```Javascript
+// contactModel.js
+var mongoose = require('mongoose');
+// Setup schema
+var contactSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    gender: String,
+    phone: String,
+    create_date: {
+        type: Date,
+        default: Date.now
+    }
+});
+// Export Contact model
+var Contact = module.exports = mongoose.model('contact', contactSchema);
+module.exports.get = function (callback, limit) {
+    Contact.find(callback).limit(limit);
+}
+```
+We are importing mongoose, creating a database for contacts, and exported the module so it is accessible. The update will be adding contact routes to the API endpoint... adding to api-routes.js (final code): 
+
+```Javascript
+// api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+        status: 'API Its Working',
+        message: 'Welcome to RESTHub crafted with love!',
+    });
+});
+// Import contact controller
+var contactController = require('./contactController');
+// Contact routes
+router.route('/contacts')
+    .get(contactController.index)
+    .post(contactController.new);
+router.route('/contacts/:contact_id')
+    .get(contactController.view)
+    .patch(contactController.update)
+    .put(contactController.update)
+    .delete(contactController.delete);
+// Export API routes
+module.exports = router;
+```
+
+We can run our server and then visit ```http://localhost:8080/api/contacts```. 
+
+
 ### Aside on REST vs. GraphQL
 
 There is another way to handle requests/responses and it's called [Graphql]("https://www.howtographql.com/"). Although REST is industry standard, Graphql will eventually take over the world and is much faster. For the sake of documentation, I refrain from getting into GraphQl. A [whitepaper]("https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm") from Roy Fielding explains why I used REST for the tutorial and for the project. 

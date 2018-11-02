@@ -543,6 +543,8 @@ module.exports = router;
 
 We can run our server and then visit ```http://localhost:8080/api/contacts```. This would show a success status message but no contacts because we haven't added contacts. We'd need to use the HTTP POST request to add users. For example, we would use Postman with the URL above and then add four keys: name, email, phone, and gender as defined by the code; you would insert values for those and make sure you're using XML encoded. Finally, you would send the data via Postman and then running your GET would get the data.  
 
+Using the following [tutorial]("https://devcenter.heroku.com/articles/getting-started-with-nodejs"). 
+
 ### Aside on REST vs. GraphQL
 
 There is another way to handle requests/responses and it's called [Graphql]("https://www.howtographql.com/"). Although REST is industry standard, Graphql will eventually take over the world and is much faster. For the sake of documentation, I refrain from getting into GraphQl. A [whitepaper]("https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm") from Roy Fielding explains why I used REST for the tutorial and for the project. 

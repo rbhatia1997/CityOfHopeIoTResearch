@@ -295,11 +295,88 @@ Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query la
 
 ## Designing a REST API with Node.js and MongoDB Continued
 
-So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wante dto build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. 
+So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wanted to build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. I will use the following source as a [guide]("https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d"). 
 
-May use this as a [guide]("https://codeburst.io/building-a-rest-api-using-mongo-db-75cac3403fab"). 
+So the first step here is to create another director (folder) on the computer called mongod (you can call it something else but I called it this). Then, put another directory called restAPI (or resthub or whatever you want) in there. In terminal, you're going to want to go to this directory and run/create your code in this directory. 
 
+Next, you're going to want to run npm init. This will allow you to set-up your project. Accept the default name and version but change the description to what you want and change the author name to your name; make sure you accept the default license to generate something called ```package.json```. Additionally, make sure "main" has index.js referenced. Now, this package should be available in the directory that you're in. 
 
+Now, you're going to install Express and setup the server. A web server is necessary in order to make the API endpoint accessible to a browswer or an API development tool like Postman (which will emulate HTTP requests from something like the MKR1000). 
+
+We can install Express in the project with the following command: ```npm install express --save```. This should take a bit of time. 
+
+Now, open an IDE or use vim on terminal, and create a new file called ```index.js``` where .js stands for javascript. Express is a minimalist web framewrok for Node.js. 
+
+There'll be a directory called node_modules and a file called package.json asides from index.js. In package.json, index.js is defined as the app's entry point. Creating index.js should like the following:
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Save the file and then run node index in the command line (making sure you're in the correct directory). It will say the port number and the name of the directory. Going to ```http://localhost:8080``` in the browser should show you a "Hello world with express" message that was defined in the index.js file. 
+
+### More Professional Web Structuring
+
+```api-routes``` will have all api endpoints defined in this file. 
+
+```controller``` will process HTTP requests and defines the available endpoints. 
+
+```model``` will manage database layer (request and response). 
+
+Now, create a file called ```api-routes.js``` which has the following information: 
+
+```Javascript
+// Filename: api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+       status: 'API Its Working',
+       message: 'Welcome to RESTHub crafted with love!',
+    );
+});
+// Export API routes
+module.exports = router;
+```
+
+This imports express router, sets the default route and exports the module so it can be used in the application. So, making this route accessible, we add more code to the index.js file that we had previously...
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Import routes
+let apiRoutes = require("./api-routes")
+// Use Api routes in the App
+app.use('/api', apiRoutes)
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Now, if your server is still running in the command line, use ```cntrl + C``` to end it. Then, run it again by typing ```node index```. Now, going to ```http://localhost:8080/api``` will allow users to see a new message! 
+
+Instead of restarting the server every time we make changes to our files or adding new ones, we can use a node module called nodemon which restarts the server every time changes are made. Install this globally for every project you have through the following command-line prompt: ```npm install -g nodemon```. 
 
 ### Aside on REST vs. GraphQL
 

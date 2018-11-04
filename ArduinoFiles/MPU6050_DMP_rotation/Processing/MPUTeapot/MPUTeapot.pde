@@ -55,6 +55,8 @@ float[] gravity = new float[3];
 float[] euler = new float[3];
 float[] ypr = new float[3];
 
+long start_time = 0;
+
 void setup() {
     // 300px square viewport using OpenGL rendering
     size(300, 300, OPENGL);
@@ -68,7 +70,7 @@ void setup() {
     println(Serial.list());
 
     // get the first available port (use EITHER this OR the specific port code below)
-    String portName = "/dev/cu.usbmodem1411";
+    String portName = "/dev/cu.usbmodem4014351";
     
     // get a specific serial port (use EITHER this OR the first-available code above)
     //String portName = "COM4";
@@ -79,9 +81,16 @@ void setup() {
     // send single character to trigger DMP init/start
     // (expected by MPU6050_DMP6 example Arduino sketch)
     port.write('r');
+    
+    start_time = millis();
 }
 
 void draw() {
+    
+    if (millis() - start_time < 7000) {
+        text("Don't move IMU", 50, 50);
+    }
+    
     if (millis() - interval > 1000) {
         // resend single character to trigger DMP init/start
         // in case the MPU is halted/reset while applet is running
@@ -90,7 +99,7 @@ void draw() {
     }
     
     // black background
-    background(0);
+    background(255);
     
     // translate everything to the middle of the viewport
     pushMatrix();

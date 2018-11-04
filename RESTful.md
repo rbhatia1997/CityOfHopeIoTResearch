@@ -543,7 +543,7 @@ module.exports = router;
 
 We can run our server and then visit ```http://localhost:8080/api/contacts```. This would show a success status message but no contacts because we haven't added contacts. We'd need to use the HTTP POST request to add users. For example, we would use Postman with the URL above and then add four keys: name, email, phone, and gender as defined by the code; you would insert values for those and make sure you're using XML encoded. Finally, you would send the data via Postman and then running your GET would get the data.  
 
-Using the following [tutorial]("https://devcenter.heroku.com/articles/getting-started-with-nodejs"). Also going to reference [this]("https://devcenter.heroku.com/articles/mean-apps-restful-api") for the next steps. 
+Using the following [tutorial]("https://devcenter.heroku.com/articles/getting-started-with-nodejs"). Also going to reference [this]("https://devcenter.heroku.com/articles/mean-apps-restful-api") for the next steps. Also, [this]("https://medium.freecodecamp.org/build-restful-api-with-authentication-under-5-minutes-using-loopback-by-expressjs-no-programming-31231b8472ca") may be helpful.  The last option implements something called LoopBack, which sets the routes automatically, and something called SwaggerAPI which allows you to make APIs quickly. 
 
 ### Aside on REST vs. GraphQL
 

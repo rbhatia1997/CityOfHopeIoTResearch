@@ -23,6 +23,7 @@ double x_offset = 0;
 double y_offset = 0;
 double z_offset = 0;
 
+auto start_time = 0;
 
 void setup() {
   
@@ -62,24 +63,24 @@ void loop() {
 
   // Calculate the calibrated angles by subtracting the intial offsets
   x_roll = x_roll - x_offset;
-  y_roll = y_roll - y_offset;
-  z_roll = z_roll - z_offset;
+  y_roll = y_pitch - y_offset;
+  z_roll = z_yaw - z_offset;
 
   // Filter signal using moving average
-  double x_avg = ( (avg_size - 1)*x_avg_past + x_roll) / avg_size - x_cal;
-  double y_avg = ( (avg_size - 1)*y_avg_past + y_pitch) / avg_size - y_cal;
-  double z_avg = ( (avg_size - 1)*z_avg_past + z_yaw) / avg_size - z_cal;
+  double x_avg = ( (avg_size - 1)*x_avg_past + x_roll) / avg_size;
+  double y_avg = ( (avg_size - 1)*y_avg_past + y_pitch) / avg_size;
+  double z_avg = ( (avg_size - 1)*z_avg_past + z_yaw) / avg_size;
   x_avg_past = x_avg;
   y_avg_past = y_avg;
   z_avg_past = z_avg;
 
   // Print the unfiltered (but calibrated) angles
-  Serial.print(x_roll);
-  Serial.print("  ");
-  Serial.print(y_pitch);
-  Serial.print("  ");
-  Serial.println(z_yaw);
-  Serial.print("  ");
+//  Serial.print(x_roll);
+//  Serial.print("  ");
+//  Serial.print(y_pitch);
+//  Serial.print("  ");
+//  Serial.println(z_yaw);
+//  Serial.print("  ");
   
   // Print the filtered, calibrated angles
   Serial.print(x_avg);

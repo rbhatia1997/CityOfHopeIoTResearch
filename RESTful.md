@@ -188,4 +188,363 @@ In order to communicate properly with the HTTP server, one needs to format the d
 
 # RESTful API 
 
-An API is the tool that makes a website's data digestible for a computer. Through it, a computer can view and edit data just like a person can via loading pages/submitting forms. A well-designed format is dictated by what makes the information the easiest for the intended audience to understand. The most common formats found in APIs are JSON and XML. Referencing [here](https://restful.io/an-introduction-to-api-s-cee90581ca1b). To be continued :). 
+An API is the tool that makes a website's data digestible for a computer. Through it, a computer can view and edit data just like a person can via loading pages/submitting forms. A well-designed format is dictated by what makes the information the easiest for the intended audience to understand. The most common formats found in APIs are JSON and XML. The rest of this intorduction will be referencing the following [link](https://restful.io/an-introduction-to-api-s-cee90581ca1b). 
+
+Systems that use APIs or connectusing them are considered **integrated**. The server will host the API whereas the client can manipulate and use the API. As mentioned previously, the HTTP protocol uses a request-response cycle. A valid request has four things:
+
+* URL (Uniform Resource Locator) or URI (Uniform Resource Identifier) 
+* Method 
+* List of Headers
+* Body 
+
+Previously, we discussed methods or HTTP requests, of which the most common are GET, POST,PUT, and DELETE. Headers provide meta-information on a request and the body is the data that a client wants to send a server, which responds with a status code that informs the progress of the request. This is explained in more detail in the previous sections. 
+
+## JSON & XML 
+
+A well-designed format is dictated by what information is the easiest for people to understand. The most used formats in APIs are JSON and XML. 
+
+JSON consists of two pieces that are important: ```key``` and ```value```. On the other hand, XML consists of a few building blocks, of which the main block is called a node. The name of the node tells us the attribute of the order; the data inside is the details. Let's show what each looks like. 
+
+* JSON looks like: ```{"Key": "TheValue"}```
+* XML looks like: ```<key>TheValue</key>``` 
+
+So tying things together. We use headers in our request to tell a server what type of information we're sending it and what we expect back. In the header called ```content-type```, we are saying what format our data is in. The ```accept``` header tells the server what data-format it can accept. So it would look like the following if our server and front-end application (client) wanted to send JSON information: 
+
+* Accept: "application/json"
+* Content-Type: "application/json" 
+
+## Authentication
+
+There are techniques in APIs to authenticate a client. From the server side, this is important because we want to know who is accessing information. Clients use authentification to verify that the server is the one it claims to be. The act of authentification is ensuring identity is accurate. 
+
+### Types of Authentification 
+
+Basic authentification or Basic Auth only requires username and password for verification. The client will take two credentials, convert them to one value, and pass them to an HTTP header called authentification. The server will check the authentification header to the credential it was stored; if there's a match, the server allows the HTTP request to go through, otherwise it returns 401 status code. 
+
+API Key Authentification is a technique that overcomes the insecurity of sharing credentials because it requires a specific key must be used. When we say key, we mean a code passed in by computer programs that call an API. A lot of times, people have a special URL that will allow access: ```http://example.com?apikey=mysecret_key```. 
+
+Open Authorization (OAuth) will automate a key exchange; it only requires user credentials and will secretly have client-server dialogue to get a valid key. There are two versions of OAuth. In OAuth2, the user tells the client to connect to a server. The next step is to have client direct the user to a server once authentification happens - a callback URL is sent from the server to client. Next, a user logs-in and gets access; users are given a unique authorization code for their client. Then, the client gives that code and a secret key for access. The server responds with an access code. Finally, a client can get data from a server. The access code allows for direct authentification. Tokens can expire for OAuth2. The time is set by the server. 
+
+## Types of API Design
+
+The two most common architectures for web-based APIs are SOAP and REST. 
+
+* SOAP 
+   * XML-based design that has a standardized structure for requests and responses. 
+* REST (Representation State Transfer) 
+   * Open approach with many conventions; leave many decisions to person designing API. 
+
+I will focus on REST for the tutorial, as I think it's valuable to have the ability to control more. When talking about APIs, we use the word resources, which is what is interacted with in an API. Let's say that we are designing an API for a pizza company. For the client to interact with the company, there needs to be several decisions made: 
+
+1. Decide what resources need to be available 
+2. Assign URLs to those resources
+3. Decide what actions the client should be allowed to perform on those resources
+4. Figure out what pieces of data are required for each action & what format they're in
+
+For REST APIs, a resource will have two URL patterns: (1) the plural of the resource name,like ```orders/``` and (2) the plural of the resource name + identifier for an order, which is ```orders/bhatia12323```. These are the endpoints that the API supports; an endpoint is what goes at the **end** of a URL after the ```\```. 
+
+Now that the resources have URLs, a client needs to have actions it can do. We say that the endpoints, such as orders, list existing orders and can create new ones. The unique identifier endpoint for orders (e.g. orders/bhatia12323) can retrieve, update, or cancel a specific order. The client tells the server what to do by using the HTTP reqeust methods (e.g. GET, POST, PUT, DELETE). I can use a DELETE method to www.pizzacompany.com/orders/1 to cancel order one for example. 
+
+Now, we need to decide what data is exchanged. If we say a pizza has crust and toppings, we need to select a data format (JSON for example). Therefore, an interaction between client and server will look like the following. A client will POST the following:
+
+```
+{
+    "crust": "thin",
+    "toppings" : ["cheese"]
+}
+``` 
+
+It will then get the following response from the server that will indicate progress:
+
+```
+HTTP/1.1 201 Created
+{
+    "id": 5
+}
+```
+
+What if we want to associate orders with customers (assuming we have a customer resource)?
+Sometimes, people will add to the endpoint: ```/customers/5/orders``` for the 5th customer's order and then add /3 to indicate the third order for that customer. However, people may use an additional field in the body of the HTTP request that will be sent with order details (POST) that includes a customer_id. 
+
+URLs have a component called a query string. REST APIs use these to define details of a search. These details are query parameters. The API dictates what parameters are accepted. You can use this in the pizza API to search for pizza with certain crust or toppings. Additionally, query strings can limit the amount of data in each request. Splitting data like this is called pagination - so if I called GET to get all the orders made I can only view a limited selection (e.g. orders from 200 - 400). 
+
+## RESTful API and Arduino
+
+Arduino has great resources for implementing RESTful API. One example is using REST calls via HTTP and the Arduino WiFi 101 Library (assuming one is using the MKR1000). One such library is the [aREST]("https://arest.io/") library (which is free to a certain extent). In using this library, boards running aREST can be accessed from anywhere using  ```cloud.arest.io```. 
+
+Additionally, there is a library called [ArduinoHttpClient]("https://github.com/arduino-libraries/ArduinoHttpClient") that makes it easier to interact with web servers using Arduino. It can handle POST, PUT, GET, and DELETE. 
+
+Finally, I have heard good words about the [ArduinoJSON]("https://github.com/bblanchon/ArduinoJson") library. I'm not sure about its functionality with the MKR1000, but it works for the ESP8266 and ESP32 IoT boards. 
+
+## Designing a REST API with Node.js and MongoDB 
+
+So first, what is Node.js. It's a technology for developing web applications; it's open-source and executes JavaScript code outside of a browser. Node.js has a package ecosystem called npm - the largest open source ecosystem of libraries in the world. Npm is a command line client that handles packages, which are building blocks of code. 
+
+Applications that use REST APIs perform four functions that are known as CRUD. I'm being completely serious, that is the literal name for it. CRUD stands for the following:
+
+* C: Creating Data
+* R: Reading Data
+* U: Updating Data
+* D: Deleting or removing Data 
+
+I mentioned POSTman way back in this post. You should have this downloaded; it's a tool for testing API. Additionally, you should have [node.js]("https://nodejs.org/en/") installed on your computer. Finally, make sure to download [MongoDB]("https://www.mongodb.com/"), which is a noSQL database. 
+
+### Aside on Databases
+
+Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query langauge (SQL) for defining and manipulating data. SQL is very powerful but it can be restrictive because you have to have preferred schema to determine the data structure even before working with it. There's a lot of up-front preparation. NoSQL has a dynamic schema for unstructured data and data can be stored in many ways. NoSQL is preferred for large or ever-changing data sets whereas SQL is vertically scalable (increase the load through CPU, RAM, or SSD changes). SQL structures are table-based and NoSQL databases are document-based. Although MySQL is free and has good documentation (and versatility), I believe that NoSQL is a good choice for a start-up or for clinic because of the potential for rapid data growth and for databases with no clear schema definition. 
+
+## Designing a REST API with Node.js and MongoDB Continued
+
+So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wanted to build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. I will use the following source as a [guide]("https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d"). 
+
+So the first step here is to create another director (folder) on the computer called mongod (you can call it something else but I called it this). Then, put another directory called restAPI (or resthub or whatever you want) in there. In terminal, you're going to want to go to this directory and run/create your code in this directory. 
+
+Next, you're going to want to run npm init. This will allow you to set-up your project. Accept the default name and version but change the description to what you want and change the author name to your name; make sure you accept the default license to generate something called ```package.json```. Additionally, make sure "main" has index.js referenced. Now, this package should be available in the directory that you're in. 
+
+Now, you're going to install Express and setup the server. A web server is necessary in order to make the API endpoint accessible to a browswer or an API development tool like Postman (which will emulate HTTP requests from something like the MKR1000). 
+
+We can install Express in the project with the following command: ```npm install express --save```. This should take a bit of time. 
+
+Now, open an IDE or use vim on terminal, and create a new file called ```index.js``` where .js stands for javascript. Express is a minimalist web framewrok for Node.js. 
+
+There'll be a directory called node_modules and a file called package.json asides from index.js. In package.json, index.js is defined as the app's entry point. Creating index.js should like the following:
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Save the file and then run node index in the command line (making sure you're in the correct directory). It will say the port number and the name of the directory. Going to ```http://localhost:8080``` in the browser should show you a "Hello world with express" message that was defined in the index.js file. 
+
+### More Professional Web Structuring
+
+```api-routes``` will have all api endpoints defined in this file. 
+
+```controller``` will process HTTP requests and defines the available endpoints. 
+
+```model``` will manage database layer (request and response). 
+
+Now, create a file called ```api-routes.js``` which has the following information: 
+
+```Javascript
+// Filename: api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+       status: 'API Its Working',
+       message: 'Welcome to RESTHub crafted with love!',
+    );
+});
+// Export API routes
+module.exports = router;
+```
+
+This imports express router, sets the default route and exports the module so it can be used in the application. So, making this route accessible, we add more code to the index.js file that we had previously...
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Import routes
+let apiRoutes = require("./api-routes")
+// Use Api routes in the App
+app.use('/api', apiRoutes)
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Now, if your server is still running in the command line, use ```cntrl + C``` to end it. Then, run it again by typing ```node index```. Now, going to ```http://localhost:8080/api``` will allow users to see a new message! 
+
+Instead of restarting the server every time we make changes to our files or adding new ones, we can use a node module called nodemon which restarts the server every time changes are made. Install this globally for every project you have through the following command-line prompt: ```npm install -g nodemon```. 
+
+**Important to note that we will run our server with nodemon index rather than node index** 
+
+Now, let's set-up MongoDB. We run this, after installation, using ```mongod``` in the command line. Now, we're going to install a few packages: (1) ```npm install mongoose --save``` and (2) ```npm install body-parser --save```. 
+
+What did we do here? Mongoose is a NodeJs package for modeling MongoDB and handle validation/business logic for mongoDB on NodeJs. Body-parser enables an application to parse data from incoming request (e.g. XML, JSON data). Let's modify index.js with the following lines, enabling these packages: 
+
+```Javascript
+// Import Body parser
+let bodyParser = require('body-parser');
+// Import Mongoose
+let mongoose = require('mongoose');
+// Configure bodyparser to handle post requests
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+app.use(bodyParser.json());
+// Connect to Mongoose and set connection variable
+mongoose.connect('mongodb://localhost/resthub');
+var db = mongoose.connection;
+```
+Now, we need to set up our controller to handle API requests and Model which will save/retrieve data from the database. So, if we want to store a few pieces of information on a user, we'd have to add two more files to our directory: ```contactController.js``` and ```contactModel.js``` which can be done also using the ```touch``` command in command line. 
+
+The controller defines a method that handles requests and responses from different API endpoints. Additionally, we can import the contactModel and handle CRUD functions. So, contactController.js has:
+
+```Javascript
+// contactController.js
+// Import contact model
+Contact = require('./contactModel');
+// Handle index actions
+exports.index = function (req, res) {
+    Contact.get(function (err, contacts) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        }
+        res.json({
+            status: "success",
+            message: "Contacts retrieved successfully",
+            data: contacts
+        });
+    });
+};
+// Handle create contact actions
+exports.new = function (req, res) {
+    var contact = new Contact();
+    contact.name = req.body.name ? req.body.name : contact.name;
+    contact.gender = req.body.gender;
+    contact.email = req.body.email;
+    contact.phone = req.body.phone;
+// save the contact and check for errors
+    contact.save(function (err) {
+        // if (err)
+        //     res.json(err);
+res.json({
+            message: 'New contact created!',
+            data: contact
+        });
+    });
+};
+// Handle view contact info
+exports.view = function (req, res) {
+    Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+        res.json({
+            message: 'Contact details loading..',
+            data: contact
+        });
+    });
+};
+// Handle update contact info
+exports.update = function (req, res) {
+Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+contact.name = req.body.name ? req.body.name : contact.name;
+        contact.gender = req.body.gender;
+        contact.email = req.body.email;
+        contact.phone = req.body.phone;
+// save the contact and check for errors
+        contact.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                message: 'Contact Info updated',
+                data: contact
+            });
+        });
+    });
+};
+// Handle delete contact
+exports.delete = function (req, res) {
+    Contact.remove({
+        _id: req.params.contact_id
+    }, function (err, contact) {
+        if (err)
+            res.send(err);
+res.json({
+            status: "success",
+            message: 'Contact deleted'
+        });
+    });
+};
+```
+
+And for contactModel.js: 
+
+```Javascript
+// contactModel.js
+var mongoose = require('mongoose');
+// Setup schema
+var contactSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    gender: String,
+    phone: String,
+    create_date: {
+        type: Date,
+        default: Date.now
+    }
+});
+// Export Contact model
+var Contact = module.exports = mongoose.model('contact', contactSchema);
+module.exports.get = function (callback, limit) {
+    Contact.find(callback).limit(limit);
+}
+```
+We are importing mongoose, creating a database for contacts, and exported the module so it is accessible. The update will be adding contact routes to the API endpoint... adding to api-routes.js (final code): 
+
+```Javascript
+// api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+        status: 'API Its Working',
+        message: 'Welcome to RESTHub crafted with love!',
+    });
+});
+// Import contact controller
+var contactController = require('./contactController');
+// Contact routes
+router.route('/contacts')
+    .get(contactController.index)
+    .post(contactController.new);
+router.route('/contacts/:contact_id')
+    .get(contactController.view)
+    .patch(contactController.update)
+    .put(contactController.update)
+    .delete(contactController.delete);
+// Export API routes
+module.exports = router;
+```
+
+We can run our server and then visit ```http://localhost:8080/api/contacts```. This would show a success status message but no contacts because we haven't added contacts. We'd need to use the HTTP POST request to add users. For example, we would use Postman with the URL above and then add four keys: name, email, phone, and gender as defined by the code; you would insert values for those and make sure you're using XML encoded. Finally, you would send the data via Postman and then running your GET would get the data.  
+
+Using the following [tutorial]("https://devcenter.heroku.com/articles/getting-started-with-nodejs"). Also going to reference [this]("https://devcenter.heroku.com/articles/mean-apps-restful-api") for the next steps. 
+
+### Aside on REST vs. GraphQL
+
+There is another way to handle requests/responses and it's called [Graphql]("https://www.howtographql.com/"). Although REST is industry standard, Graphql will eventually take over the world and is much faster. For the sake of documentation, I refrain from getting into GraphQl. A [whitepaper]("https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm") from Roy Fielding explains why I used REST for the tutorial and for the project. 

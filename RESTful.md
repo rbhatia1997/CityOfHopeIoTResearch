@@ -295,11 +295,255 @@ Databases can be relational or non-relational (SQL vs. NoSQL). SQL uses query la
 
 ## Designing a REST API with Node.js and MongoDB Continued
 
-So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wante dto build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. 
+So, let's back up. Why do we need a REST API or Mongo? Basically, I mentioned CRUD earlier and how it was a useful method for understanding how to build applications. Let's say you wanted to build an app that lets you view/update a profile (e.g. patient data), you can create API endpoints with a REST API, which would let you connect many front-end applications to the same back-end which gives a lot of versatility. I will use the following source as a [guide]("https://medium.com/@dinyangetoh/how-to-build-simple-restful-api-with-nodejs-expressjs-and-mongodb-99348012925d"). 
 
-May use this as a [guide]("https://codeburst.io/building-a-rest-api-using-mongo-db-75cac3403fab"). 
+So the first step here is to create another director (folder) on the computer called mongod (you can call it something else but I called it this). Then, put another directory called restAPI (or resthub or whatever you want) in there. In terminal, you're going to want to go to this directory and run/create your code in this directory. 
 
+Next, you're going to want to run npm init. This will allow you to set-up your project. Accept the default name and version but change the description to what you want and change the author name to your name; make sure you accept the default license to generate something called ```package.json```. Additionally, make sure "main" has index.js referenced. Now, this package should be available in the directory that you're in. 
 
+Now, you're going to install Express and setup the server. A web server is necessary in order to make the API endpoint accessible to a browswer or an API development tool like Postman (which will emulate HTTP requests from something like the MKR1000). 
+
+We can install Express in the project with the following command: ```npm install express --save```. This should take a bit of time. 
+
+Now, open an IDE or use vim on terminal, and create a new file called ```index.js``` where .js stands for javascript. Express is a minimalist web framewrok for Node.js. 
+
+There'll be a directory called node_modules and a file called package.json asides from index.js. In package.json, index.js is defined as the app's entry point. Creating index.js should like the following:
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Save the file and then run node index in the command line (making sure you're in the correct directory). It will say the port number and the name of the directory. Going to ```http://localhost:8080``` in the browser should show you a "Hello world with express" message that was defined in the index.js file. 
+
+### More Professional Web Structuring
+
+```api-routes``` will have all api endpoints defined in this file. 
+
+```controller``` will process HTTP requests and defines the available endpoints. 
+
+```model``` will manage database layer (request and response). 
+
+Now, create a file called ```api-routes.js``` which has the following information: 
+
+```Javascript
+// Filename: api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+       status: 'API Its Working',
+       message: 'Welcome to RESTHub crafted with love!',
+    );
+});
+// Export API routes
+module.exports = router;
+```
+
+This imports express router, sets the default route and exports the module so it can be used in the application. So, making this route accessible, we add more code to the index.js file that we had previously...
+
+```Javascript
+// FileName: index.js
+// Import express
+let express = require('express')
+// Initialize the app
+let app = express();
+// Import routes
+let apiRoutes = require("./api-routes")
+// Use Api routes in the App
+app.use('/api', apiRoutes)
+// Setup server port
+var port = process.env.PORT || 8080;
+// Send message for default URL
+app.get('/', (req, res) => res.send('Hello World with Express'));
+// Launch app to listen to specified port
+app.listen(port, function () {
+     console.log("Running RestHub on port " + port);
+});
+```
+
+Now, if your server is still running in the command line, use ```cntrl + C``` to end it. Then, run it again by typing ```node index```. Now, going to ```http://localhost:8080/api``` will allow users to see a new message! 
+
+Instead of restarting the server every time we make changes to our files or adding new ones, we can use a node module called nodemon which restarts the server every time changes are made. Install this globally for every project you have through the following command-line prompt: ```npm install -g nodemon```. 
+
+**Important to note that we will run our server with nodemon index rather than node index** 
+
+Now, let's set-up MongoDB. We run this, after installation, using ```mongod``` in the command line. Now, we're going to install a few packages: (1) ```npm install mongoose --save``` and (2) ```npm install body-parser --save```. 
+
+What did we do here? Mongoose is a NodeJs package for modeling MongoDB and handle validation/business logic for mongoDB on NodeJs. Body-parser enables an application to parse data from incoming request (e.g. XML, JSON data). Let's modify index.js with the following lines, enabling these packages: 
+
+```Javascript
+// Import Body parser
+let bodyParser = require('body-parser');
+// Import Mongoose
+let mongoose = require('mongoose');
+// Configure bodyparser to handle post requests
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+app.use(bodyParser.json());
+// Connect to Mongoose and set connection variable
+mongoose.connect('mongodb://localhost/resthub');
+var db = mongoose.connection;
+```
+Now, we need to set up our controller to handle API requests and Model which will save/retrieve data from the database. So, if we want to store a few pieces of information on a user, we'd have to add two more files to our directory: ```contactController.js``` and ```contactModel.js``` which can be done also using the ```touch``` command in command line. 
+
+The controller defines a method that handles requests and responses from different API endpoints. Additionally, we can import the contactModel and handle CRUD functions. So, contactController.js has:
+
+```Javascript
+// contactController.js
+// Import contact model
+Contact = require('./contactModel');
+// Handle index actions
+exports.index = function (req, res) {
+    Contact.get(function (err, contacts) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        }
+        res.json({
+            status: "success",
+            message: "Contacts retrieved successfully",
+            data: contacts
+        });
+    });
+};
+// Handle create contact actions
+exports.new = function (req, res) {
+    var contact = new Contact();
+    contact.name = req.body.name ? req.body.name : contact.name;
+    contact.gender = req.body.gender;
+    contact.email = req.body.email;
+    contact.phone = req.body.phone;
+// save the contact and check for errors
+    contact.save(function (err) {
+        // if (err)
+        //     res.json(err);
+res.json({
+            message: 'New contact created!',
+            data: contact
+        });
+    });
+};
+// Handle view contact info
+exports.view = function (req, res) {
+    Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+        res.json({
+            message: 'Contact details loading..',
+            data: contact
+        });
+    });
+};
+// Handle update contact info
+exports.update = function (req, res) {
+Contact.findById(req.params.contact_id, function (err, contact) {
+        if (err)
+            res.send(err);
+contact.name = req.body.name ? req.body.name : contact.name;
+        contact.gender = req.body.gender;
+        contact.email = req.body.email;
+        contact.phone = req.body.phone;
+// save the contact and check for errors
+        contact.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                message: 'Contact Info updated',
+                data: contact
+            });
+        });
+    });
+};
+// Handle delete contact
+exports.delete = function (req, res) {
+    Contact.remove({
+        _id: req.params.contact_id
+    }, function (err, contact) {
+        if (err)
+            res.send(err);
+res.json({
+            status: "success",
+            message: 'Contact deleted'
+        });
+    });
+};
+```
+
+And for contactModel.js: 
+
+```Javascript
+// contactModel.js
+var mongoose = require('mongoose');
+// Setup schema
+var contactSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    gender: String,
+    phone: String,
+    create_date: {
+        type: Date,
+        default: Date.now
+    }
+});
+// Export Contact model
+var Contact = module.exports = mongoose.model('contact', contactSchema);
+module.exports.get = function (callback, limit) {
+    Contact.find(callback).limit(limit);
+}
+```
+We are importing mongoose, creating a database for contacts, and exported the module so it is accessible. The update will be adding contact routes to the API endpoint... adding to api-routes.js (final code): 
+
+```Javascript
+// api-routes.js
+// Initialize express router
+let router = require('express').Router();
+// Set default API response
+router.get('/', function (req, res) {
+    res.json({
+        status: 'API Its Working',
+        message: 'Welcome to RESTHub crafted with love!',
+    });
+});
+// Import contact controller
+var contactController = require('./contactController');
+// Contact routes
+router.route('/contacts')
+    .get(contactController.index)
+    .post(contactController.new);
+router.route('/contacts/:contact_id')
+    .get(contactController.view)
+    .patch(contactController.update)
+    .put(contactController.update)
+    .delete(contactController.delete);
+// Export API routes
+module.exports = router;
+```
+
+We can run our server and then visit ```http://localhost:8080/api/contacts```. This would show a success status message but no contacts because we haven't added contacts. We'd need to use the HTTP POST request to add users. For example, we would use Postman with the URL above and then add four keys: name, email, phone, and gender as defined by the code; you would insert values for those and make sure you're using XML encoded. Finally, you would send the data via Postman and then running your GET would get the data.  
+
+Using the following [tutorial]("https://devcenter.heroku.com/articles/getting-started-with-nodejs"). Also going to reference [this]("https://devcenter.heroku.com/articles/mean-apps-restful-api") for the next steps. Also, [this]("https://medium.freecodecamp.org/build-restful-api-with-authentication-under-5-minutes-using-loopback-by-expressjs-no-programming-31231b8472ca") may be helpful.  The last option implements something called LoopBack, which sets the routes automatically, and something called SwaggerAPI which allows you to make APIs quickly. 
 
 ### Aside on REST vs. GraphQL
 

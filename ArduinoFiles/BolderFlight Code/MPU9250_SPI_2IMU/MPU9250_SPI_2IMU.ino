@@ -22,20 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 */
 
 #include "MPU9250.h"
+#include <math.h>
 
-// an MPU9250 object with the MPU-9250 sensor on SPI bus 0 and chip select pin 10
 MPU9250 IMU1(SPI,10);
 MPU9250 IMU2(SPI,2);
 
 int status1;
 int status2;
 
-void setup() {
-  // serial to display data
-  Serial.begin(115200);
-  while(!Serial) {}
+double Omega[6] = {0, 0, 0, 0, 0, 0};
+double Theta[6] = {0, 0, 0, 0, 0, 0};
 
-  // start communication with IMU 
+long newTime = 0;
+long lastTime = 0;
+
+void setup() {
+  
+  Serial.begin(38400);
+  while(!Serial) {}
+ 
   status1 = IMU1.begin();
   if (status1 < 0) {
     Serial.println("IMU initialization unsuccessful");
@@ -53,33 +58,45 @@ void setup() {
     Serial.println(status2);
     while(1) {}
   }
+  
 }
 
 void loop() {
+
+  newTime=millis();
+
   IMU1.readSensor();
   IMU2.readSensor();
 
-  double gyrox1 = IMU1.getGyroX_rads();
-  double gyroy1 = IMU1.getGyroY_rads();
-  double gyroz1 = IMU1.getGyroZ_rads();
-  
-  double gyrox2 = IMU2.getGyroX_rads();
-  double gyroy2 = IMU2.getGyroY_rads();
-  double gyroz2 = IMU2.getGyroZ_rads();
+  Omega[0] = IMU1.getGyroX_rads();
+  Omega[1] = IMU1.getGyroY_rads();
+  Omega[2] = IMU1.getGyroZ_rads();
 
-  Serial.println(gyrox1);
+  Omega[3] = IMU2.getGyroX_rads();
+  Omega[4] = IMU2.getGyroY_rads();
+  Omega[5] = IMU2.getGyroZ_rads();
 
-//  Serial.print(IMU1.getGyroX_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU1.getGyroY_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU1.getGyroZ_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU2.getGyroX_rads(),6);
-//  Serial.print("\t");
-//  Serial.print(IMU2.getGyroY_rads(),6);
-//  Serial.print("\t");
-//  Serial.println(IMU2.getGyroZ_rads(),6);
+  double delta = (newTime - lastTime) / 1000.0;
 
-//  delay(50);
+  for (int i = 0; i < 6; i++){
+    Theta[i] += Omega[i] * delta;
+  }
+
+  Serial.print(Theta[0] * 60,6);
+  Serial.print("\t");
+  Serial.print(Theta[1] * 60,6);
+  Serial.print("\t");
+  Serial.print(Theta[2] * 60,6);
+  Serial.print("\t");
+
+  Serial.print(Theta[3] * 60,6);
+  Serial.print("\t");
+  Serial.print(Theta[4] * 60,6);
+  Serial.print("\t");
+  Serial.print(Theta[5] * 60,6);
+  Serial.print("\n");
+
+  delay(100);
+
+  lastTime = newTime;
 }

@@ -17,8 +17,8 @@ void setup()
     pinMode(IMU1, OUTPUT);
     pinMode(IMU2, OUTPUT);
 
-    digitalWrite(IMU1, HIGH);
-    digitalWrite(IMU2, HIGH);
+    digitalWrite(IMU1, LOW);
+    digitalWrite(IMU2, LOW);
 }
 
 void loop()
@@ -38,7 +38,7 @@ void loop()
 
 void readIMU(int pin) {
   
-  digitalWrite(pin, LOW);
+  digitalWrite(pin, HIGH);
 
   delay(20);
         
@@ -51,6 +51,6 @@ void readIMU(int pin) {
   Serial.print(mpu.getYaw());
   Serial.print("\t");
 
-  digitalWrite(pin, HIGH);
+  digitalWrite(pin, LOW);
   
 }

@@ -58,14 +58,14 @@ def get_max_angle(x):
 # the index (0-2) specifies whether x, y, or z is the most useful list to
 # analyze to observe the repetitions
 def splitReps(xyz, ind):
-
+    # obtain the relevant list for analyzing reps
     main_list = xyz[ind]
-
+    # initialize useful variables and lists
     ang_prev = 0
     count = 0
     current_rep = []
     reps = []
-
+    # go through all the angles and separate into reps
     for ang in main_list:
         if abs(ang) >= abs(ang_prev):
             current_rep += [ang]
@@ -86,23 +86,50 @@ def splitReps(xyz, ind):
 # x-axis motion (around the x-axis) for IMU 1 and IMU 2 (forearm and upper arm should be aligned for this exercise)
 # There should be very minimal movement for IMU 0
 def front_arm_raises():
+    # get number of reps of exercise
     reps = splitReps([x_0, x_1, x_2], 1)
+    # go through the reps to find the average max angle
     max_angs = []
     for rep in reps:
-        max_angs += [max(rep, key=abs)]
+        max_angs += [abs(max(rep, key=abs))]
     avg_max_angle = sum(max_angs) / len(max_angs)
-    return get_max_angle(x_1)
+
+    # sum up data in a table
+    data = {"exercise": "front arm raises",
+            "maximum angle": abs(get_max_angle(x_1)),
+            "average maximum angle": avg_max_angle,
+            "number of reps": len(reps)
+            }
+    return data
 
 # Side Arm Raises (Shoulder Abduction)
 # IMU 1 and IMU 2 rotation around the z-axis when arms are raised and slight rotation around the y axis to allow palms to face the front
 # IMU 0 should not have significant rotation (however, if there is significant rotation on the y axis then it might be a sign of overcompensation)
 def side_arm_raises():
     # should we have an if statement to ensure that x1 and x2 are the same ?
-    return get_max_angle(x_1)
+
+    # get number of reps of exercise
+    reps = splitReps([z_0, z_1, z_2], 1)
+    # go through the reps to find the average max angle
+    max_angs = []
+    for rep in reps:
+        max_angs += [abs(max(rep, key=abs))]
+    avg_max_angle = sum(max_angs) / len(max_angs)
+
+    # sum up data in a table
+    data = {"exercise": "side arm raises",
+            "maximum angle": abs(get_max_angle(x_1)),
+            "average maximum angle": avg_max_angle,
+            "number of reps": len(reps)
+            }
+    return data
 
 # Shoulder Shrugs (Shoulder Elevation)
 # Slight rotation on the z axis because the shoulders are changing orientation
 def shoulder_shrugs():
+    # get number of reps of exercise
+    reps = splitReps([z_0, z_1, z_2], 0)
+
     return get_max_angle(z_0)
 
 # Pumping (Elbow Flexion and Extension)
@@ -110,6 +137,7 @@ def shoulder_shrugs():
 # IMU 2 should be experiencing rotation from the y axis first and then large rotation on x axis
 # IMU 1 and IMU 0 should not be changing
 def pumping():
+
     # I added an if statement in order to make sure that the patients don't be moving
     # their upper arm during the pumping exercise and that their palms face up in the beginning
 
@@ -121,6 +149,9 @@ def pumping():
 # Rotation of Arm (internal and external rotation)
 # Rotation around the y axis - primarily on IMU2
 def arm_rotation():
+    # get number of reps of exercise
+    reps = splitReps([y_0, y_1, y_2], 2)
+
     return get_max_angle(y_2)
 
 # Shoulder Blade Pinch (Shoulder Retraction)

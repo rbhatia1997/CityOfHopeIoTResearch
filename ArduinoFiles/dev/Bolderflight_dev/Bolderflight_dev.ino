@@ -21,6 +21,9 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+
+
 #include "MPU9250.h"
 #include <math.h>
 
@@ -89,7 +92,12 @@ void loop() {
   double delta = (newTime - lastTime) / 1000.0;
 
   for (int i = 0; i < 3; i++){
-    Theta1[i] += Omega1[i] * delta;
+    //Theta1[i] += Omega1[i] * delta;
+    //the complimentary filter equation is  angle = 0.98(angle +gyrData*dt) + 0.02*accData
+    //i think this is what we have to change it to assuming this is what the kalman filter is
+    Theta1[i] += 0.98*(Theta1[i] + Omega1[i]*delta) +0.02*Accel1[i];
+    
+    //we can't use this acceleration?? why tho
 //    Theta2[i] += Omega2[i] * delta;
 
   }

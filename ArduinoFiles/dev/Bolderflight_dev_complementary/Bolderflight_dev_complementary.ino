@@ -45,8 +45,12 @@ double Accel2[3] = {0, 0, 0};
 long newTime = 0;
 long lastTime = 0;
 
-const int factor = 1;
-const int gain1 = 0.98;
+const double factor = 180 / PI;
+const double comp_gain = 0.98;
+
+float theta_accl = 0;
+float theta_itgr = 0;
+float theta_comp = 0;
 
 void setup() {
   
@@ -84,15 +88,24 @@ void loop() {
   double delta = (newTime - lastTime) / 1000.0;
 
   for (int i = 0; i < 3; i++){
-    Theta1[i] += Omega1[i] * delta;
+    Theta1[i] = Theta1[i] + Omega1[i] * delta;
   }
+
+  theta_accl = atan2f(Accel1[1], Accel1[2]) * PI / 180;
+
+  theta_itgr = theta_itgr + Omega1[0] * delta;
+  theta_comp = comp_gain*( theta_comp + Omega1[0] * delta ) + (1 - comp_gain)*theta_accl;
+
+  Serial.print(theta_itgr * factor, 6);
+  Serial.print("\t");
+  Serial.print(theta_comp * factor, 6);
   
-  Serial.print(Theta1[0] * factor,6);
-  Serial.print("\t");
-  Serial.print(Theta1[1] * factor,6);
-  Serial.print("\t");
-  Serial.print(Theta1[2] * factor,6);
-  Serial.print("\t");
+//  Serial.print(Theta1[0] * factor,6);
+//  Serial.print("\t");
+//  Serial.print(Theta1[1] * factor,6);
+//  Serial.print("\t");
+//  Serial.print(Theta1[2] * factor,6);
+//  Serial.print("\t");
 
 //  Serial.print(Omega1[0] * factor,6);
 //  Serial.print("\t");

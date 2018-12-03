@@ -84,11 +84,7 @@ void loop() {
   double delta = (newTime - lastTime) / 1000.0;
 
   for (int i = 0; i < 3; i++){
-    //Theta1[i] += Omega1[i] * delta;
-    //the complimentary filter equation is  angle = 0.98(angle +gyrData*dt) + 0.02*accData
-    //i think this is what we have to change it to assuming this is what the kalman filter is
-    Theta1[i] += 0.98*(Theta1[i] + Omega1[i]*delta) +0.02*Accel1[i];
-
+    Theta1[i] += Omega1[i] * delta;
   }
   
   Serial.print(Theta1[0] * factor,6);

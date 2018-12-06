@@ -21,50 +21,49 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
-
-
 #include "MPU9250.h"
 #include <math.h>
 
-MPU9250 IMU1(SPI,10);
-MPU9250 IMU2(SPI,2);
+MPU9250 IMU0(SPI,10);
+MPU9250 IMU1(SPI,2);
+MPU9250 IMU2(SPI,3);
 
+int status0;
 int status1;
 int status2;
 
-double Omega1[3] = {0, 0, 0};
-double Theta1[3] = {0, 0, 0};
-double Accel1[3] = {0, 0, 0};
-
-double Omega2[3] = {0, 0, 0};
-double Theta2[3] = {0, 0, 0};
-double Accel2[3] = {0, 0, 0};
-
+double values[][3][3] = { { {0,0,0}, {0,0,0}, {0,0,0} },
+                          { {0,0,0}, {0,0,0}, {0,0,0} },
+                          { {0,0,0}, {0,0,0}, {0,0,0} } }; // imu, type, axis
 
 long newTime = 0;
 long lastTime = 0;
 
-const double factor = 180 / PI;
-const double comp_gain = 0.98;
-
-float theta_accl = 0;
-float theta_itgr = 0;
-float theta_comp = 0;
+double rad2deg = 180 / PI;
+double gain_comp = 0.95; //0.95;
 
 void setup() {
   
   Serial.begin(38400);
   while(!Serial) {}
- 
-  status1 = IMU1.begin();
-  if (status1 < 0) {
+
+  status0 = IMU0.begin();
+  if (status0 < 0) {
     Serial.println("IMU initialization unsuccessful");
     Serial.println("Check IMU1 wiring or try cycling power");
-    Serial.print("Status 1: ");
-    Serial.println(status1);
+    Serial.print("Status 0: ");
+    Serial.println(status0);
     while(1) {}
   }
+ 
+//  status1 = IMU1.begin();
+//  if (status1 < 0) {
+//    Serial.println("IMU initialization unsuccessful");
+//    Serial.println("Check IMU1 wiring or try cycling power");
+//    Serial.print("Status 1: ");
+//    Serial.println(status1);
+//    while(1) {}
+//  }
 
 //  status2 = IMU2.begin();
 //  if (status2 < 0) {
@@ -77,106 +76,94 @@ void setup() {
   
 }
 
+double thetaX = 0;
+double accel_angle = 0;
+double accel_angle_adjust = 0;
+double accel_angle_offset = 3.2; //3.2
+
 void loop() {
 
   newTime=millis();
 
-  updateIMU1();
+  float delta = (newTime - lastTime) / 1000.0;
 
-//  updateIMU2();
-
-  double delta = (newTime - lastTime) / 1000.0;
-
-  for (int i = 0; i < 3; i++){
-    Theta1[i] = Theta1[i] + Omega1[i] * delta;
-  }
-
-  theta_accl = atan2f(Accel1[1], Accel1[2]) * PI / 180;
-
-  theta_itgr = theta_itgr + Omega1[0] * delta;
-  theta_comp = comp_gain*( theta_comp + Omega1[0] * delta ) + (1 - comp_gain)*theta_accl;
-
-  Serial.print(theta_itgr * factor, 6);
-  Serial.print("\t");
-  Serial.print(theta_comp * factor, 6);
+  updateIMU(0);
   
-//  Serial.print(Theta1[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Theta1[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Theta1[2] * factor,6);
-//  Serial.print("\t");
+  values[0][2][0] += values[0][0][0] * delta;
 
-//  Serial.print(Omega1[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Omega1[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Omega1[2] * factor,6);
-//  Serial.print("\t");
+  values[0][2][0] = imposeRange(values[0][2][0]);
 
-//  Serial.print(Accel1[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Accel1[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Accel1[2] * factor,6);
-//  Serial.print("\t");
+  accel_angle = atan2(-values[0][1][1], -values[0][1][2]) * rad2deg + accel_angle_offset; // atan( y/z )
+  
+//accel_angle = atan2f(values[0][1][2], sqrt( pow(values[0][1][0],2) + pow(values[0][1][1], 2) ));
 
-//  Serial.print(Theta2[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Theta2[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Theta2[2] * factor,6);
-//  Serial.print("\t");
+  accel_angle_adjust = accel_angle * rad2deg + 3.2; // PI/2, -264
 
-//  Serial.print(Omega2[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Omega2[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Omega2[2] * factor,6);
-//  Serial.print("\t");
+  thetaX = gain_comp * (thetaX + values[0][0][0] * delta) + (1 - gain_comp) * accel_angle;
 
-//  Serial.print(Accel2[0] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Accel2[1] * factor,6);
-//  Serial.print("\t");
-//  Serial.print(Accel2[2] * factor,6);
-//  Serial.print("\t");
+  thetaX = imposeRange(thetaX);
 
+  printOut(0, 2, 0);
+
+  Serial.print("\t");
+  Serial.print(thetaX); 
+  
+  Serial.print("\t");
+  Serial.print(accel_angle,6);
+  
   Serial.print("\n");
-
+  
   delay(100);
 
   lastTime = newTime;
 }
 
-void updateIMU1(){
-  IMU1.readSensor();
+void updateIMU(int imu){
 
-  Omega1[0] = IMU1.getGyroX_rads();
-  Omega1[1] = IMU1.getGyroY_rads();
-  Omega1[2] = IMU1.getGyroZ_rads();
+  if (imu == 0){
+    IMU0.readSensor();
+
+    values[0][0][0] = IMU0.getGyroX_rads() * rad2deg; //gyro X
+    values[0][0][1] = IMU0.getGyroY_rads() * rad2deg; //gyro Y
+    values[0][0][2] = IMU0.getGyroZ_rads() * rad2deg; //gyro Z
+
+    values[0][1][0] = IMU0.getAccelX_mss(); //accl X
+    values[0][1][1] = IMU0.getAccelY_mss(); //accl Y
+    values[0][1][2] = IMU0.getAccelZ_mss(); //accl Z
+
+  } else if (imu == 1){
+    IMU1.readSensor();
+    
+    values[1][0][0] = IMU1.getGyroX_rads() * rad2deg; //gyro X
+    values[1][0][1] = IMU1.getGyroY_rads() * rad2deg; //gyro Y
+    values[1][0][2] = IMU1.getGyroZ_rads() * rad2deg; //gyro Z
   
-  Omega1[0] = IMU1.getGyroX_rads();
-  Omega1[1] = IMU1.getGyroY_rads();
-  Omega1[2] = IMU1.getGyroZ_rads();
-
-  Accel1[0] = IMU1.getAccelX_mss();
-  Accel1[1] = IMU1.getAccelY_mss();
-  Accel1[2] = IMU1.getAccelZ_mss();
+    values[1][1][0] = IMU1.getAccelX_mss(); //accl X
+    values[1][1][1] = IMU1.getAccelY_mss(); //accl Y
+    values[1][1][2] = IMU1.getAccelZ_mss(); //accl Z
+    
+  } else if (imu == 2){
+    IMU2.readSensor();
+    
+    values[2][0][0] = IMU2.getGyroX_rads() * rad2deg; //gyro X
+    values[2][0][1] = IMU2.getGyroY_rads() * rad2deg; //gyro Y
+    values[2][0][2] = IMU2.getGyroZ_rads() * rad2deg; //gyro Z
+  
+    values[2][1][0] = IMU2.getAccelX_mss(); //accl X
+    values[2][1][1] = IMU2.getAccelY_mss(); //accl Y
+    values[2][1][2] = IMU2.getAccelZ_mss(); //accl Z
+    
+  }
 }
 
-void updateIMU2(){
-  IMU2.readSensor();
+void printOut(int imu, int type, int axis){
+  Serial.print(values[imu][type][axis], 6);
+  Serial.print("\t");
+}
 
-  Omega2[0] = IMU1.getGyroX_rads();
-  Omega2[1] = IMU1.getGyroY_rads();
-  Omega2[2] = IMU1.getGyroZ_rads();
-  
-  Omega2[0] = IMU1.getGyroX_rads();
-  Omega2[1] = IMU1.getGyroY_rads();
-  Omega2[2] = IMU1.getGyroZ_rads();
-
-  Accel2[0] = IMU1.getAccelX_mss();
-  Accel2[1] = IMU1.getAccelY_mss();
-  Accel2[2] = IMU1.getAccelZ_mss();
+double imposeRange(double value){
+  if(value > 180 || value < -180){
+    value *= -1;
+  }
+  return value;
 }

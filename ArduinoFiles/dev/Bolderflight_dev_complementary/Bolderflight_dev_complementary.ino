@@ -45,8 +45,10 @@ double accel_angle_offset_3axis[][3] = { {3.1,-0.35,0}, {0,0,0}, {0,0,0} };
 long newTime = 0;
 long lastTime = 0;
 
-double rad2deg = 180 / PI;
+const double rad2deg = 180 / PI;
 double gain_comp = 0.92; //0.95;
+
+
 
 void setup() {
   

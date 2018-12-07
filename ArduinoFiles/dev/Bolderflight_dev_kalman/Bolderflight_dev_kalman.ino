@@ -1,28 +1,8 @@
-/*
-Basic_SPI.ino
-Brian R Taylor
-brian.taylor@bolderflight.com
-
-Copyright (c) 2017 Bolder Flight Systems
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-and associated documentation files (the "Software"), to deal in the Software without restriction, 
-including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or 
-substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
+#include <SimpleKalmanFilter.h>
 #include "MPU9250.h"
 #include <math.h>
+
+SimpleKalmanFilter kalman(2, 2, 0.01); //measurement uncertainty, estimatino uncertainty, process variance
 
 MPU9250 IMU0(SPI,10);
 MPU9250 IMU1(SPI,2);
@@ -40,6 +20,9 @@ long newTime = 0;
 long lastTime = 0;
 
 const double rad2deg = 180 / PI;
+
+const long SERIAL_REFRESH_TIME = 100;
+long refresh_time;
 
 void setup() {
   
@@ -89,14 +72,36 @@ void loop() {
       
       theta[imu][axis] = theta[imu][axis] + omega[imu][axis] * delta;
       theta[imu][axis] = imposeRange(theta[imu][axis]);
-
-      Serial.print(theta[imu][axis], 6);
-      Serial.print("\t");
-      
+     
     }
   }
+
+
+  float real_value = theta[0][0];
   
-  Serial.print("\n");
+  // add a noise to the reference value and use as the measured value
+  float measured_value = real_value + random(-180,180)/100.0;
+
+  // calculate the estimated value with Kalman Filter
+  float estimated_value = kalman.updateEstimate(measured_value);
+
+  // send to Serial output every 100ms
+  // use the Serial Ploter for a good visualization
+  if (millis() > refresh_time) {
+    Serial.print(real_value,4);
+    Serial.print(",");
+    Serial.print(measured_value,4);
+    Serial.print(",");
+    Serial.print(estimated_value,4);
+    Serial.println();
+    
+    refresh_time = millis() + SERIAL_REFRESH_TIME;
+  }
+  
+
+//  Serial.print(theta[0][0], 6);
+//  Serial.print("\t");
+//  Serial.print("\n");
   
   delay(100);
 

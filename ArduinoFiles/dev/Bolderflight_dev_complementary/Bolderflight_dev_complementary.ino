@@ -32,15 +32,21 @@ int status0;
 int status1;
 int status2;
 
-double values[][3][3] = { { {0,0,0}, {0,0,0}, {0,0,0} },
-                          { {0,0,0}, {0,0,0}, {0,0,0} },
-                          { {0,0,0}, {0,0,0}, {0,0,0} } }; // imu, type, axis
+double omega[][3] = { {0,0,0}, {0,0,0}, {0,0,0} }; // imu, axis
+double accel[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
+double theta[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
+
+double accel_angle[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
+double theta_comp[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
+
+double accel_angle_offset_2axis[][3] = { {3.2,-0.35,0}, {0,0,0}, {0,0,0} };
+double accel_angle_offset_3axis[][3] = { {3.1,-0.35,0}, {0,0,0}, {0,0,0} };
 
 long newTime = 0;
 long lastTime = 0;
 
 double rad2deg = 180 / PI;
-double gain_comp = 0.95; //0.95;
+double gain_comp = 0.92; //0.95;
 
 void setup() {
   
@@ -76,40 +82,44 @@ void setup() {
   
 }
 
-double thetaX = 0;
-double accel_angle = 0;
-double accel_angle_adjust = 0;
-double accel_angle_offset = 3.2; //3.2
-
 void loop() {
 
   newTime=millis();
 
   float delta = (newTime - lastTime) / 1000.0;
 
-  updateIMU(0);
-  
-  values[0][2][0] += values[0][0][0] * delta;
+  for(int imu = 0; imu < 1; imu++){
+    
+    updateIMU(imu);
 
-  values[0][2][0] = imposeRange(values[0][2][0]);
+//    accel_angle[imu][0] = atan2(-accel[imu][1], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][0];
+//    accel_angle[imu][1] = atan2( accel[imu][0], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][1];
+//    accel_angle[imu][2] = atan2(-accel[imu][1], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][2];
 
-  accel_angle = atan2(-values[0][1][1], -values[0][1][2]) * rad2deg + accel_angle_offset; // atan( y/z )
-  
-//accel_angle = atan2f(values[0][1][2], sqrt( pow(values[0][1][0],2) + pow(values[0][1][1], 2) ));
+    accel_angle[imu][0] = atan2(-accel[imu][1], sqrt( pow(accel[imu][0],2) + pow(accel[imu][2],2) )) * rad2deg + accel_angle_offset_3axis[imu][0];
+    accel_angle[imu][1] = atan2( accel[imu][0], sqrt( pow(accel[imu][1],2) + pow(accel[imu][2],2) )) * rad2deg + accel_angle_offset_3axis[imu][1];
+//    accel_angle[imu][2] = atan2( accel[imu][2], sqrt( pow(accel[imu][0],2) + pow(accel[imu][1],2) )) * rad2deg + accel_angle_offset_3axis[imu][2];
+    
+    for(int i = 0; i < 3; i++){
+      
+      theta[imu][i] = theta[imu][i] + omega[imu][i] * delta;
+      theta[imu][i] = imposeRange(theta[imu][i]);
 
-  accel_angle_adjust = accel_angle * rad2deg + 3.2; // PI/2, -264
+      theta_comp[imu][i] = gain_comp * (theta_comp[imu][i] + omega[imu][i] * delta) + (1 - gain_comp) * accel_angle[imu][i];
+      
+    }
+  }
 
-  thetaX = gain_comp * (thetaX + values[0][0][0] * delta) + (1 - gain_comp) * accel_angle;
+  int axis = 0;
 
-  thetaX = imposeRange(thetaX);
-
-  printOut(0, 2, 0);
-
+  Serial.print(theta[0][axis], 6);
   Serial.print("\t");
-  Serial.print(thetaX); 
   
+  Serial.print(theta_comp[0][axis], 6);
   Serial.print("\t");
-  Serial.print(accel_angle,6);
+  
+  Serial.print(accel_angle[0][axis], 6);
+  Serial.print("\t");
   
   Serial.print("\n");
   
@@ -123,45 +133,40 @@ void updateIMU(int imu){
   if (imu == 0){
     IMU0.readSensor();
 
-    values[0][0][0] = IMU0.getGyroX_rads() * rad2deg; //gyro X
-    values[0][0][1] = IMU0.getGyroY_rads() * rad2deg; //gyro Y
-    values[0][0][2] = IMU0.getGyroZ_rads() * rad2deg; //gyro Z
+    omega[0][0] = IMU0.getGyroX_rads() * rad2deg; //gyro X
+    omega[0][1] = IMU0.getGyroY_rads() * rad2deg; //gyro Y
+    omega[0][2] = IMU0.getGyroZ_rads() * rad2deg; //gyro Z
 
-    values[0][1][0] = IMU0.getAccelX_mss(); //accl X
-    values[0][1][1] = IMU0.getAccelY_mss(); //accl Y
-    values[0][1][2] = IMU0.getAccelZ_mss(); //accl Z
+    accel[0][0] = IMU0.getAccelX_mss(); //accl X
+    accel[0][1] = IMU0.getAccelY_mss(); //accl Y
+    accel[0][2] = IMU0.getAccelZ_mss(); //accl Z
 
   } else if (imu == 1){
     IMU1.readSensor();
     
-    values[1][0][0] = IMU1.getGyroX_rads() * rad2deg; //gyro X
-    values[1][0][1] = IMU1.getGyroY_rads() * rad2deg; //gyro Y
-    values[1][0][2] = IMU1.getGyroZ_rads() * rad2deg; //gyro Z
+    omega[1][0] = IMU1.getGyroX_rads() * rad2deg; //gyro X
+    omega[1][1] = IMU1.getGyroY_rads() * rad2deg; //gyro Y
+    omega[1][2] = IMU1.getGyroZ_rads() * rad2deg; //gyro Z
   
-    values[1][1][0] = IMU1.getAccelX_mss(); //accl X
-    values[1][1][1] = IMU1.getAccelY_mss(); //accl Y
-    values[1][1][2] = IMU1.getAccelZ_mss(); //accl Z
+    accel[1][0] = IMU1.getAccelX_mss(); //accl X
+    accel[1][1] = IMU1.getAccelY_mss(); //accl Y
+    accel[1][2] = IMU1.getAccelZ_mss(); //accl Z
     
   } else if (imu == 2){
     IMU2.readSensor();
     
-    values[2][0][0] = IMU2.getGyroX_rads() * rad2deg; //gyro X
-    values[2][0][1] = IMU2.getGyroY_rads() * rad2deg; //gyro Y
-    values[2][0][2] = IMU2.getGyroZ_rads() * rad2deg; //gyro Z
+    omega[2][0] = IMU2.getGyroX_rads() * rad2deg; //gyro X
+    omega[2][1] = IMU2.getGyroY_rads() * rad2deg; //gyro Y
+    omega[2][2] = IMU2.getGyroZ_rads() * rad2deg; //gyro Z
   
-    values[2][1][0] = IMU2.getAccelX_mss(); //accl X
-    values[2][1][1] = IMU2.getAccelY_mss(); //accl Y
-    values[2][1][2] = IMU2.getAccelZ_mss(); //accl Z
+    accel[2][0] = IMU2.getAccelX_mss(); //accl X
+    accel[2][1] = IMU2.getAccelY_mss(); //accl Y
+    accel[2][2] = IMU2.getAccelZ_mss(); //accl Z
     
   }
 }
 
-void printOut(int imu, int type, int axis){
-  Serial.print(values[imu][type][axis], 6);
-  Serial.print("\t");
-}
-
-double imposeRange(double value){
+double imposeRange(double value){ //imposes -180 to 180 range
   if(value > 180 || value < -180){
     value *= -1;
   }

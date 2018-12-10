@@ -1,5 +1,3 @@
-
-
 #include <MPU6050_tockn.h>
 #include <Wire.h>
 
@@ -32,8 +30,8 @@ void setup() {
   mpu6050.begin();
   mpu6050.calcGyroOffsets(true);
   start_time = millis();
-  
 }
+
 
 void loop() {
   
@@ -50,21 +48,13 @@ void loop() {
     x_offset = x_roll;
     y_offset = y_pitch;
     z_offset = z_yaw;
-    
-    // Print offsets
-    Serial.print("------ OFFSETS -----");
-    Serial.print(x_offset);
-    Serial.print("  ");
-    Serial.print(y_offset);
-    Serial.print("  ");
-    Serial.println(z_offset);
-    
+
   }
 
   // Calculate the calibrated angles by subtracting the intial offsets
   x_roll = x_roll - x_offset;
-  y_roll = y_pitch - y_offset;
-  z_roll = z_yaw - z_offset;
+  y_pitch = y_pitch - y_offset;
+  z_yaw = z_yaw - z_offset;
 
   // Filter signal using moving average
   double x_avg = ( (avg_size - 1)*x_avg_past + x_roll) / avg_size;
@@ -74,19 +64,12 @@ void loop() {
   y_avg_past = y_avg;
   z_avg_past = z_avg;
 
-  // Print the unfiltered (but calibrated) angles
-//  Serial.print(x_roll);
-//  Serial.print("  ");
-//  Serial.print(y_pitch);
-//  Serial.print("  ");
-//  Serial.println(z_yaw);
-//  Serial.print("  ");
-  
   // Print the filtered, calibrated angles
   Serial.print(x_avg);
-  Serial.print("  ");
+  Serial.print("\t");
   Serial.print(y_avg);
-  Serial.print("  ");
-  Serial.println(z_avg);
+  Serial.print("\t");
+  Serial.print(z_avg);
+  Serial.print("\n");
   
 }

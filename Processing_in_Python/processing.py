@@ -10,35 +10,35 @@ file = open("data.txt", 'r')
 data = file.readlines()
 file2 = open("ex.txt", 'w')
 
-# x, y, and z angles from the shoulder IMU
-x_0 = []
-y_0 = []
-z_0 = []
-
-# x, y, and z angles from the upper-arm IMU
+# x, y, and z angles from the back IMU
 x_1 = []
 y_1 = []
 z_1 = []
 
-# x, y, and z angles from the lower-arm IMU
+# x, y, and z angles from the upper-arm IMU
 x_2 = []
 y_2 = []
 z_2 = []
 
+# x, y, and z angles from the lower-arm IMU
+x_3 = []
+y_3 = []
+z_3 = []
+
 # put IMU angles into lists
 for line in data:
     xyz = line.split()
-    x_0 += [float(xyz[0])]
-    y_0 += [float(xyz[1])]
-    z_0 += [float(xyz[2])]
     x_1 += [float(xyz[0])]
     y_1 += [float(xyz[1])]
     z_1 += [float(xyz[2])]
     x_2 += [float(xyz[0])]
     y_2 += [float(xyz[1])]
     z_2 += [float(xyz[2])]
+    x_3 += [float(xyz[0])]
+    y_3 += [float(xyz[1])]
+    z_3 += [float(xyz[2])]
 
-for ang in x_0:
+for ang in x_1f:
     file2.write(str(ang)+"\n")
 
 def getMaxX(x):
@@ -53,48 +53,66 @@ def get_max_angle(x):
     max_x = max(x, key=abs)
     return max_x
 
-# splits the x, y, and z lists for a given IMU into reps
-# xyz is a list [x,y,z] of xyz lists
-# the index (0-2) specifies whether x, y, or z is the most useful list to
-# analyze to observe the repetitions
-def splitReps(xyz, ind):
-    # obtain the relevant list for analyzing reps
-    main_list = xyz[ind]
+# L is a list of data points to be split into repetitions
+# T1 and T2 are thresholds (T1 = 20 and T2 = 200 work well)
+def splitReps(L, T1, T2):
     # initialize useful variables and lists
     ang_prev = 0
     count = 0
     current_rep = []
     reps = []
+
     # go through all the angles and separate into reps
-    for ang in main_list:
+    for ang in L:
+
+        # if the angle is increasing, the rep has not yet ended,
+        # so add that angle to the current rep
         if abs(ang) >= abs(ang_prev):
             current_rep += [ang]
             count = 0
+
+        # if the angle is not increasing, then the rep might be ending
         else:
+            # increase the count to keep track of how long the angle has been
+            # decreasing for
             count += 1
             current_rep += [ang]
-            if count == 20:
-                if len(current_rep) > 200:
+            # if the count indicates that the angle has been decreasing for
+            # a significant number of data points, the rep may be over
+            if count == T1:
+                # ensure that the rep is long enough (not a glitch)
+                if len(current_rep) > T2:
+                    # add rep the to the list of reps
                     reps += [current_rep]
+                # reset variables for the next rep
                 current_rep = []
                 count = 0
+
+        # set the previous angle equal to the current angle before continuing
+        # with the for loop
         ang_prev = ang
+
     return reps
 
 
-# Front Arm Raises (Shoulder Flexion)
-# x-axis motion (around the x-axis) for IMU 1 and IMU 2 (forearm and upper arm should be aligned for this exercise)
-# There should be very minimal movement for IMU 0
+# ****** Front Arm Raises (Shoulder Flexion) ******
+# - x-axis motion for IMU 2 and IMU 3
+# - Forearm and upper arm (IMU 3 and IMU 2) should be aligned for this exercise
+# - There should be very minimal shoulder movement (IMU 1)
+# - Significant shoulder movement could be a sign of overcompensation
 def front_arm_raises():
+
     # get number of reps of exercise
-    reps = splitReps([x_0, x_1, x_2], 1)
+    reps = splitReps(x_2, 20, 200)
     # go through the reps to find the average max angle
     max_angs = []
     for rep in reps:
+        # compile a list of the maximum angles of all the reps
         max_angs += [abs(max(rep, key=abs))]
+    # find the average maximum angle
     avg_max_angle = sum(max_angs) / len(max_angs)
 
-    # sum up data in a table
+    # output data as a dictionary
     data = {"exercise": "front arm raises",
             "maximum angle": abs(get_max_angle(x_1)),
             "average maximum angle": avg_max_angle,
@@ -102,21 +120,23 @@ def front_arm_raises():
             }
     return data
 
-# Side Arm Raises (Shoulder Abduction)
-# IMU 1 and IMU 2 rotation around the z-axis when arms are raised and slight rotation around the y axis to allow palms to face the front
-# IMU 0 should not have significant rotation (however, if there is significant rotation on the y axis then it might be a sign of overcompensation)
+# ****** Side Arm Raises (Shoulder Abduction) ******
+# - z-axis motion for IMU 2 and IMU 3
+# - Forearm and upper arm (IMU 3 and IMU 2) should be aligned for this exercise
+# - There should be very minimal shoulder movement (IMU 1)
+# - Significant shoulder movement could be a sign of overcompensation
 def side_arm_raises():
-    # should we have an if statement to ensure that x1 and x2 are the same ?
 
     # get number of reps of exercise
-    reps = splitReps([z_0, z_1, z_2], 1)
+    reps = splitReps(z_2, 20, 200)
     # go through the reps to find the average max angle
     max_angs = []
     for rep in reps:
+        # compile a list of the maximum angles of all the reps
         max_angs += [abs(max(rep, key=abs))]
     avg_max_angle = sum(max_angs) / len(max_angs)
 
-    # sum up data in a table
+    # output data as a dictionary
     data = {"exercise": "side arm raises",
             "maximum angle": abs(get_max_angle(x_1)),
             "average maximum angle": avg_max_angle,

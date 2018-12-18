@@ -24,9 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include "MPU9250.h"
 #include <math.h>
 
-MPU9250 IMU0(SPI,10);
-MPU9250 IMU1(SPI,2);
-MPU9250 IMU2(SPI,3);
+MPU9250 IMU0(SPI,5);
+MPU9250 IMU1(SPI,6);
+MPU9250 IMU2(SPI,7);
 
 int status0;
 int status1;
@@ -46,9 +46,7 @@ long newTime = 0;
 long lastTime = 0;
 
 const double rad2deg = 180 / PI;
-double gain_comp = 0.92; //0.95;
-
-
+double gain_comp = 0.95; //0.95;
 
 void setup() {
   
@@ -58,7 +56,7 @@ void setup() {
   status0 = IMU0.begin();
   if (status0 < 0) {
     Serial.println("IMU initialization unsuccessful");
-    Serial.println("Check IMU1 wiring or try cycling power");
+    Serial.println("Check IMU0 wiring or try cycling power");
     Serial.print("Status 0: ");
     Serial.println(status0);
     while(1) {}
@@ -76,12 +74,12 @@ void setup() {
 //  status2 = IMU2.begin();
 //  if (status2 < 0) {
 //    Serial.println("IMU initialization unsuccessful");
-//    Serial.println("Check IMU1 wiring or try cycling power");
+//    Serial.println("Check IMU2 wiring or try cycling power");
 //    Serial.print("Status 2: ");
 //    Serial.println(status2);
 //    while(1) {}
 //  }
-  
+
 }
 
 void loop() {
@@ -94,14 +92,9 @@ void loop() {
     
     updateIMU(imu);
 
-//    accel_angle[imu][0] = atan2(-accel[imu][1], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][0];
-//    accel_angle[imu][1] = atan2( accel[imu][0], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][1];
-//    accel_angle[imu][2] = atan2(-accel[imu][1], -accel[imu][2]) * rad2deg + accel_angle_offset_2axis[imu][2];
-
     accel_angle[imu][0] = atan2(-accel[imu][1], sqrt( pow(accel[imu][0],2) + pow(accel[imu][2],2) )) * rad2deg + accel_angle_offset_3axis[imu][0];
     accel_angle[imu][1] = atan2( accel[imu][0], sqrt( pow(accel[imu][1],2) + pow(accel[imu][2],2) )) * rad2deg + accel_angle_offset_3axis[imu][1];
-//    accel_angle[imu][2] = atan2( accel[imu][2], sqrt( pow(accel[imu][0],2) + pow(accel[imu][1],2) )) * rad2deg + accel_angle_offset_3axis[imu][2];
-    
+
     for(int i = 0; i < 3; i++){
       
       theta[imu][i] = theta[imu][i] + omega[imu][i] * delta;
@@ -112,20 +105,21 @@ void loop() {
     }
   }
 
-  int axis = 0;
+  for(int imu = 0; imu < 3; imu++){
+    Serial.print(theta_comp[imu][0], 6);
+    Serial.print("\t");
+    
+//    Serial.print(theta_comp[imu][1], 6);
+//    Serial.print("\t");
+//
+//    Serial.print(theta[imu][2], 6);
+//    Serial.print("\t");
+  }
 
-  Serial.print(theta[0][axis], 6);
-  Serial.print("\t");
-  
-  Serial.print(theta_comp[0][axis], 6);
-  Serial.print("\t");
-  
-  Serial.print(accel_angle[0][axis], 6);
-  Serial.print("\t");
-  
   Serial.print("\n");
+
   
-  delay(100);
+  delay(5000);
 
   lastTime = newTime;
 }

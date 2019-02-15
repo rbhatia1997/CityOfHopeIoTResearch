@@ -21,6 +21,9 @@ Jumpers on the breakout board will do this for you.)
 #define I2C_SCL 19
 #define I2C_SDA 18
 
+//status LED for debuggin 
+#define STATUS_LED 13
+
 #define NUM_IMUS 1
 #define MAX_NUM_IMUS 8
 
@@ -120,8 +123,14 @@ Madgwick Mad_List[MAX_NUM_IMUS] = {mad0,mad1,mad2,mad3,mad4,mad5,mad6,mad7};
 // When SDO_M and SDO_AG are high the active adresses are 0x1E
 // and 0x6B respectively. However, we only want to talk to
 // the one IMU wich has SDO_M and SDO_AG pulled low externally
+
+//if want to pull CS LOW
 #define LSM9DS1_M	0x1C // Would be 0x1E if SDO_M is HIGH
 #define LSM9DS1_AG	0x6A // Would be 0x6B if SDO_AG is HIGH
+
+//if want to pull CS HIGH:
+//#define LSM9DS1_M  0x1E // Would be 0x1C if SDO_M is LOW
+//#define LSM9DS1_AG  0x6B // Would be 0x6A if SDO_AG is LOW
 
 ////////////////////////////
 // Sketch Output Settings //
@@ -137,26 +146,149 @@ Madgwick Mad_List[MAX_NUM_IMUS] = {mad0,mad1,mad2,mad3,mad4,mad5,mad6,mad7};
 // http://www.ngdc.noaa.gov/geomag-web/#declination
 #define DECLINATION -8.58 // Declination (degrees) in Boulder, CO.
 
+
+//to be used for debugging
+void blinkStatusLED(int mS)
+{
+  digitalWrite(STATUS_LED,HIGH);
+  delay(mS);
+  digitalWrite(STATUS_LED,LOW);
+}
+
 void setup() 
 {
-  
+
     Serial.begin(115200);
     Serial.println("Starting setup...");
 
+    
+    pinMode(STATUS_LED,OUTPUT); //to be used for debugging
+    blinkStatusLED(1000); //power check
+
+    
     // set I2C pins
     Wire.setSCL(I2C_SCL);
     Wire.setSDA(I2C_SDA);
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
+      Serial.print("Checking IMU# :");
+      Serial.println(imu);
+
+      
         // Configure CS pin as output
         pinMode(CS_pins[imu],OUTPUT);
         digitalWrite(CS_pins[imu],LOW);
 
-        IMU_List[imu].settings.device.commInterface = IMU_MODE_I2C;
+        //set the ODR, enable features, and set ranges
+        IMUsettings(imu);
+
+        if (!IMU_List[imu].begin())
+        {
+                Serial.print("Failed to communicate with IMU #: ");
+                Serial.println(imu);
+                while (1);
+        }
+        digitalWrite(CS_pins[imu],HIGH);
+        blinkStatusLED(1000);
+    }
+}
+
+void loop()
+{
+    for( int imu = 0; imu < NUM_IMUS; imu++){
+
+        //pull CS line low for specific IMU
+        digitalWrite(CS_pins[imu],LOW);
+        
+        //update values for IMU
+        
+          // imu.accelAvailable() returns 1 if new accelerometer
+        // data is ready to be read. 0 otherwise.
+        if (IMU_List[imu].accelAvailable())
+        {
+          IMU_List[imu].readAccel();
+//          Serial.print("reading Accel ");
+  //        Serial.println(IMU_List[imu].ax);
+        }
+        
+        // imu.gyroAvailable() returns 1 if new gyroscope
+        // data is ready to be read. 0 otherwise.
+        if (IMU_List[imu].gyroAvailable())
+        {
+          IMU_List[imu].readGyro();
+//          Serial.println("reading Gyro");
+        }
+        
+        // imu.magAvailable() returns 1 if new magnetometer
+        // data is ready to be read. 0 otherwise.
+        if (IMU_List[imu].magAvailable())
+        {
+          IMU_List[imu].readMag();
+//          Serial.println("reading Mag");
+        }
+
+        //calculate float meaningful values
+        //calibrate with offset values
+        MagData[imu][0] = (IMU_List[imu].calcMag(IMU_List[imu].mx) - mag_Offsets[imu][0]) * mag_Scaling[imu][0];
+        MagData[imu][1] = (IMU_List[imu].calcMag(IMU_List[imu].my) - mag_Offsets[imu][1]) * mag_Scaling[imu][1];
+        MagData[imu][2] = (IMU_List[imu].calcMag(IMU_List[imu].mz) - mag_Offsets[imu][2]) * mag_Scaling[imu][2];
+
+        AccelData[imu][0] = IMU_List[imu].calcAccel(IMU_List[imu].ax) - accel_Offsets[imu][0];
+        AccelData[imu][1] = IMU_List[imu].calcAccel(IMU_List[imu].ay) - accel_Offsets[imu][1];
+        AccelData[imu][2] = IMU_List[imu].calcAccel(IMU_List[imu].az) - accel_Offsets[imu][2];
+
+        GyroData[imu][0] = IMU_List[imu].calcGyro(IMU_List[imu].gx) - gyro_Offsets[imu][0];
+        GyroData[imu][1] = IMU_List[imu].calcGyro(IMU_List[imu].gy) - gyro_Offsets[imu][1];
+        GyroData[imu][2] = IMU_List[imu].calcGyro(IMU_List[imu].gz) - gyro_Offsets[imu][2];
+
+        //debugging -- print data before the filter 
+//        Serial.print(MagData[imu][0]);
+//        Serial.print(" ");
+//        Serial.print(AccelData[imu][0]);
+//        Serial.print(" ");
+//        Serial.println(GyroData[imu][0]);
+
+//         Serial.print(IMU_List[imu].mx);
+//        Serial.print(" ");
+//        Serial.print(IMU_List[imu].gx);
+//        Serial.print(" ");
+//        Serial.println(IMU_List[imu].ax);
+//        
+
+        //get reading from Madgwick filter 
+        Mad_List[imu].update(GyroData[imu][0],GyroData[imu][1],GyroData[imu][1],AccelData[imu][0],AccelData[imu][1],AccelData[imu][1],MagData[imu][0],MagData[imu][1],MagData[imu][1]);
+
+          Serial.print("Roll (deg): ");
+            Serial.print(Mad_List[imu].getRoll());
+          Serial.print(" Pitch (deg): ");
+            Serial.print(" ");
+            Serial.print(Mad_List[imu].getPitch());
+          Serial.print(" Yaw (deg): ");
+            Serial.print(" ");
+            Serial.println(Mad_List[imu].getYaw());
+
+            digitalWrite(CS_pins[imu],HIGH);
+
+
+    } 
+    delay(100);
+}   
+
+
+/*
+ * SC Feb 14,2019
+ * Moved settings into this function down here
+ * to improve readability
+ * 
+ */
+
+void IMUsettings(int imu)
+{
+  IMU_List[imu].settings.device.commInterface = IMU_MODE_I2C;
         IMU_List[imu].settings.device.mAddress = LSM9DS1_M;
         IMU_List[imu].settings.device.agAddress = LSM9DS1_AG;
 
-        // Gyro Initialization
+//         Gyro Initialization
         IMU_List[imu].settings.gyro.enabled = true;
         // scale can be set to either 245, 500, or 2000
         IMU_List[imu].settings.gyro.scale = 245;
@@ -223,89 +355,5 @@ void setup()
         // 2 = power down
         IMU_List[imu].settings.mag.operatingMode = 0; // Continuous mode
         IMU_List[imu].settings.temp.enabled = true;
-
-        if (!IMU_List[imu].begin())
-        {
-                Serial.print("Failed to communicate with IMU #: ");
-                Serial.println(imu);
-                while (1);
-        }
-        digitalWrite(CS_pins[imu],HIGH);
-    }
 }
-
-void loop()
-{
-    for( int imu = 0; imu < NUM_IMUS; imu++){
-
-        digitalWrite(CS_pins[imu],HIGH);
-        //update values for IMU
-        // imu.accelAvailable() returns 1 if new accelerometer
-      // data is ready to be read. 0 otherwise.
-      if (IMU_List[imu].accelAvailable())
-      {
-        IMU_List[imu].readAccel();
-      }
-      
-      // imu.gyroAvailable() returns 1 if new gyroscope
-      // data is ready to be read. 0 otherwise.
-      if (IMU_List[imu].gyroAvailable())
-      {
-        imu.readGyro();
-        gyroReadCounter++;
-      }
-      
-      // imu.magAvailable() returns 1 if new magnetometer
-      // data is ready to be read. 0 otherwise.
-      if (imu.magAvailable())
-      {
-        imu.readMag();
-        magReadCounter++;
-      }
-
-        //calculate float meaningful values
-        //calibrate with offset values
-        MagData[imu][0] = (IMU_List[imu].calcMag(IMU_List[imu].mx) - mag_Offsets[imu][0]) * mag_Scaling[imu][0];
-        MagData[imu][1] = (IMU_List[imu].calcMag(IMU_List[imu].my) - mag_Offsets[imu][1]) * mag_Scaling[imu][1];
-        MagData[imu][2] = (IMU_List[imu].calcMag(IMU_List[imu].mz) - mag_Offsets[imu][2]) * mag_Scaling[imu][2];
-
-        AccelData[imu][0] = IMU_List[imu].calcAccel(IMU_List[imu].ax) - accel_Offsets[imu][0];
-        AccelData[imu][1] = IMU_List[imu].calcAccel(IMU_List[imu].ay) - accel_Offsets[imu][1];
-        AccelData[imu][2] = IMU_List[imu].calcAccel(IMU_List[imu].az) - accel_Offsets[imu][2];
-
-        GyroData[imu][0] = IMU_List[imu].calcGyro(IMU_List[imu].gx) - gyro_Offsets[imu][0];
-        GyroData[imu][1] = IMU_List[imu].calcGyro(IMU_List[imu].gy) - gyro_Offsets[imu][1];
-        GyroData[imu][2] = IMU_List[imu].calcGyro(IMU_List[imu].gz) - gyro_Offsets[imu][2];
-
-        //debugging -- print data before the filter 
-//        Serial.print(MagData[imu][0]);
-//        Serial.print(" ");
-//        Serial.print(AccelData[imu][0]);
-//        Serial.print(" ");
-//        Serial.println(GyroData[imu][0]);
-
-         Serial.print(IMU_List[imu].mx);
-        Serial.print(" ");
-        Serial.print(IMU_List[imu].gx);
-        Serial.print(" ");
-        Serial.println(IMU_List[imu].ax);
-        
-
-        Mad_List[imu].update(GyroData[imu][0],GyroData[imu][1],GyroData[imu][1],AccelData[imu][0],AccelData[imu][1],AccelData[imu][1],MagData[imu][0],MagData[imu][1],MagData[imu][1]);
-
-//        //  Serial.print("Roll (deg): ");
-//            Serial.print(Mad_List[imu].getRoll());
-//        //  Serial.print(" Pitch (deg): ");
-//            Serial.print(" ");
-//            Serial.print(Mad_List[imu].getPitch());
-//        //  Serial.print(" Yaw (deg): ");
-//            Serial.print(" ");
-//            Serial.println(Mad_List[imu].getYaw());
-
-            digitalWrite(CS_pins[imu],LOW);
-
-
-    } 
-    delay(100);
-}   
  

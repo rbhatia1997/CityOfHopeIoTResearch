@@ -24,9 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 #include "MPU9250.h"
 #include <math.h>
 
-MPU9250 IMU0(SPI,5);
-MPU9250 IMU1(SPI,6);
-MPU9250 IMU2(SPI,7);
+MPU9250 IMU0(SPI,10);
+MPU9250 IMU1(SPI,9);
+MPU9250 IMU2(SPI,15);
 
 int status0;
 int status1;
@@ -40,7 +40,7 @@ double accel_angle[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
 double theta_comp[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
 
 double accel_angle_offset_2axis[][3] = { {3.2,-0.35,0}, {0,0,0}, {0,0,0} };
-double accel_angle_offset_3axis[][3] = { {3.1,-0.35,0}, {0,0,0}, {0,0,0} };
+double accel_angle_offset_3axis[][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
 
 long newTime = 0;
 long lastTime = 0;
@@ -50,7 +50,7 @@ double gain_comp = 0.95; //0.95;
 
 void setup() {
   
-  Serial.begin(38400);
+  Serial.begin(9600); //38400
   while(!Serial) {}
 
   status0 = IMU0.begin();
@@ -59,17 +59,17 @@ void setup() {
     Serial.println("Check IMU0 wiring or try cycling power");
     Serial.print("Status 0: ");
     Serial.println(status0);
-    while(1) {}
+//    while(1) {}
   }
  
-//  status1 = IMU1.begin();
-//  if (status1 < 0) {
-//    Serial.println("IMU initialization unsuccessful");
-//    Serial.println("Check IMU1 wiring or try cycling power");
-//    Serial.print("Status 1: ");
-//    Serial.println(status1);
+  status1 = IMU1.begin();
+  if (status1 < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Check IMU1 wiring or try cycling power");
+    Serial.print("Status 1: ");
+    Serial.println(status1);
 //    while(1) {}
-//  }
+  }
 
 //  status2 = IMU2.begin();
 //  if (status2 < 0) {
@@ -88,7 +88,7 @@ void loop() {
 
   float delta = (newTime - lastTime) / 1000.0;
 
-  for(int imu = 0; imu < 1; imu++){
+  for(int imu = 0; imu < 2; imu++){
     
     updateIMU(imu);
 
@@ -105,10 +105,25 @@ void loop() {
     }
   }
 
-  for(int imu = 0; imu < 3; imu++){
+  for(int imu = 0; imu < 2; imu++){
+
+    Serial.print("IMU #");
+    Serial.print(imu);
+    
+    Serial.print(" Theta_comp_X: ");
     Serial.print(theta_comp[imu][0], 6);
     Serial.print("\t");
+
+    Serial.print("Theta_comp_Y: ");
+    Serial.print(theta_comp[imu][1], 6);
+    Serial.print("\t");
+
+    Serial.print(" || ");
+
     
+//    Serial.print(theta_comp[imu][0], 6);
+//    Serial.print("\t");
+//    
 //    Serial.print(theta_comp[imu][1], 6);
 //    Serial.print("\t");
 //
@@ -118,8 +133,7 @@ void loop() {
 
   Serial.print("\n");
 
-  
-  delay(5000);
+  delay(100);
 
   lastTime = newTime;
 }

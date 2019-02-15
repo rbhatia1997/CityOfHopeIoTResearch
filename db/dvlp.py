@@ -1,7 +1,7 @@
 import psycopg2
 
 try:
-    conn=psycopg2.connect("host='coh-test-db.ccotkfp86qay.us-east-2.rds.amazonaws.com' port='5676' dbname='coh_dvlp' user='Fall2018COH' password='cityofhope'")
+    conn=psycopg2.connect("host=coh-test-db.ccotkfp86qay.us-east-2.rds.amazonaws.com port=5432 dbname=coh_dvlp user=Fall2018COH password=cityofhope")
 except:
     print("I am unable to connect to the database.")
 

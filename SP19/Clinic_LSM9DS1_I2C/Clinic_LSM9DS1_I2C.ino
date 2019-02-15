@@ -258,14 +258,21 @@ void loop()
         //get reading from Madgwick filter 
         Mad_List[imu].update(GyroData[imu][0],GyroData[imu][1],GyroData[imu][1],AccelData[imu][0],AccelData[imu][1],AccelData[imu][1],MagData[imu][0],MagData[imu][1],MagData[imu][1]);
 
-          Serial.print("Roll (deg): ");
+//          Serial.print("Roll (deg): ");
             Serial.print(Mad_List[imu].getRoll());
-          Serial.print(" Pitch (deg): ");
-            Serial.print(" ");
+//          Serial.print(" Pitch (deg): ");
+            Serial.print("\t");
             Serial.print(Mad_List[imu].getPitch());
-          Serial.print(" Yaw (deg): ");
-            Serial.print(" ");
-            Serial.println(Mad_List[imu].getYaw());
+//          Serial.print(" Yaw (deg): ");
+            Serial.print("\t");
+            Serial.print(Mad_List[imu].getYaw());
+            Serial.print("\t");
+
+            for(int i = 0; i < 6; i++) {
+              Serial.print("0");
+              Serial.print("\t");
+            }
+            Serial.println();
 
             digitalWrite(CS_pins[imu],HIGH);
 

@@ -15,8 +15,8 @@ Jumpers on the breakout board will do this for you.)
 /************************************
  * SC Feb 15 -- Copy of most recent code -> trying to get multiple IMUs talking, implementing calibration data from WI matlab
  * SC Feb 17 -- added in functionality to control the sample frequency of the data 
- * SC Feb 18 -- recalibrated magnetometer, increases gryo scale to prevent clipping, added mahony filter
- * 
+ * WI Feb 18 -- recalibrated magnetometer, increases gryo scale to prevent clipping, added mahony filter
+ * SC,MG Feb 20 -- added calibration method for accel and gyro 
  */
 
 #include <Wire.h>
@@ -31,6 +31,8 @@ Jumpers on the breakout board will do this for you.)
 
 //status LED for debuggin 
 #define STATUS_LED 13
+//calibration button for the accelerometer and gyro
+#define CALIB_BUTTON 32 
 
 #define NUM_IMUS 2
 #define MAX_NUM_IMUS 8
@@ -53,9 +55,9 @@ float GyroData[MAX_NUM_IMUS][3]; //deg/sec
 
 // These acceleration offsets [g] will be subtracted from the 
 // raw data to compensate for sensor bias
-const float accel_Offsets[MAX_NUM_IMUS][3] = 
-    {   {0.01,    -0.03,    0},
-        {-0.02,   -0.03,    -0.02},
+float accel_Offsets[MAX_NUM_IMUS][3] = 
+    {   {0.0,     0.0,      0.0},
+        {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
@@ -65,9 +67,9 @@ const float accel_Offsets[MAX_NUM_IMUS][3] =
 
 // These gyroscope offsets [deg/s] will be subtracted from the 
 // raw data to compensate for sensor bias
-const float gyro_Offsets[MAX_NUM_IMUS][3] = 
-    {   {1.4,     1.5,      0.0},
-        {0.25,    -0.5,     -0.3},
+float gyro_Offsets[MAX_NUM_IMUS][3] = 
+    {   {0.0,     0.0,      0.0},
+        {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
@@ -350,8 +352,93 @@ void loop()
     } 
   }
 }   
+/*
+ * MG Feb 20, 2019
+ * function for gyroscope and acceleration calibration
+ * this function takes in an integer imu and a boolean that tells the IMU to either use the sparkfun calibration or our own calculated values
+ */
+void calibration(int imu, bool useSparkfun){
 
+    //this is initiallizing all of the variables
+    int sumgyrox = 0;
+    int sumgyroy = 0;
+    int sumgyroz = 0;
 
+    int sumAccelx = 0;
+    int sumAccely = 0;
+    int sumAccelz = 0;
+
+    int avg_gyrox = 0;
+    int avg_gyroy = 0;
+    int avg_gyroz = 0;
+    int avg_accelz = 0;
+    int avg_accelx = 0;
+    int avg_accely = 0;
+    
+    int buttonPress = 0;
+  
+  if (useSparkfun == true){
+    IMU_List[imu].calibrate(true);
+    
+  }
+  
+  else{
+    
+    Serial.println("Lay sensor flat");
+    delay(1000);
+     
+    for( int i = 0; i< 32; i++){
+       //finding the sum of all the gyro offsets while the sensor is laying flat
+      sumgyrox += IMU_List[imu].calcGyro(IMU_List[imu].gx);
+      sumgyroy += IMU_List[imu].calcGyro(IMU_List[imu].gy);
+      sumgyroz += IMU_List[imu].calcGyro(IMU_List[imu].gz);
+      sumAccelz += IMU_List[imu].calcAccel(IMU_List[imu].az);
+    }
+
+    avg_gyrox = sumgyrox/32;
+    avg_gyroy = sumgyroy/32;
+    avg_gyroz = sumgyroz/32;
+    avg_accelz = sumAccelz/32;
+
+ 
+    while ( buttonPress < 2){
+      if((buttonPress == 0) && (digitalRead(CALIB_BUTTON))){
+        Serial.println("Checking x axis");
+        delay(500);
+        for( int j = 0; j<32; j++){
+          sumAccelx += IMU_List[imu].calcAccel(IMU_List[imu].ax);
+        }
+        avg_accelx = sumAccelx/32;
+        
+        buttonPress++;
+        
+      }
+      if( (buttonPress == 1) && (!digitalRead(CALIB_BUTTON))){
+        Serial.println("Checking y axis");
+        delay(500);
+        for(int k = 0 ; k < 32 ; k++){
+          sumAccely += IMU_List[imu].calcAccel(IMU_List[imu].ay);
+        }
+        avg_accely = sumAccely/32;
+        
+        buttonPress++;
+        
+      }
+      
+    }
+    
+  }
+
+  accel_Offsets[imu][0] = (1 - avg_accelx); 
+  accel_Offsets[imu][1] = (1 - avg_accely); 
+  accel_Offsets[imu][2] = (1 - avg_accelz);
+
+  gyro_Offsets[imu][0] = (0 - avg_gyrox);
+  gyro_Offsets[imu][1] = (0 - avg_gyroy);
+  gyro_Offsets[imu][2] = (0 - avg_gyroz);
+
+  //print these and also store the in the EEPROM
+}
 /*
  * SC Feb 14,2019
  * Moved settings into this function down here

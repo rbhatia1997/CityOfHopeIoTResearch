@@ -1,0 +1,41 @@
+# How to work with BLE Devices on iOS
+
+#### Introduction
+
+BLE (Bluetooth Low Energy Devices) are supported with iPhones, so why not developers explore the possibilities of its implementation. Lets dive deep into BLE device integration with iPhones. If you need a step by step explanation of the topic, you can check our article here: [How to work with BLE Devices on iOS](https://insights.nimblechapps.com/app-development/ios-app-development/how-to-work-with-ble-devices-on-ios)
+
+#### Setting up the environment
+
+ 1. Create the new xCode project. 
+ 2. Enable background modes to make use of bluetooth even in background.  
+ 3. Include CoreBluetooth libraries.
+
+#### Steps to follow
+
+ 1. Create the UI.
+ 2. Setup central manager & initialise the needed variables.
+ 3. Setup delegate methods for CBCentralManager.
+ 4. Implement the TableView delegates.
+ 5. Connect with the peripheral device.
+ 6. Discover services & characteristics.
+ 7. Run the app.
+
+#### Final output
+<br/>
+
+[![N|Solid](https://insights.nimblechapps.com/wp-content/uploads/2017/11/BLE-Devices-on-iOS.png)](https://insights.nimblechapps.com/app-development/ios-app-development/how-to-work-with-ble-devices-on-ios)
+
+This tutorial has been presented by Nimblechapps - The coolest [iPhone App Development Company](https://www.nimblechapps.com/ios-app-development-company). Checkout our [iPhone app development portfolio](https://www.nimblechapps.com/portfolio/mobile-app-development).
+
+     Provide us your valuable comment in our blog comment section.
+
+##### Read other interesting iOS blogs
+
+ 1. [Parsing XML Web Service in iOS With Swift](https://insights.nimblechapps.com/app-development/ios-app-development/parsing-xml-web-service-ios-swift)
+ 2. [Be Awesome with ‘Font Awesome’](https://insights.nimblechapps.com/app-development/ios-app-development/awesome-font-ios)
+ 3. [How to Make Tinder-like Swipe Gesture for iOS](https://insights.nimblechapps.com/app-development/ios-app-development/how-to-make-tinder-like-swipe-gesture-for-ios)
+ 4. [How to Use Firebase to Send Notifications in iOS](https://insights.nimblechapps.com/app-development/ios-app-development/how-to-use-firebase-to-send-notifications-in-ios)
+
+## License
+
+Copyright (c) 2017 Nimblechapps

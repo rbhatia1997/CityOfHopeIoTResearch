@@ -1,0 +1,8 @@
+platform :ios, '12.0'
+
+target 'COHPatientUI' do
+  use_frameworks!
+
+  pod 'Charts'
+
+end

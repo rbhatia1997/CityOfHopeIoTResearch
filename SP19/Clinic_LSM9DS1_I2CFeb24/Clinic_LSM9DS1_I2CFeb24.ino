@@ -17,6 +17,8 @@ Jumpers on the breakout board will do this for you.)
  * SC Feb 17 -- added in functionality to control the sample frequency of the data 
  * WI Feb 18 -- recalibrated magnetometer, increases gryo scale to prevent clipping, added mahony filter
  * SC,MG Feb 20 -- added calibration method for accel and gyro 
+ * SC,WI,MG Feb 21 -- testing out calibration method on all four IMUs
+ * WI,SC,MG Feb 24 -- working on the calibration method 
  */
 
 #include <Wire.h>
@@ -24,6 +26,7 @@ Jumpers on the breakout board will do this for you.)
 #include <SparkFunLSM9DS1.h>
 #include "MadgwickAHRS.h"
 #include "MahonyAHRS.h"
+#include <EEPROM.h>
 
 // define I2C clock and data pins
 #define I2C_SCL 19
@@ -34,7 +37,7 @@ Jumpers on the breakout board will do this for you.)
 //calibration button for the accelerometer and gyro
 #define CALIB_BUTTON 32 
 
-#define NUM_IMUS 2
+#define NUM_IMUS 1
 #define MAX_NUM_IMUS 8
 
 #define SAMPLE_FREQ 1000 //sample frequency in hertz
@@ -42,7 +45,7 @@ Jumpers on the breakout board will do this for you.)
 unsigned long prevTime = 0; //for time 
 
 // Chip Select pin for each IMU
-const int CS_pins[MAX_NUM_IMUS] = {24,25,3,0,0,0,0,0};
+const int CS_pins[MAX_NUM_IMUS] = {27,26,25,24,0,0,0,0};
 
 // Latest IMU Data
 // stores float values (from int reading)
@@ -80,10 +83,10 @@ float gyro_Offsets[MAX_NUM_IMUS][3] =
 // These magnetometer offsets [Gauss] will be subtracted from 
 // the raw data to compensate for sensor bias
 const float mag_Offsets[MAX_NUM_IMUS][3] = 
-    {   {0.227,   0.233,    -0.188},
+    {   {0.125,   0.095,    0.079},
+        {0.227,   0.233,    -0.188},
         {-0.023,  0.247,    0.125},
-        {0.0,     0.0,      0.0},
-        {0.0,     0.0,      0.0},
+        {0.261,   0.138,    0.035},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
@@ -92,10 +95,10 @@ const float mag_Offsets[MAX_NUM_IMUS][3] =
 // These magnetometer scaling factors will be multiplied to 
 // the raw data to compensate for sensor bias
 const float mag_Scaling[MAX_NUM_IMUS][3] = 
-    {   {2.516,   2.485,    2.725},
+    {   {2.424,   2.422,    2.600},
+        {2.516,   2.485,    2.725},
         {2.488,   2.557,    2.599},
-        {1.0,     1.0,      1.0},
-        {0.0,     0.0,      0.0},
+        {2.508,   2.462,    2.601},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
         {0.0,     0.0,      0.0},
@@ -173,13 +176,14 @@ void setup()
 
     
     pinMode(STATUS_LED,OUTPUT); //to be used for debugging
+    pinMode(CALIB_BUTTON,INPUT);//used for calibration
     blinkStatusLED(500); //power check
 
     
     // set I2C pins
     Wire.setSCL(I2C_SCL);
     Wire.setSDA(I2C_SDA);
-    
+
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
       Serial.print("Checking IMU# :");
@@ -191,6 +195,7 @@ void setup()
 
       //set the ODR, enable features, and set ranges
       IMUsettings(imu);
+      //set the frequency for calcution
       Mah_List[imu].begin(SAMPLE_FREQ);
 
       if (!IMU_List[imu].begin())
@@ -200,14 +205,18 @@ void setup()
               while (1);
       }
 
-//      run internal calibration method on gyro and accel
-//      keep sensor flat on table
-//      IMU_List[imu].calibrate(true);
-      
       digitalWrite(CS_pins[imu],HIGH);
       blinkStatusLED(1000);
     }
+
+    //calibrate sensors
+    Serial.println("Calibrating sensors... Press button to begin");
+    delay(3000);
+    calibration(0);
+           
 }
+
+    
 
 void loop()
 {
@@ -303,19 +312,18 @@ void loop()
 //        Serial.println((IMU_List[imu].calcAccel(IMU_List[imu].az)));
 //        
 
-        //get reading from Madgwick filter 
+
+        //Pass inputs to filter
+          //use updateIMU if don't have Mag data
         Mad_List[imu].update(GyroData[imu][0],GyroData[imu][1],GyroData[imu][2],AccelData[imu][0],AccelData[imu][1],AccelData[imu][2],MagData[imu][0],MagData[imu][1],MagData[imu][2]);
 //        Mad_List[imu].updateIMU(GyroData[1][0],GyroData[1][1],GyroData[1][2],AccelData[1][0],AccelData[1][1],AccelData[1][2]);
+
         Mah_List[imu].update(GyroData[imu][0],GyroData[imu][1],GyroData[imu][2],AccelData[imu][0],AccelData[imu][1],AccelData[imu][2],MagData[imu][0],MagData[imu][1],MagData[imu][2]);
 //        Mah_List[imu].updateIMU(GyroData[1][0],GyroData[1][1],GyroData[1][2],AccelData[1][0],AccelData[1][1],AccelData[1][2]);
-//
-//
-//            Serial.print("IMU: ");
-//            Serial.print(imu);
-//            Serial.print("\t");
-//
+
+
 /////////////////////////////////////////////////////////////////////
-//          Madgwick Filter
+//         Print  Madgwick Filter
 /////////////////////////////////////////////////////////////////////
 ////          Serial.print("Roll (deg): ");
 //            Serial.print(Mad_List[imu].getRoll());
@@ -328,7 +336,7 @@ void loop()
 //            Serial.println("\t");
             
 /////////////////////////////////////////////////////////////////////
-//          Mahony Filter
+//          Print  Mahony Filter
 /////////////////////////////////////////////////////////////////////
 //          Serial.print("Roll (deg): ");
             Serial.print(Mah_List[imu].getRoll());
@@ -354,91 +362,219 @@ void loop()
 }   
 /*
  * MG Feb 20, 2019
- * function for gyroscope and acceleration calibration
- * this function takes in an integer imu and a boolean that tells the IMU to either use the sparkfun calibration or our own calculated values
- */
-void calibration(int imu, bool useSparkfun){
+ * SC FEb 24, 2019
+ * 
+ * Inputs: int mode --  which calibration mode to use
+ * Outputs: NONE
+ * Functionality: 
+ *  simple calibration for accelerometer and gyro along each axis
+ *  can also read/write offsets to the EEPROM so that it can be stored betweeen runs
+ * 
+  */
+void calibration(int mode){
 
-    //this is initiallizing all of the variables
-    int sumgyrox = 0;
-    int sumgyroy = 0;
-    int sumgyroz = 0;
+    //initiallizing all of the variables
+    float sumgyrox[NUM_IMUS];
+    float sumgyroy[NUM_IMUS];
+    float sumgyroz[NUM_IMUS];
 
-    int sumAccelx = 0;
-    int sumAccely = 0;
-    int sumAccelz = 0;
+    float sumAccelx[NUM_IMUS];
+    float sumAccely[NUM_IMUS];
+    float sumAccelz[NUM_IMUS];
 
-    int avg_gyrox = 0;
-    int avg_gyroy = 0;
-    int avg_gyroz = 0;
-    int avg_accelz = 0;
-    int avg_accelx = 0;
-    int avg_accely = 0;
-    
-    int buttonPress = 0;
-  
-  if (useSparkfun == true){
-    IMU_List[imu].calibrate(true);
-    
-  }
-  
-  else{
-    
-    Serial.println("Lay sensor flat");
-    delay(1000);
-     
-    for( int i = 0; i< 32; i++){
-       //finding the sum of all the gyro offsets while the sensor is laying flat
-      sumgyrox += IMU_List[imu].calcGyro(IMU_List[imu].gx);
-      sumgyroy += IMU_List[imu].calcGyro(IMU_List[imu].gy);
-      sumgyroz += IMU_List[imu].calcGyro(IMU_List[imu].gz);
-      sumAccelz += IMU_List[imu].calcAccel(IMU_List[imu].az);
+    float avg_gyrox[NUM_IMUS];
+    float avg_gyroy[NUM_IMUS];
+    float avg_gyroz[NUM_IMUS];
+    float avg_accelz[NUM_IMUS];
+    float avg_accelx[NUM_IMUS];
+    float avg_accely[NUM_IMUS];
+   
+
+    //Sparkfun calibration 
+    if (mode == 0){
+       for( int imu = 0; imu < NUM_IMUS; imu++){
+          IMU_List[imu].calibrate(true);
+          
+        }
     }
 
-    avg_gyrox = sumgyrox/32;
-    avg_gyroy = sumgyroy/32;
-    avg_gyroz = sumgyroz/32;
-    avg_accelz = sumAccelz/32;
-
- 
-    while ( buttonPress < 2){
-      if((buttonPress == 0) && (digitalRead(CALIB_BUTTON))){
-        Serial.println("Checking x axis");
-        delay(500);
-        for( int j = 0; j<32; j++){
-          sumAccelx += IMU_List[imu].calcAccel(IMU_List[imu].ax);
+  if (mode == 1) {
+    while(true) { if(digitalRead(CALIB_BUTTON)) break; }
+    
+      Serial.println("Lay sensor flat");
+      delay(500);
+  
+      for(int imu = 0; imu < NUM_IMUS; imu++){
+        digitalWrite(CS_pins[imu],LOW);
+        for( int i = 0; i< 32; i++){
+          IMU_List[imu].readAccel();
+          IMU_List[imu].readGyro();
+           //finding the sum of all the gyro offsets while the sensor is laying flat
+          sumgyrox[imu] += IMU_List[imu].calcGyro(IMU_List[imu].gx);
+          sumgyroy[imu] += IMU_List[imu].calcGyro(IMU_List[imu].gy);
+          sumgyroz[imu] += IMU_List[imu].calcGyro(IMU_List[imu].gz);
+          sumAccelz[imu] += IMU_List[imu].calcAccel(IMU_List[imu].az);
         }
-        avg_accelx = sumAccelx/32;
-        
-        buttonPress++;
-        
-      }
-      if( (buttonPress == 1) && (!digitalRead(CALIB_BUTTON))){
-        Serial.println("Checking y axis");
-        delay(500);
-        for(int k = 0 ; k < 32 ; k++){
-          sumAccely += IMU_List[imu].calcAccel(IMU_List[imu].ay);
-        }
-        avg_accely = sumAccely/32;
-        
-        buttonPress++;
-        
+        digitalWrite(CS_pins[imu],HIGH);
+    
+        avg_gyrox[imu] = sumgyrox[imu]/32;
+        avg_gyroy[imu] = sumgyroy[imu]/32;
+        avg_gyroz[imu] = sumgyroz[imu]/32;
+        avg_accelz[imu] = sumAccelz[imu]/32;
       }
       
+      Serial.println("Ready for y axis. Rotate to negative 90deg around X");
+          
+      while(true) { if(digitalRead(CALIB_BUTTON)) break; }
+         
+          Serial.println("Checking y axis");
+          delay(500);
+
+          for(int imu = 0; imu < NUM_IMUS; imu++){
+            digitalWrite(CS_pins[imu],LOW);
+            
+            for( int j = 0; j<32; j++){
+              IMU_List[imu].readAccel();
+              sumAccely[imu] += IMU_List[imu].calcAccel(IMU_List[imu].ay);
+            }
+            digitalWrite(CS_pins[imu],HIGH);
+            avg_accely[imu] = sumAccely[imu]/32;
+          
+          }
+  
+  
+         Serial.println("Ready for x axis. Rotate to positive 90deg around Y");
+        
+         while(true) { if(digitalRead(CALIB_BUTTON)) break; }
+            
+            Serial.println("Checking y axis");
+            delay(500);
+
+            for(int imu = 0; imu < NUM_IMUS; imu++){
+              digitalWrite(CS_pins[imu],LOW);
+              
+            for(int k = 0 ; k < 32 ; k++){
+              IMU_List[imu].readAccel();
+              sumAccelx[imu] += IMU_List[imu].calcAccel(IMU_List[imu].ax);
+            }
+            avg_accelx[imu] = sumAccelx[imu]/32;
+            digitalWrite(CS_pins[imu],HIGH);
+            }
+        
+        for(int imu = 0; imu < NUM_IMUS; imu++){
+          accel_Offsets[imu][0] = (1 - avg_accelx[imu]); 
+          accel_Offsets[imu][1] = (1 - avg_accely[imu]); 
+          accel_Offsets[imu][2] = (1 - avg_accelz[imu]);
+        
+          gyro_Offsets[imu][0] = (0 - avg_gyrox[imu]);
+          gyro_Offsets[imu][1] = (0 - avg_gyroy[imu]);
+          gyro_Offsets[imu][2] = (0 - avg_gyroz[imu]);
+        
+        
+          //print offsets
+          Serial.print("AccelOffsets: ");
+          for(int i  = 0; i < 3; i++)
+          {
+            Serial.print(accel_Offsets[imu][i]);
+            Serial.print(" ");
+          }
+        
+          Serial.println("");
+          
+          Serial.print("GyroOffsets: ");
+          for(int i  = 0; i < 3; i++)
+          {
+            Serial.print(gyro_Offsets[imu][i]);
+            Serial.print(" ");
+          }
+        
+          Serial.println("");
+        }
+
+
+        //store offsets in the EEPROM
+        Serial.println("Press button in the next 5 seconds if you want to save values");
+        
+        int current_time = millis();
+        int EEPROM_index = 0; //address in the EEPROM
+        
+        while(millis()-current_time < 7000) { 
+          if(digitalRead(CALIB_BUTTON)){
+            // store calibration in EEPROM
+            for(int imu = 0; imu < NUM_IMUS; imu++){
+                EEPROM.put(EEPROM_index,accel_Offsets[imu][0]); //ax
+                EEPROM.put(EEPROM_index + 4,accel_Offsets[imu][1]); //ay
+                EEPROM.put(EEPROM_index + 8,accel_Offsets[imu][2]); //az
+  
+                EEPROM.put(EEPROM_index + 12,gyro_Offsets[imu][0]); //gx
+                EEPROM.put(EEPROM_index + 16,gyro_Offsets[imu][1]); //gy
+                EEPROM.put(EEPROM_index + 20,gyro_Offsets[imu][2]); //gz
+                EEPROM_index += 24; //increase counter to next available address
+  
+  
+  ////                //testing the store and get function 
+  //               EEPROM.put(EEPROM_index,1.0 * imu); //ax
+  //              EEPROM.put(EEPROM_index + 4,3.0 * imu); //ay
+  //              EEPROM.put(EEPROM_index + 8,5.0 * imu); //az
+  //
+  //              EEPROM.put(EEPROM_index + 12,2.0 * imu); //gx
+  //              EEPROM.put(EEPROM_index + 16,4.0 * imu); //gy
+  //              EEPROM.put(EEPROM_index + 20,6.0 * imu); //gz
+  //              EEPROM_index += 24;
+  
+             
+            }
+            Serial.println("Offsets stored");
+
+            break; 
+          }
+          
+        }
+
     }
-    
-  }
 
-  accel_Offsets[imu][0] = (1 - avg_accelx); 
-  accel_Offsets[imu][1] = (1 - avg_accely); 
-  accel_Offsets[imu][2] = (1 - avg_accelz);
+    //load offsets from EEPROM
+    if (mode == 2){
+      Serial.println("Getting offsets from EEPROM");
+      
+      int EEPROM_index = 0; //address in the EEPROM
+      for(int imu = 0; imu < NUM_IMUS; imu++)
+      {
+        EEPROM.get(EEPROM_index, accel_Offsets[imu][0]); //ax
+        EEPROM.get(EEPROM_index + 4, accel_Offsets[imu][1]); //ay
+        EEPROM.get(EEPROM_index + 8, accel_Offsets[imu][2]); //az
 
-  gyro_Offsets[imu][0] = (0 - avg_gyrox);
-  gyro_Offsets[imu][1] = (0 - avg_gyroy);
-  gyro_Offsets[imu][2] = (0 - avg_gyroz);
+        EEPROM.get(EEPROM_index + 12, gyro_Offsets[imu][0]); //gx
+        EEPROM.get(EEPROM_index + 16, gyro_Offsets[imu][1]); //gy
+        EEPROM.get(EEPROM_index + 20, gyro_Offsets[imu][2]); //gz
+        EEPROM_index += 24;  //increase counter to next available address
 
-  //print these and also store the in the EEPROM
+     //print offsets so that we can easily see it
+      Serial.print("AccelOffsets: ");
+        for(int i  = 0; i < 3; i++)
+        {
+          Serial.print(accel_Offsets[imu][i]);
+          Serial.print(" ");
+        }
+      
+        Serial.println("");
+        
+        Serial.print("GyroOffsets: ");
+        for(int i  = 0; i < 3; i++)
+        {
+          Serial.print(gyro_Offsets[imu][i]);
+          Serial.print(" ");
+        }
+      
+        Serial.println("");
+      }
+    }
 }
+      
+
+
+
+
 /*
  * SC Feb 14,2019
  * Moved settings into this function down here

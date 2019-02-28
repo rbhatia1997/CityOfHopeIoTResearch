@@ -1,14 +1,14 @@
 //
-//  ExerciseGraph.swift
+//  NestedCircleGraph.swift
 //  COHPatientUI
 //
-//  Created by Darien Joso on 2/22/19.
+//  Created by Darien Joso on 2/26/19.
 //  Copyright © 2019 Darien Joso. All rights reserved.
 //
 
 import UIKit
 
-class ExerciseGraph: UIView {
+class NestedCircleGraph: UIView {
 
     /*
     // Only override draw() if you perform custom drawing.

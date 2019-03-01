@@ -10,12 +10,16 @@ import UIKit
 
 class GoalsViewController: UIViewController {
 
+    @IBOutlet weak var headerView: Header!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        headerView.setHeader(text: "Achievements", color: UIColor(named: "yellow") ?? .clear)
+    }
 
     /*
     // MARK: - Navigation

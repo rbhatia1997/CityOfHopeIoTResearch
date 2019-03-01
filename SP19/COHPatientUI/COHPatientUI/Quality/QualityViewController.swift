@@ -10,12 +10,16 @@ import UIKit
 
 class QualityViewController: UIViewController {
 
+    @IBOutlet weak var headerView: Header!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        headerView.setHeader(text: "Check myself", color: UIColor(named: "purple") ?? .clear)
+    }
 
     /*
     // MARK: - Navigation

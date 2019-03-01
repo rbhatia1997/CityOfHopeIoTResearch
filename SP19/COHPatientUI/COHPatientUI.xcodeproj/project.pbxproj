@@ -16,7 +16,20 @@
 		F8478E5C221EB5A7009AD3E3 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8478E5B221EB5A7009AD3E3 /* ProgressViewController.swift */; };
 		F8478E5E221EB5D2009AD3E3 /* GoalsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8478E5D221EB5D2009AD3E3 /* GoalsViewController.swift */; };
 		F8478E60221F44DC009AD3E3 /* MoodRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8478E5F221F44DC009AD3E3 /* MoodRating.swift */; };
-		F8D38AB42220BBCC007D1093 /* ExerciseGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D38AB32220BBCC007D1093 /* ExerciseGraph.swift */; };
+		F85AA8F122264A33002CF800 /* MyTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85AA8F022264A33002CF800 /* MyTabBarController.swift */; };
+		F85AA8F322264B00002CF800 /* QualityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85AA8F222264B00002CF800 /* QualityViewController.swift */; };
+		F85AA8FA22264CA2002CF800 /* NestedCircleGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85AA8F922264CA2002CF800 /* NestedCircleGraph.swift */; };
+		F85AA9012227D6B6002CF800 /* Montserrat-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9002227D6B6002CF800 /* Montserrat-ExtraLight.ttf */; };
+		F85AA9092227D6C0002CF800 /* MontserratAlternates-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9022227D6C0002CF800 /* MontserratAlternates-Light.ttf */; };
+		F85AA90A2227D6C0002CF800 /* MontserratAlternates-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9032227D6C0002CF800 /* MontserratAlternates-Regular.ttf */; };
+		F85AA90B2227D6C0002CF800 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9042227D6C0002CF800 /* Montserrat-Regular.ttf */; };
+		F85AA90C2227D6C0002CF800 /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9052227D6C0002CF800 /* Montserrat-Light.ttf */; };
+		F85AA90D2227D6C0002CF800 /* MontserratAlternates-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9062227D6C0002CF800 /* MontserratAlternates-Thin.ttf */; };
+		F85AA90E2227D6C0002CF800 /* MontserratAlternates-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9072227D6C0002CF800 /* MontserratAlternates-ExtraLight.ttf */; };
+		F85AA90F2227D6C0002CF800 /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F85AA9082227D6C0002CF800 /* Montserrat-Thin.ttf */; };
+		F85AA9112227DC23002CF800 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85AA9102227DC23002CF800 /* Header.swift */; };
+		F8C549FD2229D23A000EAF99 /* BTConn.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C549FC2229D23A000EAF99 /* BTConn.swift */; };
+		F8C54A012229E086000EAF99 /* HomeMotivator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C54A002229E086000EAF99 /* HomeMotivator.swift */; };
 		F8D38ABC2220DAC0007D1093 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D38ABB2220DAC0007D1093 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +47,20 @@
 		F8478E5B221EB5A7009AD3E3 /* ProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
 		F8478E5D221EB5D2009AD3E3 /* GoalsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsViewController.swift; sourceTree = "<group>"; };
 		F8478E5F221F44DC009AD3E3 /* MoodRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodRating.swift; sourceTree = "<group>"; };
-		F8D38AB32220BBCC007D1093 /* ExerciseGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseGraph.swift; sourceTree = "<group>"; };
+		F85AA8F022264A33002CF800 /* MyTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTabBarController.swift; sourceTree = "<group>"; };
+		F85AA8F222264B00002CF800 /* QualityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QualityViewController.swift; sourceTree = "<group>"; };
+		F85AA8F922264CA2002CF800 /* NestedCircleGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NestedCircleGraph.swift; sourceTree = "<group>"; };
+		F85AA9002227D6B6002CF800 /* Montserrat-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ExtraLight.ttf"; sourceTree = "<group>"; };
+		F85AA9022227D6C0002CF800 /* MontserratAlternates-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Light.ttf"; sourceTree = "<group>"; };
+		F85AA9032227D6C0002CF800 /* MontserratAlternates-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Regular.ttf"; sourceTree = "<group>"; };
+		F85AA9042227D6C0002CF800 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		F85AA9052227D6C0002CF800 /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Light.ttf"; sourceTree = "<group>"; };
+		F85AA9062227D6C0002CF800 /* MontserratAlternates-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-Thin.ttf"; sourceTree = "<group>"; };
+		F85AA9072227D6C0002CF800 /* MontserratAlternates-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MontserratAlternates-ExtraLight.ttf"; sourceTree = "<group>"; };
+		F85AA9082227D6C0002CF800 /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Thin.ttf"; sourceTree = "<group>"; };
+		F85AA9102227DC23002CF800 /* Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
+		F8C549FC2229D23A000EAF99 /* BTConn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BTConn.swift; sourceTree = "<group>"; };
+		F8C54A002229E086000EAF99 /* HomeMotivator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMotivator.swift; sourceTree = "<group>"; };
 		F8D38ABB2220DAC0007D1093 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,18 +115,87 @@
 			isa = PBXGroup;
 			children = (
 				F8478E35221E6056009AD3E3 /* AppDelegate.swift */,
-				F8478E55221EABB3009AD3E3 /* HomeScreenViewController.swift */,
-				F8478E59221EB46B009AD3E3 /* ExerciseViewController.swift */,
-				F8478E5B221EB5A7009AD3E3 /* ProgressViewController.swift */,
-				F8478E5D221EB5D2009AD3E3 /* GoalsViewController.swift */,
-				F8478E5F221F44DC009AD3E3 /* MoodRating.swift */,
-				F8D38AB32220BBCC007D1093 /* ExerciseGraph.swift */,
+				F85AA8F422264B99002CF800 /* Home */,
+				F85AA8F522264BB2002CF800 /* Exercise */,
+				F85AA8F622264BBF002CF800 /* Progress */,
+				F85AA8F722264BCB002CF800 /* Goals */,
+				F85AA8F822264BDD002CF800 /* Quality */,
+				F8C549F922280ED3000EAF99 /* Miscellaneous */,
 				F8478E3B221E6056009AD3E3 /* Main.storyboard */,
 				F8D38ABB2220DAC0007D1093 /* Assets.xcassets */,
 				F8478E40221E6058009AD3E3 /* LaunchScreen.storyboard */,
 				F8478E43221E6058009AD3E3 /* Info.plist */,
+				F85AA8FD2227D4EC002CF800 /* fonts */,
 			);
 			path = COHPatientUI;
+			sourceTree = "<group>";
+		};
+		F85AA8F422264B99002CF800 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F8478E55221EABB3009AD3E3 /* HomeScreenViewController.swift */,
+				F85AA8F922264CA2002CF800 /* NestedCircleGraph.swift */,
+				F8C549FC2229D23A000EAF99 /* BTConn.swift */,
+				F8C54A002229E086000EAF99 /* HomeMotivator.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		F85AA8F522264BB2002CF800 /* Exercise */ = {
+			isa = PBXGroup;
+			children = (
+				F8478E59221EB46B009AD3E3 /* ExerciseViewController.swift */,
+			);
+			path = Exercise;
+			sourceTree = "<group>";
+		};
+		F85AA8F622264BBF002CF800 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				F8478E5B221EB5A7009AD3E3 /* ProgressViewController.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		F85AA8F722264BCB002CF800 /* Goals */ = {
+			isa = PBXGroup;
+			children = (
+				F8478E5D221EB5D2009AD3E3 /* GoalsViewController.swift */,
+			);
+			path = Goals;
+			sourceTree = "<group>";
+		};
+		F85AA8F822264BDD002CF800 /* Quality */ = {
+			isa = PBXGroup;
+			children = (
+				F85AA8F222264B00002CF800 /* QualityViewController.swift */,
+			);
+			path = Quality;
+			sourceTree = "<group>";
+		};
+		F85AA8FD2227D4EC002CF800 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F85AA9052227D6C0002CF800 /* Montserrat-Light.ttf */,
+				F85AA9042227D6C0002CF800 /* Montserrat-Regular.ttf */,
+				F85AA9082227D6C0002CF800 /* Montserrat-Thin.ttf */,
+				F85AA9072227D6C0002CF800 /* MontserratAlternates-ExtraLight.ttf */,
+				F85AA9022227D6C0002CF800 /* MontserratAlternates-Light.ttf */,
+				F85AA9032227D6C0002CF800 /* MontserratAlternates-Regular.ttf */,
+				F85AA9062227D6C0002CF800 /* MontserratAlternates-Thin.ttf */,
+				F85AA9002227D6B6002CF800 /* Montserrat-ExtraLight.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		F8C549F922280ED3000EAF99 /* Miscellaneous */ = {
+			isa = PBXGroup;
+			children = (
+				F85AA9102227DC23002CF800 /* Header.swift */,
+				F8478E5F221F44DC009AD3E3 /* MoodRating.swift */,
+				F85AA8F022264A33002CF800 /* MyTabBarController.swift */,
+			);
+			path = Miscellaneous;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,8 +259,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8478E42221E6058009AD3E3 /* LaunchScreen.storyboard in Resources */,
+				F85AA9012227D6B6002CF800 /* Montserrat-ExtraLight.ttf in Resources */,
+				F85AA90E2227D6C0002CF800 /* MontserratAlternates-ExtraLight.ttf in Resources */,
+				F85AA90B2227D6C0002CF800 /* Montserrat-Regular.ttf in Resources */,
 				F8D38ABC2220DAC0007D1093 /* Assets.xcassets in Resources */,
+				F85AA90C2227D6C0002CF800 /* Montserrat-Light.ttf in Resources */,
+				F85AA9092227D6C0002CF800 /* MontserratAlternates-Light.ttf in Resources */,
+				F85AA90F2227D6C0002CF800 /* Montserrat-Thin.ttf in Resources */,
+				F85AA90A2227D6C0002CF800 /* MontserratAlternates-Regular.ttf in Resources */,
 				F8478E3D221E6056009AD3E3 /* Main.storyboard in Resources */,
+				F85AA90D2227D6C0002CF800 /* MontserratAlternates-Thin.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,10 +326,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8D38AB42220BBCC007D1093 /* ExerciseGraph.swift in Sources */,
+				F85AA9112227DC23002CF800 /* Header.swift in Sources */,
+				F85AA8FA22264CA2002CF800 /* NestedCircleGraph.swift in Sources */,
+				F85AA8F122264A33002CF800 /* MyTabBarController.swift in Sources */,
 				F8478E36221E6056009AD3E3 /* AppDelegate.swift in Sources */,
+				F85AA8F322264B00002CF800 /* QualityViewController.swift in Sources */,
 				F8478E60221F44DC009AD3E3 /* MoodRating.swift in Sources */,
 				F8478E5A221EB46B009AD3E3 /* ExerciseViewController.swift in Sources */,
+				F8C549FD2229D23A000EAF99 /* BTConn.swift in Sources */,
+				F8C54A012229E086000EAF99 /* HomeMotivator.swift in Sources */,
 				F8478E56221EABB3009AD3E3 /* HomeScreenViewController.swift in Sources */,
 				F8478E5C221EB5A7009AD3E3 /* ProgressViewController.swift in Sources */,
 				F8478E5E221EB5D2009AD3E3 /* GoalsViewController.swift in Sources */,

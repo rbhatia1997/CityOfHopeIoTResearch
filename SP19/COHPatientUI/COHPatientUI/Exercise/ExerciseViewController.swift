@@ -10,12 +10,17 @@ import UIKit
 
 class ExerciseViewController: UIViewController {
 
+    @IBOutlet weak var headerView: Header!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        headerView.setHeader(text: "Workouts", color: UIColor(named: "pink") ?? .clear)
+    }
+
 
     /*
     // MARK: - Navigation

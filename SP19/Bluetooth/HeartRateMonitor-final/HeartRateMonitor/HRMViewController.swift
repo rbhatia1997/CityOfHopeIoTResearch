@@ -40,8 +40,11 @@ let bodySensorLocationCharacteristicCBUUID = CBUUID(string: "2A38")
 
 class HRMViewController: UIViewController {
 
-  @IBOutlet weak var heartRateLabel: UILabel!
-  @IBOutlet weak var bodySensorLocationLabel: UILabel!
+   
+    @IBOutlet weak var serviceUUID: UILabel!
+    @IBOutlet weak var heartRateLabel: UILabel!
+    @IBOutlet weak var characteristicUUID: UILabel!
+    @IBOutlet weak var bodySensorLocationLabel: UILabel!
 
   var centralManager: CBCentralManager!
   var heartRatePeripheral: CBPeripheral!
@@ -132,6 +135,8 @@ extension HRMViewController: CBPeripheralDelegate {
       onHeartRateReceived(bpm)
       let data = characteristic.value
       bodySensorLocationLabel.text = String(data: data!, encoding: .utf8)
+      serviceUUID.text = "hi earth"
+      characteristicUUID.text = characteristic.uuid.uuidString
     default:
       print("Unhandled Characteristic UUID: \(characteristic.uuid)")
     }

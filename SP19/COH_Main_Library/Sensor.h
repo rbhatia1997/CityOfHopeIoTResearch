@@ -2,9 +2,9 @@
 #define __SENSOR_h__
 
 #include "Pinouts.h"
+#include "Calibrations.h"
 #include <SparkFunLSM9DS1.h>
 #include <Wire.h>
-//#include "Filter.h"
 
 // define I2C addresses for a/g and m
 // CS is connected to SDO_M and SDO_AG. We want an imu to be active if CS is pulled low 
@@ -15,19 +15,19 @@ class Sensor
 {
 public:
     // contructor: takes number of connected imus as input
-    Sensor(num_imus);
+    Sensor(void);
 
     // configures all connected imus
-    void init(void);
+    void init(int num_imus);
 
     // reads data from sensors
     void read_sensors(void);
 
-    // custom calibration routine
-    void cal_ag(bool stop_after);
+    // custom accelerometer/gyroscope calibration routine
+    void calibrate_ag(bool stop_after);
 
     // custom magnetometer calibration
-    void cal_m(bool stop_after);
+    void calibrate_m(bool stop_after);
 
     // print space-delimited calibrated data from one imu
     String print_accel(int imu);
@@ -39,16 +39,25 @@ public:
     String print_gyro_raw(int imu);
     String print_mag_raw(int imu);
 
+    // print a, g, or m offsets calculated using calibrate_ag or calibrate_m
+    String print_a_cal_offsets(int imu);
+    String print_g_cal_offsets(int imu);
+    String print_m_cal_offsets(int imu);
+    String print_m_cal_scaling(int imu);
 
     // arrays that hold calibrated data for each imu
-    float accel_data[NUM_IMUS][3];
-    float gyro_data[NUM_IMUS][3];
-    float mag_data[NUM_IMUS][3];
+    float accel_data[8][3];
+    float gyro_data[8][3];
+    float mag_data[8][3];
 
     // arrays that hold raw data for each imu
-    float accel_data_raw[NUM_IMUS][3];
-    float gyro_data_raw[NUM_IMUS][3];
-    float mag_data_raw[NUM_IMUS][3];
+    float accel_data_raw[8][3];
+    float gyro_data_raw[8][3];
+    float mag_data_raw[8][3];
+
+    // list of imu objects
+    LSM9DS1 imu0, imu1, imu2, imu3, imu4, imu5, imu6, imu7;             // MIGHT NEED TO PUT LSM9DS1 IN FRONT OF EACH
+    LSM9DS1 imu_list[8] = {imu0,imu1,imu2,imu3,imu4,imu5,imu6,imu7};
 
 
 private:
@@ -64,11 +73,11 @@ private:
     // list of chip select pins
     int CS_pins[8] = {CS0_PIN, CS1_PIN, CS2_PIN, CS3_PIN, CS4_PIN, CS5_PIN, CS6_PIN, CS7_PIN};
 
-    // list of imu objects
-    LSM9DS1 imu0, imu1, imu2, imu3, imu4, imu5, imu6, imu7;             // MIGHT NEED TO PUT LSM9DS1 IN FRONT OF EACH
-    LSM9DS1 imu_list[8] = {imu0,imu1,imu2,imu3,imu4,imu5,imu6,imu7};
-
-
+    // custom calibration offsets calculated using calibrate_ag and calibrate_m
+    float custom_a_offsets[8][3];
+    float custom_g_offsets[8][3];
+    float custom_m_offsets[8][3];
+    float custom_m_scaling[8][3];
 
 };
 #endif

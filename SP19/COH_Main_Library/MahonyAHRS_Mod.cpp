@@ -21,15 +21,8 @@
 //-------------------------------------------------------------------------------------------
 // Header files
 
-#include "MahonyAHRS.h"
+#include "MahonyAHRS_Mod.h"
 #include <math.h>
-
-//-------------------------------------------------------------------------------------------
-// Definitions
-
-#define DEFAULT_SAMPLE_FREQ	512.0f	// sample frequency in Hz
-#define twoKpDef	(1000.0f * 0.5f)	// 2 * proportional gain
-#define twoKiDef	(0.0f * 0.0f)	// 2 * integral gain
 
 
 //============================================================================================
@@ -40,8 +33,6 @@
 
 Mahony::Mahony()
 {
-	twoKp = twoKpDef;	// 2 * proportional gain (Kp)
-	twoKi = twoKiDef;	// 2 * integral gain (Ki)
 	q0 = 1.0f;
 	q1 = 0.0f;
 	q2 = 0.0f;
@@ -50,7 +41,12 @@ Mahony::Mahony()
 	integralFBy = 0.0f;
 	integralFBz = 0.0f;
 	anglesComputed = 0;
-	invSampleFreq = 1.0f / DEFAULT_SAMPLE_FREQ;
+}
+
+void Mahony::begin(float sampleFrequency, float Kp, float Ki){
+	invSampleFreq = 1.0f / sampleFrequency;
+	twoKp = 2*Kp;
+	twoKi = 2*Ki;
 }
 
 void Mahony::update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz)

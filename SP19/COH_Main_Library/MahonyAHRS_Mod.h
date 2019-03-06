@@ -10,8 +10,8 @@
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
 //
 //=============================================================================================
-#ifndef MahonyAHRS_h
-#define MahonyAHRS_h
+#ifndef MahonyAHRS_MOD_h
+#define MahonyAHRS_MOD_h
 #include <math.h>
 #include <stdlib.h>
 
@@ -35,7 +35,7 @@ private:
 
 public:
 	Mahony();
-	void begin(float sampleFrequency) { invSampleFreq = 1.0f / sampleFrequency; }
+	void begin(float sampleFrequency, float Kp, float Ki);
 	void update(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
 	void updateIMU(float gx, float gy, float gz, float ax, float ay, float az);
 	float getRoll() {
@@ -62,19 +62,36 @@ public:
 		if (!anglesComputed) computeAngles();
 		return yaw;
 	}
+	float get_q0() {
+		return q0;
+	}
+	float get_q1() {
+		return q1;
+	}
+	float get_q2() {
+		return q2;
+	}
+	float get_q3() {
+		return q3;
+	}
 	//SC March 3, 2019
 	//adding function to read out the values of the quaternion calculated by the filter`
-	float *getQuaternion()
-	{
-    float *q = new float[4];
-    // float *q = malloc(sizeof(float)*4); //Or C-style:
+	float *getQuaternion(){
+		float *q = new float[4];
+		// float *q = malloc(sizeof(float)*4); //Or C-style:
+		q[0] = q0;
+		q[1] = q1;
+		q[2] = q2;
+		q[3] = q3;
+		return q;
+	}
 
-    q[0] = q0;
-    q[1] = q1;
-    q[2] = q2;
-    q[3] = q3;
-
-    return q;
-}
-#endif
+	// need to statically create float array then pass address to fcn
+	void getQuaternion2(float *q){
+		q[0] = q0;
+		q[1] = q1;
+		q[2] = q2;
+		q[3] = q3;
+	}
 };
+#endif

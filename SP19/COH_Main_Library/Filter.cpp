@@ -2,10 +2,9 @@
 #include "Filter.h"
 
 
-Filter::Filter(int num_filters, float sample_frequency, Sensor linked_sensor){
+Filter::Filter(int num_filters, float sample_frequency){
     NUM_FILTERS = num_filters;
     SAMPLE_FREQUENCY = sample_frequency;
-    sensor = linked_sensor;
 }
 
 void Filter::init(void){
@@ -14,12 +13,16 @@ void Filter::init(void){
     } 
 }
 
-void Filter::update(void){
+void Filter::update(Sensor& linked_sensor){
+    Sensor sensor = linked_sensor;
     for(int imu = 0; imu < NUM_FILTERS; imu++){
         // give filter data from each imu
         mahony_list[imu].update(sensor.gyro_data[imu][0],sensor.gyro_data[imu][1],sensor.gyro_data[imu][2],
                                 sensor.accel_data[imu][0],sensor.accel_data[imu][1],sensor.accel_data[imu][2],
                                 sensor.mag_data[imu][0],sensor.mag_data[imu][1],sensor.mag_data[imu][2]);
+        // mahony_list[imu].update(sensor-> sensor->gyro_data[imu][0],sensor->gyro_data[imu][1],sensor->gyro_data[imu][2],
+        //                         sensor->accel_data[imu][0],sensor->accel_data[imu][1],sensor->accel_data[imu][2],
+        //                         sensor->mag_data[imu][0],sensor->mag_data[imu][1],sensor->mag_data[imu][2]);
         // update the roll, pitch, and yaw from the inertial to the imu frame for each imu
         rpy_inertial_imu[imu][0] = mahony_list[imu].getRoll();
         rpy_inertial_imu[imu][1] = mahony_list[imu].getPitch();

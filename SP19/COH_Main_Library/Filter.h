@@ -9,11 +9,11 @@ class Filter
 {
 public:
     // contructor: takes number of connected filters and sample frequency as input
-    Filter(int num_filters, float sample_frequency, Sensor linked_sensor);
+    Filter(int num_filters, float sample_frequency);
 
     void init(void);
 
-    void update(void);
+    void update(Sensor& linked_sensor);
 
     // print roll, pitch, and yaw in various frames
     String print_rpy_intertial_imu(int filter);
@@ -58,7 +58,7 @@ private:
     Madgwick madgwick0, madgwick1, madgwick2, madgwick3, madgwick4, madgwick5, madgwick6, madgwick7;        // MIGHT NEED TO PUT Madgwick IN FRONT OF EACH
     Madgwick madgwick_list[8] = {madgwick0,madgwick1,madgwick2,madgwick3,madgwick4,madgwick5,madgwick6,madgwick7};
 
-    Sensor sensor;
+    //Sensor sensor;
 
 };
 #endif

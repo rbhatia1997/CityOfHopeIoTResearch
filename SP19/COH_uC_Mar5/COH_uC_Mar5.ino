@@ -24,12 +24,12 @@ COH AMT Clinic Team microcontroller code
 
 #define NUM_SENSORS 4
 
-const float SAMPLE_FREQ = 1000; // sample frequency in hertz
+float SAMPLE_FREQ = 10; // sample frequency in hertz
 unsigned long prevTime = 0;
 
 // Instantiate objects
 Sensor sensor;
-Filter filter = Filter(NUM_SENSORS,SAMPLE_FREQ,sensor);
+Filter filter = Filter(NUM_SENSORS,SAMPLE_FREQ);
 //Bluetooth bluetooth;
 Led status_led = Led(STATUS_LED_PIN);
 
@@ -47,11 +47,11 @@ void setup()
     //bluetooth.init();
 
     // Calibrate sensors
-    // sensor.calibrate_ag(false);
-    // for(int imu = 0; imu < NUM_SENSORS; imu++){
-    //     Serial.println(print_a_cal_offsets(imu));
-    //     Serial.println(print_g_cal_offsets(imu));
-    // }
+//     sensor.calibrate_ag(false);
+//     for(int imu = 0; imu < NUM_SENSORS; imu++){
+//         Serial.println(sensor.print_a_cal_offsets(imu));
+//         Serial.println(sensor.print_g_cal_offsets(imu));
+//     }
            
 }
 
@@ -60,9 +60,15 @@ void loop(){
     if(micros() - prevTime > 1000000.0/SAMPLE_FREQ){
         prevTime = micros();
         sensor.read_sensors();
-        filter.update();
+        filter.update(sensor);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
             Serial.println(filter.print_rpy_intertial_imu(imu));
+            //Serial.println(sensor.print_accel_raw(imu));
+            //Serial.println(sensor.print_gyro_raw(imu));
+            //Serial.println(sensor.print_mag_raw(imu));
+            //Serial.println(sensor.print_accel(imu));
+            //Serial.println(sensor.print_gyro(imu));
+            //Serial.println(sensor.print_mag(imu));
         }
 
     }

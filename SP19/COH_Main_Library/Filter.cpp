@@ -13,20 +13,32 @@ void Filter::init(void){
     } 
 }
 
-void Filter::update(Sensor& linked_sensor){
-    Sensor sensor = linked_sensor;
+void Filter::update(float accel_data[8][3],float gyro_data[8][3],float mag_data[8][3]){
     for(int imu = 0; imu < NUM_FILTERS; imu++){
+        // Serial.print(accel_data[imu][0]);Serial.print(" ");
+        // Serial.print(accel_data[imu][1]);Serial.print(" ");
+        // Serial.println(accel_data[imu][2]);
+
+        // Serial.print(gyro_data[imu][0]);Serial.print(" ");
+        // Serial.print(gyro_data[imu][1]);Serial.print(" ");
+        // Serial.println(gyro_data[imu][2]);
+
+        // Serial.print(mag_data[imu][0]);Serial.print(" ");
+        // Serial.print(mag_data[imu][1]);Serial.print(" ");
+        // Serial.println(mag_data[imu][2]);
+
         // give filter data from each imu
-        mahony_list[imu].update(sensor.gyro_data[imu][0],sensor.gyro_data[imu][1],sensor.gyro_data[imu][2],
-                                sensor.accel_data[imu][0],sensor.accel_data[imu][1],sensor.accel_data[imu][2],
-                                sensor.mag_data[imu][0],sensor.mag_data[imu][1],sensor.mag_data[imu][2]);
-        // mahony_list[imu].update(sensor-> sensor->gyro_data[imu][0],sensor->gyro_data[imu][1],sensor->gyro_data[imu][2],
-        //                         sensor->accel_data[imu][0],sensor->accel_data[imu][1],sensor->accel_data[imu][2],
-        //                         sensor->mag_data[imu][0],sensor->mag_data[imu][1],sensor->mag_data[imu][2]);
+        // mahony_list[imu].update(Sensor_Ref.gyro_data[imu][0],Sensor_Ref.gyro_data[imu][1],Sensor_Ref.gyro_data[imu][2],
+        //                         Sensor_Ref.accel_data[imu][0],Sensor_Ref.accel_data[imu][1],Sensor_Ref.accel_data[imu][2],
+        //                         Sensor_Ref.mag_data[imu][0],Sensor_Ref.mag_data[imu][1],Sensor_Ref.mag_data[imu][2]);
+        mahony_list[imu].update(gyro_data[imu][0],gyro_data[imu][1],gyro_data[imu][2],
+                                accel_data[imu][0],accel_data[imu][1],accel_data[imu][2],
+                                mag_data[imu][0],mag_data[imu][1],mag_data[imu][2]);
         // update the roll, pitch, and yaw from the inertial to the imu frame for each imu
         rpy_inertial_imu[imu][0] = mahony_list[imu].getRoll();
         rpy_inertial_imu[imu][1] = mahony_list[imu].getPitch();
         rpy_inertial_imu[imu][2] = mahony_list[imu].getYaw();
+        //Serial.println(rpy_inertial_imu[imu][1]);
         // update the quaternion for the inertial to the imu frame for each imu
         q_inertial_imu[imu][0] = mahony_list[imu].get_q0();
         q_inertial_imu[imu][1] = mahony_list[imu].get_q1();
@@ -40,7 +52,7 @@ void Filter::update(Sensor& linked_sensor){
 }
 
 String Filter::print_rpy_intertial_imu(int filter){
-    // resturns a string of space-delimited roll, pitch, yaw angles for one imu in the inertial frame
+    // returns a string of space-delimited roll, pitch, yaw angles for one imu in the inertial frame
     String print_string = "";
     print_string += String(rpy_inertial_imu[filter][0]);
     print_string += "  ";
@@ -52,7 +64,7 @@ String Filter::print_rpy_intertial_imu(int filter){
 
 
 String Filter::print_rpy_body_imu(int filter){
-    // resturns a string of space-delimited roll, pitch, yaw angles for one imu in the body frame
+    // returns a string of space-delimited roll, pitch, yaw angles for one imu in the body frame
     String print_string = "";
     print_string += String(rpy_body_imu[filter][0]);
     print_string += "  ";
@@ -64,7 +76,7 @@ String Filter::print_rpy_body_imu(int filter){
 
 
 String Filter::print_rpy_inertial_body(void){
-    // resturns a string of space-delimited roll, pitch, yaw angles for the body
+    // returns a string of space-delimited roll, pitch, yaw angles for the body
     String print_string = "";
     print_string += String(rpy_inertial_body[0]);
     print_string += "  ";

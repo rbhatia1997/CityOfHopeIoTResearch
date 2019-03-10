@@ -13,7 +13,7 @@ public:
 
     void init(void);
 
-    void update(Sensor& linked_sensor);
+    void update(float accel_data[8][3],float gyro_data[8][3],float mag_data[8][3]);
 
     // print roll, pitch, and yaw in various frames
     String print_rpy_intertial_imu(int filter);
@@ -46,7 +46,7 @@ private:
     int NUM_FILTERS;
 
     // Filter parameters
-    float KP = 1000; // mahony
+    float KP = 100; // mahony
     float KI = 2;
     float beta = 0.001; // madgwick
     
@@ -57,8 +57,6 @@ private:
     // Creat Madgwick filter objects
     Madgwick madgwick0, madgwick1, madgwick2, madgwick3, madgwick4, madgwick5, madgwick6, madgwick7;        // MIGHT NEED TO PUT Madgwick IN FRONT OF EACH
     Madgwick madgwick_list[8] = {madgwick0,madgwick1,madgwick2,madgwick3,madgwick4,madgwick5,madgwick6,madgwick7};
-
-    //Sensor sensor;
 
 };
 #endif

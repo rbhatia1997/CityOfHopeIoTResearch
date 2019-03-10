@@ -24,7 +24,7 @@ COH AMT Clinic Team microcontroller code
 
 #define NUM_SENSORS 4
 
-float SAMPLE_FREQ = 10; // sample frequency in hertz
+float SAMPLE_FREQ = 1000; // sample frequency in hertz
 unsigned long prevTime = 0;
 
 // Instantiate objects
@@ -60,7 +60,7 @@ void loop(){
     if(micros() - prevTime > 1000000.0/SAMPLE_FREQ){
         prevTime = micros();
         sensor.read_sensors();
-        filter.update(sensor);
+        filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
             Serial.println(filter.print_rpy_intertial_imu(imu));
             //Serial.println(sensor.print_accel_raw(imu));

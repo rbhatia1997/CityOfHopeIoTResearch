@@ -90,6 +90,8 @@ void setup() {
   // Add characteristics...
   // PROPERTY_WRITE, PROPERTY_NOTIFY, PROPERTY_WRITE are the properties of the characteristics.
 
+  // We need these lines to identify which property to ascribe to which characteristic.
+
   pCharacteristic = pService->createCharacteristic(
                       CHARACTERISTIC_UUID,
                       BLECharacteristic::PROPERTY_NOTIFY
@@ -97,42 +99,55 @@ void setup() {
 
   pCharacteristic->addDescriptor(new BLE2902());
 
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
-                                         CHARACTERISTIC_UUID,
-                                         BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_WRITE |
-                                         BLECharacteristic::PROPERTY_NOTIFY
-                                       );
-
+  // Start the BLE Service
   pService->start();
-  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+
+  // Code that starts advertising the information
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+
+  // Functions that help with iPhone connections issue
+  pAdvertising->setMinPreferred(0x06);
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
-  Serial.println("Characteristic defined! Now you can read it in your phone!");
+  Serial.println("Characteristic defined! ESP32 Ready to Send Data...");
 }
 
 void loop() {
-  char humidityString[2];
-  char temperatureString[2];
+  if (deviceConnected == true) {
 
-  humidity = humidity + 2;
-  temperature = temperature + 10;
+    Serial.println("ESP32 is connected to the app... Sending Data!");
 
-  dtostrf(humidity, 1, 2, humidityString);
-  dtostrf(temperature, 1, 2, temperatureString);
+    // It's necessary to update the values sent to the iPhone here.
+    // In other words, Quaternion values sent to the ESP32 pin will be updated here.
 
-  char dhtDataString[16];
-  sprintf(dhtDataString, "%d,%d", temperature, humidity);
+    // My understanding, as of now, is that we will have Quaternion values constantly update. 
+    // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
-  pCharacteristic->setValue(dhtDataString);
+    char humidityString[2];
+    char temperatureString[2]; 
 
-  pCharacteristic->notify(); // Envia o valor para o aplicativo!
-  Serial.print("*** Dado enviado: ");
-  Serial.print(dhtDataString);
-  Serial.println(" ***");
-  delay(2000);
+    humidity = humidity + 2;
+    temperature = temperature + 10;
+
+    dtostrf(humidity, 1, 2, humidityString);
+    dtostrf(temperature, 1, 2, temperatureString);
+
+    char dhtDataString[16];
+    sprintf(dhtDataString, "%d,%d", temperature, humidity);
+
+    pCharacteristic->setValue(dhtDataString);
+
+    // Sends the values to the iPhone application
+    pCharacteristic->notify(); 
+
+    // Serial Printing the Values for Testing Purposes
+    Serial.print("*** Current Value: ");
+    Serial.print(dhtDataString);
+    Serial.println(" ***");
+    
+    // This is currently the fastest rate we can get the app to read data, 0.5 Hz. 
+    delay(2000); 
+  }
 }

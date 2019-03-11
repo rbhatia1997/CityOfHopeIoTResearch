@@ -71,19 +71,25 @@ class Header: UIView {
 
     let label = UILabel()
     
+    var headerString = String()
+    var headerColor = UIColor()
+    
+    init() {
+        super.init(frame: .zero)
+        self.backgroundColor = .gray
+    }
+    
     init(title: String, color: UIColor) {
         super.init(frame: .zero)
         self.backgroundColor = color
-        setupViews(title)
-        addViews()
-        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews(_ title: String) {
+    private func setupViews(_ title: String, _ color: UIColor) {
+        self.backgroundColor = color
         label.frame = .zero
         label.font = UIFont(name: "MontserratAlternates-ExtraLight", size: 30)
         label.textColor = .black
@@ -104,5 +110,9 @@ class Header: UIView {
         label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
 
-    
+    func updateHeader() {
+        setupViews(headerString, headerColor)
+        addViews()
+        setupConstraints()
+    }
 }

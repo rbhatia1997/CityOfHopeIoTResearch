@@ -10,7 +10,10 @@ import UIKit
 
 class ProgressViewController: UIViewController {
 
-    let headerView = Header(title: "Progress", color: UIColor(named: "green")!)
+    let colorTheme = UIColor(named: "green")!
+    
+    // Subviews
+    let headerView = Header()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +23,9 @@ class ProgressViewController: UIViewController {
     }
     
     private func setupViews() {
-        
+        headerView.headerString = "Progress"
+        headerView.headerColor = colorTheme
+        headerView.updateHeader()
     }
     
     private func addViews() {

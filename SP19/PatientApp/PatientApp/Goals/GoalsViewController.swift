@@ -10,7 +10,10 @@ import UIKit
 
 class GoalsViewController: UIViewController {
 
-    let headerView = Header(title: "Achievements", color: UIColor(named: "yellow")!)
+    let colorTheme = UIColor(named: "yellow")!
+    
+    // Subviews
+    let headerView = Header()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +23,9 @@ class GoalsViewController: UIViewController {
     }
     
     private func setupViews() {
-        
+        headerView.headerString = "Goals"
+        headerView.headerColor = colorTheme
+        headerView.updateHeader()
     }
     
     private func addViews() {

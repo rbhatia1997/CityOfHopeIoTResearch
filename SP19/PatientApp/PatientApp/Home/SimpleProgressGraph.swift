@@ -38,7 +38,7 @@ class SimpleProgressGraph: UIView {
         self.backgroundColor = .clear
         
         colorTheme = color
-        numberOfExercises = 2
+        numberOfExercises = exNames.count
         exerciseNames = exNames
         exerciseValues = exValues
         for i in 0..<numberOfExercises {
@@ -52,7 +52,7 @@ class SimpleProgressGraph: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews(_ numOfExercises: Int, _ namesOfExercises: [String], _ outerDia: CGFloat) {
+    private func setupViews(_ numOfExercises: Int, _ namesOfExercises: [String], _ valuesOfExercises: [CGFloat], _ outerDia: CGFloat) {
         title.frame = .zero
         title.font = UIFont(name: "Montserrat-Regular", size: 14)
         title.textColor = .gray
@@ -68,8 +68,7 @@ class SimpleProgressGraph: UIView {
                             innerDia: 150,
                             color: hsbShadeTint(color: colorTheme, sat: darkestSaturation),
                             trackSat: colorTheme.hsba.saturation,
-                            view: largeGraphView,
-                            yOffset: 0)
+                            view: largeGraphView)
         
         stackGraphView.frame = .zero
         stackGraphView.axis = .horizontal
@@ -79,14 +78,13 @@ class SimpleProgressGraph: UIView {
 
             singleSmallGraphView[i].frame = .zero
             singleSmallGraphView[i].backgroundColor = .clear
-            drawSemicircleGraph(value: progressAverage,
+            drawSemicircleGraph(value: valuesOfExercises[i],
                                 exName: namesOfExercises[i],
                                 outerDia: outerDia,
                                 innerDia: outerDia * 0.75,
                                 color: hsbShadeTint(color: colorTheme, sat: darkestSaturation),
                                 trackSat: colorTheme.hsba.saturation,
-                                view: singleSmallGraphView[i],
-                                yOffset: 0)
+                                view: singleSmallGraphView[i])
 
             stackGraphView.insertArrangedSubview(singleSmallGraphView[i], at: i)
         }
@@ -116,13 +114,13 @@ class SimpleProgressGraph: UIView {
         largeGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
         largeGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
         
-        stackGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
-        stackGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
+        stackGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+        stackGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
         stackGraphView.heightAnchor.constraint(equalTo: largeGraphView.heightAnchor, multiplier: 0.5).isActive = true
         stackGraphView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     }
     
-    private func drawSemicircleGraph(value: CGFloat, exName: String, outerDia: CGFloat, innerDia: CGFloat, color: UIColor, trackSat: CGFloat, view: UIView, yOffset: CGFloat) {
+    private func drawSemicircleGraph(value: CGFloat, exName: String, outerDia: CGFloat, innerDia: CGFloat, color: UIColor, trackSat: CGFloat, view: UIView) {
         
         let valueLabel = UILabel()
         valueLabel.frame = .zero
@@ -147,15 +145,15 @@ class SimpleProgressGraph: UIView {
         valueLabel.widthAnchor.constraint(equalToConstant: valueLabel.frame.width).isActive = true
         valueLabel.heightAnchor.constraint(equalToConstant: valueLabel.frame.height).isActive = true
         valueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        valueLabel.bottomAnchor.constraint(equalTo: view.centerYAnchor, constant: yOffset).isActive = true
+        valueLabel.bottomAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         exLabel.translatesAutoresizingMaskIntoConstraints = false
         exLabel.widthAnchor.constraint(equalToConstant: exLabel.frame.width).isActive = true
         exLabel.heightAnchor.constraint(equalToConstant: exLabel.frame.height).isActive = true
         exLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        exLabel.topAnchor.constraint(equalTo: view.centerYAnchor, constant: innerDia/15 + yOffset).isActive = true
+        exLabel.topAnchor.constraint(equalTo: view.centerYAnchor, constant: innerDia/8).isActive = true
         
-        singleCircleGraph(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height + yOffset),
+        singleCircleGraph(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height),
                           endAng: value * 2 * CGFloat.pi,
                           outerDia: outerDia,
                           innerDia: innerDia,
@@ -170,6 +168,7 @@ class SimpleProgressGraph: UIView {
         
         let trackWidth: CGFloat = (outerDia - innerDia)/2
         let trackCenterRadius: CGFloat = (innerDia + trackWidth)/2
+        let capShape = CAShapeLayerLineCap.round
         
         let trackPath = UIBezierPath(arcCenter: center,
                                      radius: trackCenterRadius,
@@ -183,7 +182,7 @@ class SimpleProgressGraph: UIView {
         trackLayer.strokeColor = trackColor.cgColor
         trackLayer.lineWidth = trackWidth
         trackLayer.fillColor = UIColor.clear.cgColor
-        trackLayer.lineCap = CAShapeLayerLineCap.square
+        trackLayer.lineCap = capShape
         view.layer.addSublayer(trackLayer)
         
         let progPath = UIBezierPath(arcCenter: center,
@@ -198,7 +197,7 @@ class SimpleProgressGraph: UIView {
         progressLayer.strokeColor = progColor.cgColor
         progressLayer.lineWidth = trackWidth
         progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.lineCap = fullCircle ? CAShapeLayerLineCap.square : CAShapeLayerLineCap.square
+        progressLayer.lineCap = fullCircle ? CAShapeLayerLineCap.round : capShape
         progressLayer.strokeEnd = 0
         view.layer.addSublayer(progressLayer)
         
@@ -211,7 +210,7 @@ class SimpleProgressGraph: UIView {
     }
     
     func updateProgressGraph() {
-        setupViews(numberOfExercises, exerciseNames, CGFloat(pow(100, numberOfExercises - 2)))
+        setupViews(numberOfExercises, exerciseNames, exerciseValues, CGFloat(160 - 20 * numberOfExercises))
         addViews()
         setupConstraints()
     }

@@ -10,6 +10,8 @@ import UIKit
 
 class HomeMotivator: UIView {
     
+    var goals = [String]()
+    
     private let goalTitle = UILabel()
     private var goalList = [UILabel]()
     private let goalNum: Int = 5
@@ -17,16 +19,14 @@ class HomeMotivator: UIView {
     
     init() {
         super.init(frame: .zero)
-        self.backgroundColor = .yellow
+        self.backgroundColor = .clear
     }
 
     init(goals: [String]) {
         super.init(frame: .zero)
         self.backgroundColor = .clear
         
-        setupViews(goalNum, goals)
-        addViews()
-        setupConstraints()
+        self.goals = goals
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -79,6 +79,10 @@ class HomeMotivator: UIView {
         stackGoals.distribution = .fillEqually
     }
     
-    
+    func updateGoals() {
+        setupViews(goalNum, goals)
+        addViews()
+        setupConstraints()
+    }
     
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AA953C8591CE8C85BE1DCD63 /* Pods_COHPatientUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4E6650E503BB23F95A0CB58 /* Pods_COHPatientUI.framework */; };
+		F818716E222E0D8B0043DCBE /* SliderQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F818716D222E0D8B0043DCBE /* SliderQuestion.swift */; };
 		F8478E36221E6056009AD3E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8478E35221E6056009AD3E3 /* AppDelegate.swift */; };
 		F8478E3D221E6056009AD3E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8478E3B221E6056009AD3E3 /* Main.storyboard */; };
 		F8478E42221E6058009AD3E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8478E40221E6058009AD3E3 /* LaunchScreen.storyboard */; };
@@ -37,6 +38,7 @@
 		119BD7A20B99D54A0FEF75F0 /* Pods-COHPatientUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-COHPatientUI.debug.xcconfig"; path = "Target Support Files/Pods-COHPatientUI/Pods-COHPatientUI.debug.xcconfig"; sourceTree = "<group>"; };
 		698C197DAA414F47FE01AB06 /* Pods-COHPatientUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-COHPatientUI.release.xcconfig"; path = "Target Support Files/Pods-COHPatientUI/Pods-COHPatientUI.release.xcconfig"; sourceTree = "<group>"; };
 		C4E6650E503BB23F95A0CB58 /* Pods_COHPatientUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_COHPatientUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F818716D222E0D8B0043DCBE /* SliderQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderQuestion.swift; sourceTree = "<group>"; };
 		F8478E32221E6056009AD3E3 /* COHPatientUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = COHPatientUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8478E35221E6056009AD3E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8478E3C221E6056009AD3E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				F85AA8F222264B00002CF800 /* QualityViewController.swift */,
+				F818716D222E0D8B0043DCBE /* SliderQuestion.swift */,
 			);
 			path = Quality;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			files = (
 				F85AA9112227DC23002CF800 /* Header.swift in Sources */,
 				F85AA8FA22264CA2002CF800 /* NestedCircleGraph.swift in Sources */,
+				F818716E222E0D8B0043DCBE /* SliderQuestion.swift in Sources */,
 				F85AA8F122264A33002CF800 /* MyTabBarController.swift in Sources */,
 				F8478E36221E6056009AD3E3 /* AppDelegate.swift in Sources */,
 				F85AA8F322264B00002CF800 /* QualityViewController.swift in Sources */,

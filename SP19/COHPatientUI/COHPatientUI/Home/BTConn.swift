@@ -42,7 +42,7 @@ class BTConn: UIView {
         let statusLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         statusLabel.font = UIFont(name: "Montserrat-Thin", size: 14)
         statusLabel.textColor = .black
-        statusLabel.text = "Status :  "
+        statusLabel.text = "Device Status :  "
         statusLabel.sizeToFit()
         statusLabel.textAlignment = .center
         
@@ -62,7 +62,8 @@ class BTConn: UIView {
         statusLabel.center.x = serviceLabel.center.x - (serviceLabel.frame.width - statusLabel.frame.width)/2
         statusLabel.center.y = self.frame.height/2 - statusLabel.frame.height/2
         
-        connectLabel.center.x = uuidLabel.center.x - (uuidLabel.frame.width - connectLabel.frame.width)/2
+        connectLabel.center.x = statusLabel.center.x + statusLabel.frame.width/2 + connectLabel.frame.width/2
+//        uuidLabel.center.x - (uuidLabel.frame.width - connectLabel.frame.width)/2
 //        statusLabel.center.x + statusLabel.frame.width/2 + connectLabel.frame.width/2
         connectLabel.center.y = statusLabel.center.y
         
@@ -81,6 +82,10 @@ class BTConn: UIView {
 //        shapeLayer.lineWidth = 1.0
 //
 //        self.layer.addSublayer(shapeLayer)
+    }
+    
+    func matchBackground(color: UIColor) {
+        self.backgroundColor = color
     }
 
 }

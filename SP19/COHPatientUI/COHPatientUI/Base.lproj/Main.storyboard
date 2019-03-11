@@ -25,36 +25,36 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="KZ5-0r-ZOr">
-                                <rect key="frame" x="20" y="164" width="374" height="629"/>
+                                <rect key="frame" x="20" y="174" width="374" height="619"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="803-8k-zEl" customClass="HomeMotivator" customModule="COHPatientUI" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="374" height="244.66666666666666"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2d-G0-r8U" customClass="NestedCircleGraph" customModule="COHPatientUI" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="264.66666666666669" width="374" height="244.33333333333331"/>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rt0-Lr-6VI" customClass="BTConn" customModule="COHPatientUI" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="529" width="374" height="100"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="374" height="180"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="100" id="TWy-IO-E1W"/>
+                                            <constraint firstAttribute="height" constant="180" id="VRj-iG-CXX"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s2d-G0-r8U" customClass="NestedCircleGraph" customModule="COHPatientUI" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="200" width="374" height="329"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rt0-Lr-6VI" customClass="BTConn" customModule="COHPatientUI" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="549" width="374" height="70"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="70" id="TWy-IO-E1W"/>
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <constraints>
-                                    <constraint firstItem="s2d-G0-r8U" firstAttribute="height" secondItem="803-8k-zEl" secondAttribute="height" id="nzM-9m-xGT"/>
-                                </constraints>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="kkB-P7-LLU" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="5NV-0d-UGT"/>
+                            <constraint firstItem="KZ5-0r-ZOr" firstAttribute="top" secondItem="kkB-P7-LLU" secondAttribute="bottom" constant="30" id="Fxd-1y-MXB"/>
                             <constraint firstItem="KZ5-0r-ZOr" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" constant="20" id="c6l-34-yag"/>
                             <constraint firstItem="PQr-Ze-W5v" firstAttribute="bottom" secondItem="KZ5-0r-ZOr" secondAttribute="bottom" constant="20" id="e8x-rE-qpj"/>
                             <constraint firstItem="kkB-P7-LLU" firstAttribute="trailing" secondItem="PQr-Ze-W5v" secondAttribute="trailing" id="gkK-eD-YvQ"/>
                             <constraint firstItem="kkB-P7-LLU" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="jCu-BV-fE2"/>
-                            <constraint firstItem="KZ5-0r-ZOr" firstAttribute="top" secondItem="kkB-P7-LLU" secondAttribute="bottom" constant="20" id="kfN-9j-tJi"/>
                             <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="KZ5-0r-ZOr" secondAttribute="trailing" constant="20" id="xFf-V5-zTh"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
@@ -63,6 +63,7 @@
                     <connections>
                         <outlet property="bluetoothConnection" destination="Rt0-Lr-6VI" id="kSi-3V-aoE"/>
                         <outlet property="headerView" destination="kkB-P7-LLU" id="JRf-eo-vzq"/>
+                        <outlet property="homeMotivation" destination="803-8k-zEl" id="IFG-tu-rG4"/>
                         <outlet property="homeProgressGraph" destination="s2d-G0-r8U" id="JQC-4e-8QI"/>
                     </connections>
                 </viewController>
@@ -141,7 +142,7 @@
             <objects>
                 <viewController id="hq1-Ex-drZ" customClass="QualityViewController" customModule="COHPatientUI" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WkB-37-RkA">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="1500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kgx-6P-sPt" customClass="Header" customModule="COHPatientUI" customModuleProvider="target">
@@ -151,23 +152,123 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="100" id="tOS-lI-hSJ"/>
                                 </constraints>
                             </view>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sNT-vM-Wfh">
+                                <rect key="frame" x="0.0" y="144" width="414" height="1273"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KCO-CV-jYa">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="1273"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="cC4-M4-mA0">
+                                                <rect key="frame" x="20" y="40" width="374" height="1160"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jdE-Lv-1iB" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="374" height="150"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="150" id="iVU-Kx-wnK"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8lc-B7-hUm" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="190" width="374" height="150"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HoR-d9-67b" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="380" width="374" height="150"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d7L-gM-IGM" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="570" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="50" id="PJJ-Pl-iNT"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Saw-Es-iNW" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="660" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3n0-TI-Kzm" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="750" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VMe-s3-iiW" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="840" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DEf-xO-tlJ" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="930" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IBx-Ut-ZFf" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="1020" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DNm-Hg-Eii" customClass="SliderQuestion" customModule="COHPatientUI" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="1110" width="374" height="50"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="DEf-xO-tlJ" firstAttribute="height" secondItem="VMe-s3-iiW" secondAttribute="height" id="32w-LY-YN1"/>
+                                                    <constraint firstItem="8lc-B7-hUm" firstAttribute="height" secondItem="jdE-Lv-1iB" secondAttribute="height" id="4nQ-ow-Dbu"/>
+                                                    <constraint firstItem="DNm-Hg-Eii" firstAttribute="height" secondItem="IBx-Ut-ZFf" secondAttribute="height" id="ALt-oo-8UF"/>
+                                                    <constraint firstItem="Saw-Es-iNW" firstAttribute="height" secondItem="d7L-gM-IGM" secondAttribute="height" id="DWb-RJ-2wW"/>
+                                                    <constraint firstItem="HoR-d9-67b" firstAttribute="height" secondItem="8lc-B7-hUm" secondAttribute="height" id="L6l-Ce-kJl"/>
+                                                    <constraint firstItem="IBx-Ut-ZFf" firstAttribute="height" secondItem="DEf-xO-tlJ" secondAttribute="height" id="rCg-8G-4Br"/>
+                                                    <constraint firstItem="VMe-s3-iiW" firstAttribute="height" secondItem="3n0-TI-Kzm" secondAttribute="height" id="vAp-Wg-Lm5"/>
+                                                    <constraint firstItem="3n0-TI-Kzm" firstAttribute="height" secondItem="Saw-Es-iNW" secondAttribute="height" id="wjS-Zf-E0X"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="cC4-M4-mA0" secondAttribute="trailing" constant="20" id="OpX-HP-JXF"/>
+                                            <constraint firstAttribute="height" constant="1273" id="ViZ-cc-qUV"/>
+                                            <constraint firstItem="cC4-M4-mA0" firstAttribute="leading" secondItem="KCO-CV-jYa" secondAttribute="leading" constant="20" id="Y8k-mX-vFm"/>
+                                            <constraint firstItem="cC4-M4-mA0" firstAttribute="top" secondItem="KCO-CV-jYa" secondAttribute="top" constant="40" id="up3-Oo-byy"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="KCO-CV-jYa" firstAttribute="leading" secondItem="sNT-vM-Wfh" secondAttribute="leading" id="2Tw-SN-gO1"/>
+                                    <constraint firstAttribute="bottom" secondItem="KCO-CV-jYa" secondAttribute="bottom" id="NfX-SE-sQi"/>
+                                    <constraint firstAttribute="trailing" secondItem="KCO-CV-jYa" secondAttribute="trailing" id="Ry8-Vm-rha"/>
+                                    <constraint firstItem="KCO-CV-jYa" firstAttribute="top" secondItem="sNT-vM-Wfh" secondAttribute="top" id="jfQ-CK-rlV"/>
+                                </constraints>
+                            </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="KCO-CV-jYa" firstAttribute="width" secondItem="WkB-37-RkA" secondAttribute="width" id="Kpq-Mp-SUI"/>
                             <constraint firstItem="Kgx-6P-sPt" firstAttribute="trailing" secondItem="N5k-Bn-IzO" secondAttribute="trailing" id="Mpu-BW-LMj"/>
+                            <constraint firstItem="sNT-vM-Wfh" firstAttribute="trailing" secondItem="N5k-Bn-IzO" secondAttribute="trailing" id="Npa-dM-Mmz"/>
                             <constraint firstItem="Kgx-6P-sPt" firstAttribute="top" secondItem="N5k-Bn-IzO" secondAttribute="top" id="O2l-qD-XGV"/>
+                            <constraint firstItem="sNT-vM-Wfh" firstAttribute="top" secondItem="Kgx-6P-sPt" secondAttribute="bottom" id="Vp3-Ob-Cyr"/>
+                            <constraint firstItem="sNT-vM-Wfh" firstAttribute="bottom" secondItem="N5k-Bn-IzO" secondAttribute="bottom" id="e2A-7U-gEC"/>
                             <constraint firstItem="Kgx-6P-sPt" firstAttribute="leading" secondItem="N5k-Bn-IzO" secondAttribute="leading" id="oFk-Q4-18u"/>
+                            <constraint firstItem="sNT-vM-Wfh" firstAttribute="leading" secondItem="N5k-Bn-IzO" secondAttribute="leading" id="p4L-9q-ZQ8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="N5k-Bn-IzO"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="Fto-it-WvK"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="quality" id="Fto-it-WvK"/>
+                    <size key="freeformSize" width="414" height="1500"/>
                     <connections>
                         <outlet property="headerView" destination="Kgx-6P-sPt" id="IMT-47-W2u"/>
+                        <outlet property="question0" destination="jdE-Lv-1iB" id="h0W-Jk-65n"/>
+                        <outlet property="question1" destination="8lc-B7-hUm" id="22h-FE-M01"/>
+                        <outlet property="question2" destination="HoR-d9-67b" id="Tce-7M-GPz"/>
+                        <outlet property="question3" destination="d7L-gM-IGM" id="DPR-u4-2gW"/>
+                        <outlet property="question4" destination="Saw-Es-iNW" id="Onf-d9-x8Z"/>
+                        <outlet property="question5" destination="3n0-TI-Kzm" id="0E9-lV-BDT"/>
+                        <outlet property="question6" destination="VMe-s3-iiW" id="c0a-Dm-lwH"/>
+                        <outlet property="question7" destination="DEf-xO-tlJ" id="gPE-Ds-SKt"/>
+                        <outlet property="question8" destination="IBx-Ut-ZFf" id="Kgx-uH-0M9"/>
+                        <outlet property="question9" destination="DNm-Hg-Eii" id="QOn-de-9CE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ShA-5G-uwV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3210" y="823"/>
+            <point key="canvasLocation" x="3208.6956521739135" y="822.99107142857144"/>
         </scene>
         <!--Exercise-->
         <scene sceneID="wg7-f3-ORb">
@@ -229,5 +330,6 @@
         <image name="goals" width="25" height="25"/>
         <image name="home" width="25" height="25"/>
         <image name="progress" width="25" height="25"/>
+        <image name="quality" width="25" height="25"/>
     </resources>
 </document>

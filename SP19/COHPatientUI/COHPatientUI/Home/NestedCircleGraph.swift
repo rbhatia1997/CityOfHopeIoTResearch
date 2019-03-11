@@ -14,7 +14,34 @@ class NestedCircleGraph: UIView {
     
 //    override func draw(_ rect: CGRect) {}
     
-    func drawGraph(exerciseNum: Int, exerciseNames: [String], values: [CGFloat], clr: UIColor, rMax: Double, rMin: Double, trackSat: [CGFloat], progSat: [CGFloat], sweepAngle: CGFloat) {
+    func drawSingleGraph(value: CGFloat, color: UIColor, rMax: CGFloat, rMin: CGFloat, trackSat: CGFloat) {
+        
+        let centerX = self.frame.size.width/2
+        let centerY = self.frame.size.height/2 + 20
+        
+        singleCircleGraph(centerX: centerX,
+                          centerY: centerY,
+                          startAng: degToRad(deg: 0),
+                          endAng: value * 2*CGFloat.pi,
+                          rad: rMin,
+                          lineWidth: (rMax - rMin) / 2,
+                          depth: 0,
+                          color: color,
+                          trackSat: trackSat,
+                          progSat: color.hsba.saturation)
+        
+        let valueLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        valueLabel.font = UIFont(name: "Montserrat-ExtraLight", size: 40)
+        valueLabel.textColor = .black //hsbShadeTint(color: color, sat: 1.0)
+        valueLabel.text = " \((value * 1000).rounded()/10)%"
+        valueLabel.sizeToFit()
+        valueLabel.textAlignment = .center
+        valueLabel.center.x = centerX
+        valueLabel.center.y = centerY
+        self.addSubview(valueLabel)
+    }
+    
+    func drawNestedGraph(exerciseNum: Int, exerciseNames: [String], values: [CGFloat], clr: UIColor, rMax: Double, rMin: Double, trackSat: [CGFloat], progSat: [CGFloat], sweepAngle: CGFloat) {
         
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         basicAnimation.toValue = 1
@@ -23,7 +50,7 @@ class NestedCircleGraph: UIView {
         basicAnimation.isRemovedOnCompletion = false
         
         let centerX = self.frame.size.width/2 - 60
-        let centerY = self.frame.size.height/2
+        let centerY = self.frame.size.height/2 + 20
         
         let maxRad: Double = rMax
         let minRad: Double = rMin
@@ -37,7 +64,7 @@ class NestedCircleGraph: UIView {
             let r = maxRad - l/2 - Double(index) * (l + trackClr)
 
             
-            singleCircleGraph(centerX: centerX,
+            nestCircleGraph(centerX: centerX,
                               centerY: centerY,
                               startAng: degToRad(deg: 0),
                               endAng: values[index] * 2*CGFloat.pi,
@@ -61,7 +88,7 @@ class NestedCircleGraph: UIView {
         }
     }
     
-    private func singleCircleGraph(centerX: CGFloat, centerY: CGFloat, startAng: CGFloat, endAng: CGFloat, rad: CGFloat, lineWidth: CGFloat, depth: Int, color: UIColor, trackSatStart: CGFloat, trackSatEnd: CGFloat, progSatStart: CGFloat, progSatEnd: CGFloat, exerciseNum: Int) {
+    private func nestCircleGraph(centerX: CGFloat, centerY: CGFloat, startAng: CGFloat, endAng: CGFloat, rad: CGFloat, lineWidth: CGFloat, depth: Int, color: UIColor, trackSatStart: CGFloat, trackSatEnd: CGFloat, progSatStart: CGFloat, progSatEnd: CGFloat, exerciseNum: Int) {
         // define center of the circle
         let center = CGPoint(x: centerX, y: centerY)
         
@@ -145,7 +172,7 @@ class NestedCircleGraph: UIView {
         let exerciseLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         exerciseLabel.font = UIFont(name: "Montserrat-Light", size: 12)
         exerciseLabel.textColor = .black
-        exerciseLabel.text = "\(exerciseName): \(exerciseValue.rounded())%"
+        exerciseLabel.text = "\(exerciseName): \((exerciseValue*10).rounded()/10)%"
         exerciseLabel.sizeToFit()
         exerciseLabel.textAlignment = .center
         exerciseLabel.center.x = end.x + exerciseLabel.frame.width/2 + 5
@@ -161,20 +188,47 @@ class NestedCircleGraph: UIView {
 //        percentLabel.center.x = end.x + exerciseLabel.frame.width/2 + 5
 //        percentLabel.center.y = end.y + exerciseLabel.frame.height/2
 //        self.addSubview(percentLabel)
+    }
+    
+    private func singleCircleGraph(centerX: CGFloat, centerY: CGFloat, startAng: CGFloat, endAng: CGFloat, rad: CGFloat, lineWidth: CGFloat, depth: Int, color: UIColor, trackSat: CGFloat, progSat: CGFloat) {
+        // define center of the circle
+        let center = CGPoint(x: centerX, y: centerY)
         
+        let progressLayer = CAShapeLayer()
+        let trackLayer = CAShapeLayer()
         
+        let trackPath = UIBezierPath(arcCenter: center, radius: rad, startAngle: startAng - degToRad(deg: 90), endAngle: degToRad(deg: 270), clockwise: true)
+        
+        let trackColor = hsbShadeTint(color: color, sat: trackSat)
+        
+        trackLayer.path = trackPath.cgPath
+        trackLayer.strokeColor = trackColor.cgColor
+        trackLayer.lineWidth = lineWidth
+        trackLayer.fillColor = UIColor.clear.cgColor
+        self.layer.addSublayer(trackLayer)
+        
+        let progPath = UIBezierPath(arcCenter: center, radius: rad, startAngle: startAng - degToRad(deg: 90), endAngle: endAng - degToRad(deg: 90), clockwise: true)
+
+        let progColor = hsbShadeTint(color: color, sat: progSat)
+        
+        progressLayer.path = progPath.cgPath
+        progressLayer.strokeColor = progColor.cgColor
+        progressLayer.lineWidth = lineWidth
+        progressLayer.fillColor = UIColor.clear.cgColor
+        progressLayer.lineCap = CAShapeLayerLineCap.round
+        progressLayer.strokeEnd = 0
+        self.layer.addSublayer(progressLayer)
+        
+        let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        basicAnimation.toValue = 1
+        basicAnimation.duration = 1
+        basicAnimation.fillMode = .forwards
+        basicAnimation.isRemovedOnCompletion = false
+        progressLayer.add(basicAnimation, forKey: "2")
     }
     
     private func degToRad(deg: Double) -> CGFloat{
         return CGFloat(deg/180) * CGFloat.pi
-    }
-    
-    func hsbShadeTint(color: UIColor, sat: CGFloat) -> UIColor {
-        let hue = color.hsba.hue
-        let brt = color.hsba.brightness
-        let alp = color.hsba.alpha
-        
-        return UIColor(hue: hue, saturation: sat, brightness: brt, alpha: alp)
     }
     
     func wipe() {
@@ -184,6 +238,7 @@ class NestedCircleGraph: UIView {
         shapeLayer.path = screenPath.cgPath
         shapeLayer.fillColor = UIColor.white.cgColor
         shapeLayer.strokeColor = UIColor.clear.cgColor
+        shapeLayer.lineWidth = 1.0
         self.layer.addSublayer(shapeLayer)
     }
 }
@@ -212,4 +267,12 @@ extension UIColor {
             return (0, 0, 0, 0)
         }
     }
+}
+
+func hsbShadeTint(color: UIColor, sat: CGFloat) -> UIColor {
+    let hue = color.hsba.hue
+    let brt = color.hsba.brightness
+    let alp = color.hsba.alpha
+    
+    return UIColor(hue: hue, saturation: sat, brightness: brt, alpha: alp)
 }

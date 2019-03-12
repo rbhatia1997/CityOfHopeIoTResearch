@@ -42,9 +42,12 @@
 
 BLECharacteristic *pCharacteristic; // define global variable - characteristic
 bool deviceConnected = false;
-int humidity = 0;
-int temperature = 0;
 
+// Values pre-defined for representing Quaternion.
+float q1 = 0;
+float q2 = 1;
+float q3 = 3;
+float q4 = 4;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -122,32 +125,52 @@ void loop() {
     // It's necessary to update the values sent to the iPhone here.
     // In other words, Quaternion values sent to the ESP32 pin will be updated here.
 
-    // My understanding, as of now, is that we will have Quaternion values constantly update. 
+    // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
-    char humidityString[2];
-    char temperatureString[2]; 
+    char quatDataString[20];
+    concatenateFunction(q1, q2, q3, q4).toCharArray(quatDataString, 20);
 
-    humidity = humidity + 2;
-    temperature = temperature + 10;
+    // Each float to 4 bytes in an array of bytes (uint8). Recombine into swift. 
 
-    dtostrf(humidity, 1, 2, humidityString);
-    dtostrf(temperature, 1, 2, temperatureString);
+    // Create byte array of floats 
+    Serial.println(quatDataString);
 
-    char dhtDataString[16];
-    sprintf(dhtDataString, "%d,%d", temperature, humidity);
+    pCharacteristic->setValue(quatDataString);
 
-    pCharacteristic->setValue(dhtDataString);
+    //void setValue(uint8_t* data, size_t size);
+
 
     // Sends the values to the iPhone application
-    pCharacteristic->notify(); 
+    pCharacteristic->notify();
+
+    // Faking Quaternion Data
+    q1 = q1 + 1.00;
+    q2 = q2 + 1.00;
+    q3 = q3 + 1.00;
+    q4 = q4 + 1.00;
 
     // Serial Printing the Values for Testing Purposes
     Serial.print("*** Current Value: ");
-    Serial.print(dhtDataString);
+    Serial.print(quatDataString);
     Serial.println(" ***");
-    
-    // This is currently the fastest rate we can get the app to read data, 0.5 Hz. 
-    delay(2000); 
+
+    // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
+    delay(2000);
   }
+}
+
+// Function to add the quaternion values together!
+String concatenateFunction(float x, float y, float z, float q) {
+  String result;
+
+  // Concatenating the Quaternion Data
+  result.concat(x);
+  result.concat(y);
+  result.concat(z);
+  result.concat(q);
+  return result;
+
+  Serial.println("This is the result: ");
+  Serial.print(result);
 }

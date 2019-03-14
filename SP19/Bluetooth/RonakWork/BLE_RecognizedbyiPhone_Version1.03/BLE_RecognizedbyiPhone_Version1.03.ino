@@ -2,7 +2,7 @@
     Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleServer.cpp
     Based on the Arduino ESP32 Port by Evandro Copercini & Chegewara
     General changes & adaptation for iOS by Ronak Bhatia & Darien Joso from City of Hope's HMC Clinic
-    Last Date Updated: Sunday, March 10, 2019
+    Last Date Updated: Sunday, March 13, 2019
 */
 
 // The following are libraries necessary for enabling BLE connection
@@ -14,6 +14,7 @@
 #include <BLE2902.h>
 #include <iostream>
 #include <string>
+#include <stdio.h>
 
 /*
 
@@ -44,10 +45,10 @@ BLECharacteristic *pCharacteristic; // define global variable - characteristic
 bool deviceConnected = false;
 
 // Values pre-defined for representing Quaternion.
-float q1 = 0;
-float q2 = 1;
+float q0 = 0;
+float q1 = 1;
+float q2 = 2;
 float q3 = 3;
-float q4 = 4;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -128,49 +129,91 @@ void loop() {
     // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
-    char quatDataString[20];
-    concatenateFunction(q1, q2, q3, q4).toCharArray(quatDataString, 20);
+    union {
+      float Q0;
+      char bytes[4];
+    } quatVal;
 
-    // Each float to 4 bytes in an array of bytes (uint8). Recombine into swift. 
+    quatVal.Q0 = 0.69;
+    for (int i = 0; i < 4; i++) {
+      Serial.printf("byte %d is %02x", i, quatVal.bytes[i]);
+    }
 
-    // Create byte array of floats 
-    Serial.println(quatDataString);
+//    byte messageString[20];
+////    byte Q0[4];
+////    byte Q1[4];
+////    byte Q2[4];
+////    byte Q3[4];
+//
+//    byte *Q0, *Q1, *Q2, *Q3;
+//
+//    Q0 = (byte*)& q0;
+//    Q1 = (byte*)& q1;
+//    Q2 = (byte*)& q2;
+//    Q3 = (byte*)& q3;
+//
+//    messageString[0] = Q0[0];
+//    messageString[1] = Q0[1];
+//    messageString[2] = Q0[2];
+//    messageString[3] = Q0[3];
+//    messageString[4] = Q1[0];
+//    messageString[5] = Q1[1];
+//    messageString[6] = Q1[2];
+//    messageString[7] = Q1[3];
+//    messageString[8] = Q2[0];
+//    messageString[9] = Q2[1];
+//    messageString[10] = Q2[2];
+//    messageString[11] = Q2[3];
+//    messageString[12] = Q3[0];
+//    messageString[13] = Q3[1];
+//    messageString[14] = Q3[2];
+//    messageString[15] = Q3[3];
+//    
+//    Serial.println("Char array: ");
+//    //Serial.println(messageString);
+//    Serial.print("floats: ");
+//    Serial.print(q0);
+//    Serial.print(", ");
+//    Serial.print(q1);
+//    Serial.print(", ");
+//    Serial.print(q2);
+//    Serial.print(", ");
+//    Serial.println(q3);
+    
 
-    pCharacteristic->setValue(quatDataString);
+    //sprintf(messageString, "%s,%s,%s,%s", q0, q1, q2, q3);
 
-    //void setValue(uint8_t* data, size_t size);
+    //
+    //    char q0String[5];
+    //    char q1String[5];
+    //    char q2String[5];
+    //    char q3String[5];
+    //
+    //    dtostrf(q0, 1, 2, q0String);
+    //    dtostrf(q1, 1, 2, q1String);
+    //    dtostrf(q2, 1, 2, q2String);
+    //    dtostrf(q3, 1, 2, q3String);
+    //
+    //    char messageString[20];
+    //    sprintf(messageString, "%s,%s,%s,%s", q0, q1, q2, q3);
 
+   // pCharacteristic->setValue(messageString);
 
     // Sends the values to the iPhone application
     pCharacteristic->notify();
 
     // Faking Quaternion Data
+    q0 = q0 + 1.00;
     q1 = q1 + 1.00;
     q2 = q2 + 1.00;
     q3 = q3 + 1.00;
-    q4 = q4 + 1.00;
 
     // Serial Printing the Values for Testing Purposes
     Serial.print("*** Current Value: ");
-    Serial.print(quatDataString);
+    //Serial.print(messageString);
     Serial.println(" ***");
 
     // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
     delay(2000);
   }
-}
-
-// Function to add the quaternion values together!
-String concatenateFunction(float x, float y, float z, float q) {
-  String result;
-
-  // Concatenating the Quaternion Data
-  result.concat(x);
-  result.concat(y);
-  result.concat(z);
-  result.concat(q);
-  return result;
-
-  Serial.println("This is the result: ");
-  Serial.print(result);
 }

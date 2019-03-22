@@ -86,6 +86,35 @@ String Filter::print_rpy_inertial_body(void){
     return print_string;
 }
 
+String Filter::print_q_inertial_imu(int filter){
+    // returns a string of space-delimited quaternion values
+    String print_string = "";
+    print_string += String(mahony_list[filter].get_q0());
+    print_string += "  ";
+    print_string += String(mahony_list[filter].get_q1());
+    print_string += "  ";
+    print_string += String(mahony_list[filter].get_q2());
+    print_string += "  ";
+    print_string += String(mahony_list[filter].get_q3());
+    return print_string;
+}
+
+float Filter::get_q0(int filter){
+    return mahony_list[filter].get_q0();
+}
+
+float Filter::get_q1(int filter){
+    return mahony_list[filter].get_q1();
+}
+
+float Filter::get_q2(int filter){
+    return mahony_list[filter].get_q2();
+}
+
+float Filter::get_q3(int filter){
+    return mahony_list[filter].get_q3();
+}
+
 
 void Filter::q_to_rpy(float *q, float *rpy){
 

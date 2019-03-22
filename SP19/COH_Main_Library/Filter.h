@@ -20,6 +20,15 @@ public:
     String print_rpy_body_imu(int filter);
     String print_rpy_inertial_body(void);
 
+    // print quaternions relating various frames
+    String print_q_inertial_imu(int filter);
+
+    // return quaternion components
+    float get_q0(int filter);
+    float get_q1(int filter);
+    float get_q2(int filter);
+    float get_q3(int filter);
+
     // Arrays that hold orientation data for each imu
     // Example: q_inertial_imu holds the quaternions that describe the transformation 
     // from the inertial frame to the imu frame
@@ -46,8 +55,8 @@ private:
     int NUM_FILTERS;
 
     // Filter parameters
-    float KP = 100; // mahony
-    float KI = 2;
+    float KP = 10; // mahony
+    float KI = 0.0;
     float beta = 0.001; // madgwick
     
     // Creat Mahony filter objects

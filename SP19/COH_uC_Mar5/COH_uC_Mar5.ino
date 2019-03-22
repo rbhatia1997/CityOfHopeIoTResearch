@@ -22,9 +22,9 @@ COH AMT Clinic Team microcontroller code
 #include "Pinouts.h"
 
 
-#define NUM_SENSORS 4
+#define NUM_SENSORS 1
 
-float SAMPLE_FREQ = 1000; // sample frequency in hertz
+float SAMPLE_FREQ = 100; // sample frequency in hertz
 unsigned long prevTime = 0;
 
 // Instantiate objects
@@ -62,16 +62,34 @@ void loop(){
         sensor.read_sensors();
         filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
-            Serial.println(filter.print_rpy_intertial_imu(imu));
+            //Serial.println(filter.print_rpy_intertial_imu(imu));
             //Serial.println(sensor.print_accel_raw(imu));
             //Serial.println(sensor.print_gyro_raw(imu));
             //Serial.println(sensor.print_mag_raw(imu));
             //Serial.println(sensor.print_accel(imu));
             //Serial.println(sensor.print_gyro(imu));
             //Serial.println(sensor.print_mag(imu));
+            Serial.println(filter.print_q_inertial_imu(imu));
         }
 
     }
+
+// For testing sample frequency
+
+//    delay(1000);
+//    int numSamples = 500;
+//    long t1;
+//    long t2;
+//    t1 = micros();
+//    for(int i = 0; i<numSamples; i++){
+//      sensor.read_sensors();
+//      filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
+//    }
+//    t2 = micros();
+//    float f = 1000000*numSamples/(t2-t1);
+//    Serial.print("Sample Frequency: ");
+//    Serial.println(f);
+//    delay(1000);
 
 }
 

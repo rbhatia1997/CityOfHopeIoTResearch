@@ -49,12 +49,12 @@ BLECharacteristic *pCharacteristic4; // define global variable - characteristic
 bool deviceConnected = false;
 
 // Values pre-defined for representing Quaternion.
-float q0 = 0;
-float q1 = 1;
-float q2 = 2;
-float q3 = 3;
+float q0 = 1;
+float q1 = 2;
+float q2 = 3;
+float q3 = 4;
 
-uint8_t txValue = 1.23;
+float q[] = {q0, q1, q2, q3};
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -65,12 +65,21 @@ uint8_t txValue = 1.23;
 
 #define SERVICE_UUID        "2f391f0f-1c30-46fb-a972-a22c2f7570ee"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+#define CHARACTERISTIC_UUID2 "a2e9cff5-1454-44f4-8829-4fa1ddfecd01"
+#define CHARACTERISTIC_UUID3 "621c1bb5-318d-4520-a0f9-00ddeabc776f"
+#define CHARACTERISTIC_UUID4 "4b181c20-a0f1-4b20-80b8-8229248c1800"
 
 // This is a callback function that handles the Bluetooth Connection status.
 // If the device is recognized, have the ESP32 change its connection status.
 // Because we aren't receiving data sent by a client, we don't include a
 // Callback function for receiving data - which would be standard.
 
+union {
+  float floatInput;
+  unsigned char byteArray[4];
+} convertToByte;
+
+char arrayToSend[20];
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -108,17 +117,17 @@ void setup() {
                     );
 
   pCharacteristic2 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID,
+                       CHARACTERISTIC_UUID2,
                        BLECharacteristic::PROPERTY_NOTIFY
                      );
 
   pCharacteristic3 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID,
+                       CHARACTERISTIC_UUID3,
                        BLECharacteristic::PROPERTY_NOTIFY
                      );
 
   pCharacteristic4 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID,
+                       CHARACTERISTIC_UUID4,
                        BLECharacteristic::PROPERTY_NOTIFY
                      );
 
@@ -153,18 +162,36 @@ void loop() {
     // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
+    for (int i = 0; i < 4; ++i) {
+      convertToByte.floatInput = q[i];
+      for (int j = 0; j < 4; ++j) {
+        arrayToSend[4 * i + j] = convertToByte.byteArray[j];
+      }
+    }
 
-    pCharacteristic->setValue("Hello1");
+    for (int i = 0; i < 20; ++i) {
+      Serial.print((char*)(arrayToSend[i]));
+      Serial.print(" ");
+    }
+    Serial.print("\n");
+
+    //char dataString[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    //sprintf(dataString, "%d", arrayToSend);
+    pCharacteristic->setValue("123456789012345678912345678900");
     pCharacteristic->notify();
-    
-    pCharacteristic2->setValue("Hello2");
-    pCharacteristic2->notify();
-    
-    pCharacteristic3->setValue("Hello3");
-    pCharacteristic3->notify();
-    
-    pCharacteristic4->setValue("Hello4");
-    pCharacteristic4->notify();
+
+
+    //    pCharacteristic->setValue("Henlo");
+    //    pCharacteristic->notify();
+    //
+    //    pCharacteristic2->setValue("Darien");
+    //    pCharacteristic2->notify();
+    //
+    //    pCharacteristic3->setValue("What's");
+    //    pCharacteristic3->notify();
+    //
+    //    pCharacteristic4->setValue("Up");
+    //    pCharacteristic4->notify();
 
 
     // Faking Quaternion Data
@@ -175,7 +202,8 @@ void loop() {
 
     // Serial Printing the Values for Testing Purposes
     Serial.print("*** Current Value: ");
-    //Serial.print(messageString);
+    //Serial.print((char*) dataString);
+    Serial.print(arrayToSend); 
     Serial.println(" ***");
 
     // This is currently the fastest rate we can get the app to read data, 0.5 Hz.

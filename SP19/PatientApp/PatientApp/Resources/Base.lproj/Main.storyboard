@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+    <device id="retina6_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home-->
+        <scene sceneID="hNz-n2-bh7">
+            <objects>
+                <viewController id="9pv-A4-QxB" customClass="HomeViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Home" image="home" id="acW-dT-cKf"/>
+                    <connections>
+                        <segue destination="mk8-j4-8vs" kind="show" identifier="toBluetoothVC" id="bOW-1G-LVU"/>
+                        <segue destination="EHL-F2-et9" kind="show" identifier="toCoreDataVC" id="uO3-RA-wzc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2" y="359"/>
+        </scene>
+        <!--Exercise-->
+        <scene sceneID="wg7-f3-ORb">
+            <objects>
+                <viewController id="8rJ-Kc-sve" customClass="ExerciseViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="O1u-W8-tvY"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Exercise" image="exercise" id="cPa-gy-q4n"/>
+                    <connections>
+                        <segue destination="kNi-kr-zT4" kind="show" identifier="toExerciseGuide" id="ReU-uI-x2J"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="748" y="360"/>
+        </scene>
+        <!--Exercise Guide View Controller-->
+        <scene sceneID="gmz-GQ-duY">
+            <objects>
+                <viewController id="kNi-kr-zT4" customClass="ExerciseGuideViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jVz-6N-dmD">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="7Lw-Iq-ihw"/>
+                    </view>
+                    <connections>
+                        <segue destination="Uok-6W-NSd" kind="unwind" identifier="toExerciseVC" unwindAction="unwindToExerciseVCWithSegue:" id="1eV-2z-K8q"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="63B-uh-o29" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Uok-6W-NSd" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="749" y="1107"/>
+        </scene>
+        <!--Full Progress View Controller-->
+        <scene sceneID="X4m-Pu-fdc">
+            <objects>
+                <viewController id="0yG-eN-jpK" customClass="FullProgressViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="qZx-NN-zeq">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="92o-aN-T2H"/>
+                    </view>
+                    <connections>
+                        <segue destination="y2G-rd-ode" kind="unwind" identifier="toProgressVC" unwindAction="unwindToProgressVCWithSegue:" id="djW-S7-vxF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ttn-Bt-7ma" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="y2G-rd-ode" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1470" y="1108"/>
+        </scene>
+        <!--Progress-->
+        <scene sceneID="qei-l1-MiU">
+            <objects>
+                <viewController id="gRA-1x-hRC" customClass="ProgressViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="0JA-5W-hYm">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="BjF-If-1Xp"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Progress" image="progress" id="FoV-rm-s9I"/>
+                    <connections>
+                        <segue destination="0yG-eN-jpK" kind="show" identifier="toFullProgress" id="NZ8-SZ-9ZJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ltE-Jo-kRx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1472" y="360"/>
+        </scene>
+        <!--Goals-->
+        <scene sceneID="fW6-Gg-q6y">
+            <objects>
+                <viewController id="lrN-RS-r53" customClass="GoalsViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nSF-SZ-eEj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="Seg-ZJ-Ud9"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Goals" image="goals" id="Yzm-N1-nbh"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4gx-zb-Ysb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2200" y="360"/>
+        </scene>
+        <!--Wellness-->
+        <scene sceneID="rgD-4G-eeT">
+            <objects>
+                <viewController id="KAK-F4-SbU" customClass="WellnessViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wRn-Hd-bNy">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="GIf-vy-qUV"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Wellness" image="wellness" id="bJS-ld-GkP"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="b16-eP-KB4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2916" y="360"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="yl2-sM-qoP">
+            <objects>
+                <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
+                        <rect key="frame" x="0.0" y="975" width="768" height="49"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
+                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
+                        <segue destination="gRA-1x-hRC" kind="relationship" relationship="viewControllers" id="kel-hn-Kke"/>
+                        <segue destination="lrN-RS-r53" kind="relationship" relationship="viewControllers" id="ogr-c2-SQr"/>
+                        <segue destination="KAK-F4-SbU" kind="relationship" relationship="viewControllers" id="3Xc-Ej-pcJ"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1471" y="-521"/>
+        </scene>
+        <!--Core Data View Controller-->
+        <scene sceneID="Et0-ea-Tst">
+            <objects>
+                <viewController id="EHL-F2-et9" customClass="CoreDataViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2Sq-dO-4oa">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="mSd-Kk-cBV"/>
+                    </view>
+                    <connections>
+                        <segue destination="Gmt-K1-2Ca" kind="unwind" identifier="toHomeVCFromCDVC" unwindAction="unwindToHomeVCWithSegue:" id="8ZO-a0-Vcr"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DM3-Mk-u0t" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="Gmt-K1-2Ca" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="-761" y="1107"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="Geg-iE-cYI">
+            <objects>
+                <viewController id="mk8-j4-8vs" customClass="BTViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="kZu-OX-KbR">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="LzC-Uw-dnQ"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="TMq-nu-avb"/>
+                    <connections>
+                        <segue destination="eCg-Zl-dQf" kind="unwind" identifier="toHomeVCFromBTVC" unwindAction="unwindToHomeVCWithSegue:" id="dfI-T8-ZW5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KgA-Kd-uiY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="eCg-Zl-dQf" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1" y="1107"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="exercise" width="30" height="30"/>
+        <image name="goals" width="30" height="30"/>
+        <image name="home" width="30" height="30"/>
+        <image name="progress" width="30" height="30"/>
+        <image name="wellness" width="30" height="30"/>
+    </resources>
+</document>

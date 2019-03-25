@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18B75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Exercise" representedClassName="Exercise" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="session" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ExerciseSession" inverseName="exercise" inverseEntity="ExerciseSession" syncable="YES"/>
+    </entity>
+    <entity name="ExerciseSession" representedClassName="ExerciseSession" syncable="YES" codeGenerationType="class">
+        <attribute name="sessionNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Exercise" inverseName="session" inverseEntity="Exercise" syncable="YES"/>
+    </entity>
+    <entity name="Goal" representedClassName="Goal" syncable="YES">
+        <attribute name="achieved" optional="YES" attributeType="Boolean" usesScalarValueType="YES" customClassName="[Bool]" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entry" optional="YES" attributeType="String" customClassName="[String]" syncable="YES"/>
+    </entity>
+    <entity name="Wellness" representedClassName="Wellness" syncable="YES" codeGenerationType="class">
+        <attribute name="isSlider" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="question" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="WellnessResult" representedClassName="WellnessResult" syncable="YES" codeGenerationType="class"/>
+    <elements>
+        <element name="Exercise" positionX="-54" positionY="18" width="128" height="90"/>
+        <element name="Goal" positionX="-36" positionY="27" width="128" height="90"/>
+        <element name="ExerciseSession" positionX="-63" positionY="-18" width="128" height="90"/>
+        <element name="Wellness" positionX="-27" positionY="54" width="128" height="75"/>
+        <element name="WellnessResult" positionX="-18" positionY="72" width="128" height="45"/>
+    </elements>
+</model>

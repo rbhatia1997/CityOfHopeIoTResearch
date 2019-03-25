@@ -42,6 +42,10 @@
 */
 
 BLECharacteristic *pCharacteristic; // define global variable - characteristic
+BLECharacteristic *pCharacteristic2; // define global variable - characteristic
+BLECharacteristic *pCharacteristic3; // define global variable - characteristic
+BLECharacteristic *pCharacteristic4; // define global variable - characteristic
+
 bool deviceConnected = false;
 
 // Values pre-defined for representing Quaternion.
@@ -49,6 +53,8 @@ float q0 = 0;
 float q1 = 1;
 float q2 = 2;
 float q3 = 3;
+
+uint8_t txValue = 1.23;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -101,7 +107,25 @@ void setup() {
                       BLECharacteristic::PROPERTY_NOTIFY
                     );
 
+  pCharacteristic2 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID,
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
+
+  pCharacteristic3 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID,
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
+
+  pCharacteristic4 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID,
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
+
   pCharacteristic->addDescriptor(new BLE2902());
+  pCharacteristic2->addDescriptor(new BLE2902());
+  pCharacteristic3->addDescriptor(new BLE2902());
+  pCharacteristic4->addDescriptor(new BLE2902());
 
   // Start the BLE Service
   pService->start();
@@ -115,7 +139,7 @@ void setup() {
   pAdvertising->setMinPreferred(0x06);
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
-  Serial.println("Characteristic defined! ESP32 Waiting to Send Data...");
+  Serial.println("Characteristics defined! ESP32 Waiting to Send Data...");
 }
 
 void loop() {
@@ -129,78 +153,19 @@ void loop() {
     // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
-    union {
-      float Q0;
-      char bytes[4];
-    } quatVal;
 
-    quatVal.Q0 = 0.69;
-    for (int i = 0; i < 4; i++) {
-      Serial.printf("byte %d is %02x", i, quatVal.bytes[i]);
-    }
-
-//    byte messageString[20];
-////    byte Q0[4];
-////    byte Q1[4];
-////    byte Q2[4];
-////    byte Q3[4];
-//
-//    byte *Q0, *Q1, *Q2, *Q3;
-//
-//    Q0 = (byte*)& q0;
-//    Q1 = (byte*)& q1;
-//    Q2 = (byte*)& q2;
-//    Q3 = (byte*)& q3;
-//
-//    messageString[0] = Q0[0];
-//    messageString[1] = Q0[1];
-//    messageString[2] = Q0[2];
-//    messageString[3] = Q0[3];
-//    messageString[4] = Q1[0];
-//    messageString[5] = Q1[1];
-//    messageString[6] = Q1[2];
-//    messageString[7] = Q1[3];
-//    messageString[8] = Q2[0];
-//    messageString[9] = Q2[1];
-//    messageString[10] = Q2[2];
-//    messageString[11] = Q2[3];
-//    messageString[12] = Q3[0];
-//    messageString[13] = Q3[1];
-//    messageString[14] = Q3[2];
-//    messageString[15] = Q3[3];
-//    
-//    Serial.println("Char array: ");
-//    //Serial.println(messageString);
-//    Serial.print("floats: ");
-//    Serial.print(q0);
-//    Serial.print(", ");
-//    Serial.print(q1);
-//    Serial.print(", ");
-//    Serial.print(q2);
-//    Serial.print(", ");
-//    Serial.println(q3);
-    
-
-    //sprintf(messageString, "%s,%s,%s,%s", q0, q1, q2, q3);
-
-    //
-    //    char q0String[5];
-    //    char q1String[5];
-    //    char q2String[5];
-    //    char q3String[5];
-    //
-    //    dtostrf(q0, 1, 2, q0String);
-    //    dtostrf(q1, 1, 2, q1String);
-    //    dtostrf(q2, 1, 2, q2String);
-    //    dtostrf(q3, 1, 2, q3String);
-    //
-    //    char messageString[20];
-    //    sprintf(messageString, "%s,%s,%s,%s", q0, q1, q2, q3);
-
-   // pCharacteristic->setValue(messageString);
-
-    // Sends the values to the iPhone application
+    pCharacteristic->setValue("Hello1");
     pCharacteristic->notify();
+    
+    pCharacteristic2->setValue("Hello2");
+    pCharacteristic2->notify();
+    
+    pCharacteristic3->setValue("Hello3");
+    pCharacteristic3->notify();
+    
+    pCharacteristic4->setValue("Hello4");
+    pCharacteristic4->notify();
+
 
     // Faking Quaternion Data
     q0 = q0 + 1.00;

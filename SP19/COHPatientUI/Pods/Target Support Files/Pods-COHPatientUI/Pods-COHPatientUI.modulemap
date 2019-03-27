@@ -1,6 +1,0 @@
-framework module Pods_COHPatientUI {
-  umbrella header "Pods-COHPatientUI-umbrella.h"
-
-  export *
-  module * { export * }
-}

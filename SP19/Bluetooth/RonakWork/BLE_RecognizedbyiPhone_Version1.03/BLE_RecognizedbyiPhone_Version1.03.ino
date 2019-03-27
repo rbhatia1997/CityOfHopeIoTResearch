@@ -2,7 +2,7 @@
     Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleServer.cpp
     Based on the Arduino ESP32 Port by Evandro Copercini & Chegewara
     General changes & adaptation for iOS by Ronak Bhatia & Darien Joso from City of Hope's HMC Clinic
-    Last Date Updated: Sunday, March 13, 2019
+    Last Date Updated: Sunday, March 27, 2019
 */
 
 // The following are libraries necessary for enabling BLE connection
@@ -42,19 +42,19 @@
 */
 
 BLECharacteristic *pCharacteristic; // define global variable - characteristic
-BLECharacteristic *pCharacteristic2; // define global variable - characteristic
-BLECharacteristic *pCharacteristic3; // define global variable - characteristic
-BLECharacteristic *pCharacteristic4; // define global variable - characteristic
-
 bool deviceConnected = false;
 
-// Values pre-defined for representing Quaternion.
-float q0 = 1;
-float q1 = 2;
-float q2 = 3;
-float q3 = 4;
+/*
+    It's important to note that our team attempted to use floats, but there were many issues with converting floats to byte Arrays and then sending
+    that Byte Array through the setValue function. It's possible to convert the Int data that we send to Floats on the iOS side, and therefore
+    we think that is a better option. Additionally, the positive with using Ints is that we can actually send the data a lot faster.
+*/
 
-float q[] = {q0, q1, q2, q3};
+// Values pre-defined for representing Quaternion. They are ints for the reason above.
+int myInt1 = 1;
+int myInt2 = 2;
+int myInt3 = 3;
+int myInt4 = 4;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -74,13 +74,6 @@ float q[] = {q0, q1, q2, q3};
 // Because we aren't receiving data sent by a client, we don't include a
 // Callback function for receiving data - which would be standard.
 
-union {
-  float floatInput;
-  unsigned char byteArray[4];
-} convertToByte;
-
-char arrayToSend[20];
-
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
       deviceConnected = true;
@@ -95,13 +88,12 @@ void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
   Serial.println("Initialzing ESP32 as BLE Device...");
 
-  BLEDevice::init("ESP32_Bluetooth_Testing"); // designating this as a test.
+  BLEDevice::init("City of Hope Testing"); // designating this as a test.
   BLEServer *pServer = BLEDevice::createServer(); // creates server
 
   pServer->setCallbacks(new MyServerCallbacks());
 
   Serial.println("Creating a BLE Server...");
-
 
   // Create BLE service using the service UUID.
   BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -116,25 +108,7 @@ void setup() {
                       BLECharacteristic::PROPERTY_NOTIFY
                     );
 
-  pCharacteristic2 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID2,
-                       BLECharacteristic::PROPERTY_NOTIFY
-                     );
-
-  pCharacteristic3 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID3,
-                       BLECharacteristic::PROPERTY_NOTIFY
-                     );
-
-  pCharacteristic4 = pService->createCharacteristic(
-                       CHARACTERISTIC_UUID4,
-                       BLECharacteristic::PROPERTY_NOTIFY
-                     );
-
   pCharacteristic->addDescriptor(new BLE2902());
-  pCharacteristic2->addDescriptor(new BLE2902());
-  pCharacteristic3->addDescriptor(new BLE2902());
-  pCharacteristic4->addDescriptor(new BLE2902());
 
   // Start the BLE Service
   pService->start();
@@ -161,52 +135,38 @@ void loop() {
 
     // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
+    // UPDATE: Sending Ints not Floats. 
 
-    for (int i = 0; i < 4; ++i) {
-      convertToByte.floatInput = q[i];
-      for (int j = 0; j < 4; ++j) {
-        arrayToSend[4 * i + j] = convertToByte.byteArray[j];
-      }
-    }
+    // Defining the Character Array Buffers
+    
+    char q1String[2];
+    char q2String[2];
+    char q3String[2];
+    char q4String[2];
 
-    for (int i = 0; i < 20; ++i) {
-      Serial.print((char*)(arrayToSend[i]));
-      Serial.print(" ");
-    }
-    Serial.print("\n");
+    // In the format Value, Width, Precision, and the Character Array Buffer.
+    // Translates the Value into a readable format for setValue. 
+    
+    dtostrf(myInt1, 1, 2, q1String);
+    dtostrf(myInt2, 1, 2, q2String);
+    dtostrf(myInt3, 1, 2, q3String);
+    dtostrf(myInt4, 1, 2, q4String);
 
-    //char dataString[20] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    //sprintf(dataString, "%d", arrayToSend);
-    pCharacteristic->setValue("123456789012345678912345678900");
-    pCharacteristic->notify();
+    // Combining the values into one character array & sending it through setValue. 
 
+    char qDataString[20];
+    sprintf(qDataString, "%d,%d,%d,%d", myInt1, myInt2, myInt3, myInt4);
 
-    //    pCharacteristic->setValue("Henlo");
-    //    pCharacteristic->notify();
-    //
-    //    pCharacteristic2->setValue("Darien");
-    //    pCharacteristic2->notify();
-    //
-    //    pCharacteristic3->setValue("What's");
-    //    pCharacteristic3->notify();
-    //
-    //    pCharacteristic4->setValue("Up");
-    //    pCharacteristic4->notify();
+    pCharacteristic->setValue(qDataString);
+    pCharacteristic->notify(); // Informs iPhone to receive the data. 
 
+    // Faking the data changing to show it on the iPhone. 
+    myInt1++;
+    myInt2++;
+    myInt3++;
+    myInt4++;
 
-    // Faking Quaternion Data
-    q0 = q0 + 1.00;
-    q1 = q1 + 1.00;
-    q2 = q2 + 1.00;
-    q3 = q3 + 1.00;
-
-    // Serial Printing the Values for Testing Purposes
-    Serial.print("*** Current Value: ");
-    //Serial.print((char*) dataString);
-    Serial.print(arrayToSend); 
-    Serial.println(" ***");
-
-    // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
-    delay(2000);
+    // The delay represents how fast the code can go. Currently, we are operating at 10 Hz. 
+    delay(100);
   }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ExerciseTableViewCell: UITableViewCell {
+class ExerciseTableViewCell: UITableViewCell, ViewConstraintProtocol {
 
     // public variables
     public var colorTheme: UIColor!
@@ -32,7 +32,7 @@ class ExerciseTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupViews() {
+    internal func setupViews() {
         // setup cell view
         cellView.frame = .zero
         cellView.backgroundColor = .clear
@@ -69,7 +69,7 @@ class ExerciseTableViewCell: UITableViewCell {
         
     }
     
-    private func setupConstraints() {
+    internal func setupConstraints() {
         // setup cell view constraints
         cellView.translatesAutoresizingMaskIntoConstraints = false
         cellView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true

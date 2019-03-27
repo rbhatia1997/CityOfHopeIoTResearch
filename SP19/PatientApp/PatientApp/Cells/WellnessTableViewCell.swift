@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WellnessTableViewCell: UITableViewCell {
+class WellnessTableViewCell: UITableViewCell, ViewConstraintProtocol {
 
     public var colorTheme: UIColor!
     public var questionNumber: Int!
@@ -27,7 +27,7 @@ class WellnessTableViewCell: UITableViewCell {
     private let midLabel = UILabel()
     private let maxLabel = UILabel()
     
-    private let cellView = UIView()
+//    private let cellView = UIView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -37,11 +37,11 @@ class WellnessTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupViews() {
+    internal func setupViews() {
 //        cellView.frame = .zero
 //        cellView.backgroundColor = .clear
         
-        numberLabel.setLabelParams(color: .gray, string: "\(questionNumber ?? 69).", ftype: "MontserratAlternates-Regular", fsize: 16, align: .left)
+        numberLabel.setLabelParams(color: .gray, string: "\(questionNumber ?? 99).", ftype: "MontserratAlternates-Regular", fsize: 16, align: .left)
         questionLabel.setLabelParams(color: .gray, string: question, ftype: "MontserratAlternates-Regular", fsize: 16, align: .left)
         
         let yesColor: UIColor!
@@ -71,22 +71,22 @@ class WellnessTableViewCell: UITableViewCell {
             slider.maximumValue = 10
             slider.minimumValue = 0
             slider.setValue(sliderResult, animated: false)
-            slider.tag = 69
+            slider.tag = 99
             slider.addTarget(self, action: #selector(sliderSlide), for: .valueChanged)
             
-            minLabel.setLabelParams(color: .gray, string: "0", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 69)
-            midLabel.setLabelParams(color: .gray, string: "5", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 69)
-            maxLabel.setLabelParams(color: .gray, string: "10", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 69)
+            minLabel.setLabelParams(color: .gray, string: "0", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 99)
+            midLabel.setLabelParams(color: .gray, string: "5", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 99)
+            maxLabel.setLabelParams(color: .gray, string: "10", ftype: "Montserrat-Regular", fsize: 14, align: .center, tag: 99)
             
             self.addSubview(slider)
             self.addSubview(minLabel)
             self.addSubview(midLabel)
             self.addSubview(maxLabel)
         } else {
-            if let viewWithTag = slider.viewWithTag(69) {
-                minLabel.viewWithTag(69)?.removeFromSuperview()
-                midLabel.viewWithTag(69)?.removeFromSuperview()
-                maxLabel.viewWithTag(69)?.removeFromSuperview()
+            if let viewWithTag = slider.viewWithTag(99) {
+                minLabel.viewWithTag(99)?.removeFromSuperview()
+                midLabel.viewWithTag(99)?.removeFromSuperview()
+                maxLabel.viewWithTag(99)?.removeFromSuperview()
                 viewWithTag.removeFromSuperview()
             }
         }
@@ -117,7 +117,7 @@ class WellnessTableViewCell: UITableViewCell {
         noButton.layer.addSublayer(noShapeLayer)
     }
     
-    private func setupConstraints() {
+    internal func setupConstraints() {
 //        cellView.translatesAutoresizingMaskIntoConstraints = false
 //        cellView.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
 //        cellView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
@@ -192,25 +192,21 @@ class WellnessTableViewCell: UITableViewCell {
     
     @objc func yesPressed(_ sender: UIButton) {
         setupCustomButtons(hsbShadeTint(color: colorTheme, sat: 0.3), .gray)
-        cellView.addSubview(yesButton)
-        cellView.addSubview(noButton)
+        self.addSubview(yesButton)
+        self.addSubview(noButton)
         boolResult = true
     }
     
     @objc func noPressed(_ sender: UIButton) {
         setupCustomButtons(.gray, hsbShadeTint(color: colorTheme, sat: 0.3))
-        cellView.addSubview(yesButton)
-        cellView.addSubview(noButton)
+        self.addSubview(yesButton)
+        self.addSubview(noButton)
         boolResult = false
-    }
-    
-    func getYN() -> Bool {
-        return boolResult
-    }
-    
-    func getSlider() -> Float {
-        return sliderResult
+        slider.setValue(0, animated: false)
     }
 }
 
-
+protocol WellnessTableViewCellDelegate : AnyObject {
+    func yesNoInteract(_ tag: Int)
+    func sliderInteract(_ tag: Int)
+}

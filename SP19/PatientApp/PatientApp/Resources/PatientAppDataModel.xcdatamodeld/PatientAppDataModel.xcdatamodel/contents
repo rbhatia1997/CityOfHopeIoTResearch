@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18B75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Exercise" representedClassName="Exercise" syncable="YES" codeGenerationType="class">
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="order" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="session" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ExerciseSession" inverseName="exercise" inverseEntity="ExerciseSession" syncable="YES"/>
+    <entity name="Exercise" representedClassName="Exercise" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="exerciseName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="exerciseSessionStats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ExerciseSessionStats" inverseName="exercise" inverseEntity="ExerciseSessionStats" syncable="YES"/>
     </entity>
-    <entity name="ExerciseSession" representedClassName="ExerciseSession" syncable="YES" codeGenerationType="class">
-        <attribute name="sessionNumber" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="value" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Exercise" inverseName="session" inverseEntity="Exercise" syncable="YES"/>
+    <entity name="ExerciseSessionStats" representedClassName="ExerciseSessionStats" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="maxROM" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="repCount" optional="YES" attributeType="Integer 16" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Exercise" inverseName="exerciseSessionStats" inverseEntity="Exercise" syncable="YES"/>
     </entity>
     <entity name="Goal" representedClassName="Goal" syncable="YES">
-        <attribute name="achieved" optional="YES" attributeType="Boolean" usesScalarValueType="YES" customClassName="[Bool]" syncable="YES"/>
+        <attribute name="achieved" attributeType="Boolean" usesScalarValueType="YES" customClassName="[Bool]" syncable="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entry" attributeType="String" customClassName="[String]" syncable="YES"/>
+    </entity>
+    <entity name="WellnessQuestion" representedClassName="WellnessQuestion" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="entry" optional="YES" attributeType="String" customClassName="[String]" syncable="YES"/>
-    </entity>
-    <entity name="Wellness" representedClassName="Wellness" syncable="YES" codeGenerationType="class">
-        <attribute name="isSlider" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="isSlider" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="question" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="wellnessResponse" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WellnessResponse" inverseName="wellnessQuestion" inverseEntity="WellnessResponse" syncable="YES"/>
     </entity>
-    <entity name="WellnessResult" representedClassName="WellnessResult" syncable="YES" codeGenerationType="class"/>
+    <entity name="WellnessResponse" representedClassName="WellnessResponse" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sliderResult" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="yesNoResult" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="wellnessQuestion" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WellnessQuestion" inverseName="wellnessResponse" inverseEntity="WellnessQuestion" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="Exercise" positionX="-54" positionY="18" width="128" height="90"/>
-        <element name="Goal" positionX="-36" positionY="27" width="128" height="90"/>
-        <element name="ExerciseSession" positionX="-63" positionY="-18" width="128" height="90"/>
-        <element name="Wellness" positionX="-27" positionY="54" width="128" height="75"/>
-        <element name="WellnessResult" positionX="-18" positionY="72" width="128" height="45"/>
+        <element name="Exercise" positionX="-288.99609375" positionY="19.2421875" width="128" height="88"/>
+        <element name="Goal" positionX="-290.05859375" positionY="153.203125" width="128" height="88"/>
+        <element name="WellnessQuestion" positionX="-285.19921875" positionY="297.3046875" width="128" height="103"/>
+        <element name="WellnessResponse" positionX="-47.13671875" positionY="298.22265625" width="128" height="103"/>
+        <element name="ExerciseSessionStats" positionX="-73.0078125" positionY="5.11328125" width="128" height="103"/>
     </elements>
 </model>

@@ -17,4 +17,11 @@ extension UIButton {
         contentHorizontalAlignment = align
         sizeToFit()
     }
+    
+    func setButtonFrame(borderWidth: CGFloat, borderColor: UIColor, cornerRadius: CGFloat, fillColor: UIColor) {
+        layer.borderWidth = borderWidth
+        layer.borderColor = borderColor.cgColor
+        layer.cornerRadius = cornerRadius
+        backgroundColor = fillColor
+    }
 }

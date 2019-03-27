@@ -89,6 +89,28 @@ func showBorder(view: UIView, corner: CGFloat, color: UIColor) {
     view.layer.addSublayer(shapeLayer)
 }
 
+func drawRoundedRect(view: UIView, center: CGPoint, width: CGFloat, height: CGFloat, corner: CGFloat, color: UIColor, strokeWidth: CGFloat) {
+    let screen = CGRect(x: center.x - width/2, y: center.y - height/2, width: width, height: height)
+    let screenPath = UIBezierPath(roundedRect: screen, cornerRadius: corner)
+    let shapeLayer = CAShapeLayer()
+    shapeLayer.path = screenPath.cgPath
+    shapeLayer.fillColor = UIColor.clear.cgColor
+    shapeLayer.strokeColor = color.cgColor
+    shapeLayer.lineWidth = strokeWidth
+    view.layer.addSublayer(shapeLayer)
+}
+
+func drawRoundedRect(view: UIView, origin: CGPoint, width: CGFloat, height: CGFloat, corner: CGFloat, color: UIColor, strokeWidth: CGFloat) {
+    let screen = CGRect(x: origin.x, y: origin.y, width: width, height: height)
+    let screenPath = UIBezierPath(roundedRect: screen, cornerRadius: corner)
+    let shapeLayer = CAShapeLayer()
+    shapeLayer.path = screenPath.cgPath
+    shapeLayer.fillColor = UIColor.clear.cgColor
+    shapeLayer.strokeColor = color.cgColor
+    shapeLayer.lineWidth = strokeWidth
+    view.layer.addSublayer(shapeLayer)
+}
+
 func degToRad(deg: Double) -> CGFloat{
     return CGFloat(deg/180) * CGFloat.pi
 }

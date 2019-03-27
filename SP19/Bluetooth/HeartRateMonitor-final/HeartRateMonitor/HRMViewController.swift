@@ -136,7 +136,7 @@ extension HRMViewController: CBPeripheralDelegate {
       let data = characteristic.value
       serviceUUID.text = "."
       characteristicUUID.text = characteristic.uuid.uuidString
-      bodySensorLocationLabel.text = String(data: data!, encoding: .utf8)
+      bodySensorLocationLabel.text = String(data: data!, encoding: .utf16)
     default:
       print("Unhandled Characteristic UUID: \(characteristic.uuid)")
     }

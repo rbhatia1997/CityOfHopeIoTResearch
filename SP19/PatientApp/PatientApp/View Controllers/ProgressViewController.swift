@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ProgressViewController: UIViewController {
+class ProgressViewController: UIViewController, ViewConstraintProtocol {
 
     let colorTheme = UIColor(named: "green")!
     
@@ -31,7 +31,7 @@ class ProgressViewController: UIViewController {
         showBorder(view: exerciseProgressList)
     }
     
-    private func setupViews() {
+    internal func setupViews() {
         headerView.updateHeader(text: "Progress", color: colorTheme, fsize: 30)
         
         self.view.addSubview(headerView)
@@ -39,11 +39,7 @@ class ProgressViewController: UIViewController {
         self.view.addSubview(exerciseProgressList)
     }
     
-    private func setupConstraints() {
-        setupHeaderConstraints()
-    }
-    
-    private func setupHeaderConstraints() {
+    internal func setupConstraints() {
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         headerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
@@ -59,8 +55,8 @@ class ProgressViewController: UIViewController {
         exerciseProgressList.translatesAutoresizingMaskIntoConstraints = false
         exerciseProgressList.topAnchor.constraint(equalTo: progressGraph.bottomAnchor, constant: 20).isActive = true
         exerciseProgressList.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        exerciseProgressList.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        exerciseProgressList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        exerciseProgressList.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
+        exerciseProgressList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
     }
     
     @IBAction func unwindToProgressVC(segue: UIStoryboardSegue) {}

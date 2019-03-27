@@ -196,7 +196,9 @@ class SweepGraph: UIView {
         setupCustomButtons(hsbShadeTint(color: colorTheme, sat: 0.40), .gray)
         self.addSubview(leftButton)
         self.addSubview(rightButton)
-        rightArm = !rightArm
+        if (rightArm == false) {
+            rightArm = !rightArm
+        }
         setupViews()
     }
     
@@ -204,7 +206,9 @@ class SweepGraph: UIView {
         setupCustomButtons(.gray, hsbShadeTint(color: colorTheme, sat: 0.40))
         self.addSubview(leftButton)
         self.addSubview(rightButton)
-        rightArm = !rightArm
+        if (rightArm == true) {
+            rightArm = !rightArm
+        }
         setupViews()
     }
 }

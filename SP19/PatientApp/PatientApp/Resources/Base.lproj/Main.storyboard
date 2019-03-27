@@ -159,10 +159,10 @@
             </objects>
             <point key="canvasLocation" x="1471" y="-521"/>
         </scene>
-        <!--Core Data View Controller-->
+        <!--View Controller-->
         <scene sceneID="Et0-ea-Tst">
             <objects>
-                <viewController id="EHL-F2-et9" customClass="CoreDataViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="EHL-F2-et9" customClass="CDViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2Sq-dO-4oa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

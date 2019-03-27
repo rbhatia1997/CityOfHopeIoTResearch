@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ExerciseViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ExerciseViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ViewConstraintProtocol {
     
     // load these variables with core data
     var exerciseNames = [String]()
@@ -23,7 +23,7 @@ class ExerciseViewController: UIViewController, UITableViewDelegate, UITableView
     let exerciseTableView = UITableView()
     
     // global variables
-    let cellIdentifier: String = "exerciseDatacell"
+    private let cellIdentifier: String = "exerciseDatacell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,11 +37,7 @@ class ExerciseViewController: UIViewController, UITableViewDelegate, UITableView
         exerciseTableView.dataSource = self
         
         // temporarily loading these variables manually
-        exerciseNames = ["Front Arm Raise",
-                         "Side Arm Raise",
-                         "Medicine Ball Overhead Circles",
-                         "Arnold Shoulder Press",
-                         "Dumbell Shoulder Press"]
+        exerciseNames = presetExerciseList
         exerciseIcons = [UIImage(named: "frontArmRaise")!,
                          UIImage(named: "sideArmRaise")!,
                          UIImage(named: "medicineBallOverheadCircles")!,
@@ -58,12 +54,13 @@ class ExerciseViewController: UIViewController, UITableViewDelegate, UITableView
         setupConstraints()
     }
     
-    private func setupViews() {
+    internal func setupViews() {
         // setup the table view
         exerciseTableView.frame = .zero
         exerciseTableView.backgroundColor = .clear
         exerciseTableView.rowHeight = 120
         exerciseTableView.register(ExerciseTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
+        exerciseTableView.separatorStyle = UITableViewCell.SeparatorStyle.none;
         
         // update the header view
         headerView.updateHeader(text: "Workouts", color: colorTheme, fsize: 30)
@@ -73,7 +70,7 @@ class ExerciseViewController: UIViewController, UITableViewDelegate, UITableView
         self.view.addSubview(exerciseTableView)
     }
     
-    private func setupConstraints() {
+    internal func setupConstraints() {
         // set up header view constraints
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true

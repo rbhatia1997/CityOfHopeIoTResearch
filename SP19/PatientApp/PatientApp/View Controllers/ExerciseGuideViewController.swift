@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ExerciseGuideViewController: UIViewController {
+class ExerciseGuideViewController: UIViewController, ViewConstraintProtocol {
     
     // global variables
     var colorTheme: UIColor!
@@ -40,7 +40,7 @@ class ExerciseGuideViewController: UIViewController {
 //        showBorder(view: startButton)
     }
     
-    func setupViews() {
+    internal func setupViews() {
         // setup back button
         backButton.setButtonParams(color: .gray, string: "< Back", ftype: "Montserrat-Regular",
                                    fsize: 16, align: .center)
@@ -69,7 +69,7 @@ class ExerciseGuideViewController: UIViewController {
         self.view.addSubview(activeGraph)
     }
     
-    func setupConstraints() {
+    internal func setupConstraints() {
         // add back button constraints
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.heightAnchor.constraint(equalToConstant: backButton.frame.height).isActive = true

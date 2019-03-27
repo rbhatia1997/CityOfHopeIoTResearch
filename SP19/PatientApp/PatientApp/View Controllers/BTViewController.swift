@@ -6,22 +6,48 @@
 //  Copyright © 2019 Darien Joso. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import CoreBluetooth
 
-class BTViewController: UIViewController {
+class BTViewController: UIViewController, ViewConstraintProtocol {
     
-    var serviceUUID = CBUUID(string: "6969")
+    private let colorTheme: UIColor = hsbShadeTint(color: .blue, sat: 0.50)
+    
+    var serviceUUID = CBUUID(string: "2f391f0f-1c30-46fb-a972-a22c2f7570ee")
+    var char0UUID = CBUUID(string: "beb5483e-36e1-4688-b7f5-ea07361b26a8")
+    var char1UUID = CBUUID(string: "a2e9cff5-1454-44f4-8829-4fa1ddfecd01")
+    var char2UUID = CBUUID(string: "621c1bb5-318d-4520-a0f9-00ddeabc776f")
+    var char3UUID = CBUUID(string: "4b181c20-a0f1-4b20-80b8-8229248c1800")
     
     let headerView = Header()
     let serviceTitle = UILabel()
     var serviceUUIDLabel = UILabel()
     let peripheralTitle = UILabel()
     var peripheralName = UILabel()
-    let charTitle = UILabel()
-    var charUUID = UILabel()
-    let charValTitle = UILabel()
-    var charVal = UILabel()
+    
+    let char0Title = UILabel()
+    var char0Label = UILabel()
+    let char0ValTitle = UILabel()
+    var char0Val = UILabel()
+    
+    let char1Title = UILabel()
+    var char1Label = UILabel()
+    let char1ValTitle = UILabel()
+    var char1Val = UILabel()
+    
+    let char2Title = UILabel()
+    var char2Label = UILabel()
+    let char2ValTitle = UILabel()
+    var char2Val = UILabel()
+    
+    let char3Title = UILabel()
+    var char3Label = UILabel()
+    let char3ValTitle = UILabel()
+    var char3Val = UILabel()
+    
+    private let titleSize: CGFloat = 20
+    private let valSize: CGFloat = 14
     
     var centralManager: CBCentralManager!
     var wearablePeripheral: CBPeripheral!
@@ -37,91 +63,52 @@ class BTViewController: UIViewController {
         setupConstraints()
     }
     
-    func setupViews() {
-        headerView.updateHeader(text: "Blutoof", color: .lightGray, fsize: 30)
-        
-        serviceTitle.setLabelParams(color: .black, string: "Service UUID: ", ftype: "Montserrat-Regular", fsize: 20, align: .left)
-        serviceUUIDLabel.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
-        
-        peripheralTitle.setLabelParams(color: .black, string: "Peripheral Name: ", ftype: "Montserrat-Regular", fsize: 20, align: .left)
-        peripheralName.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
-        
-        charTitle.setLabelParams(color: .black, string: "Characteristic UUID: ", ftype: "Montserrat-Regular", fsize: 20, align: .left)
-        charUUID.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
-        
-        charValTitle.setLabelParams(color: .black, string: "Characteristic Data: ", ftype: "Montserrat-Regular", fsize: 20, align: .left)
-        charVal.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
-        
+    internal func setupViews() {
+        headerView.updateHeader(text: "Blutooth", color: hsbShadeTint(color: colorTheme, sat: 0.20), fsize: 30)
         self.view.addSubview(headerView)
-        self.view.addSubview(serviceTitle)
-        self.view.addSubview(serviceUUIDLabel)
-        self.view.addSubview(peripheralTitle)
-        self.view.addSubview(peripheralName)
-        self.view.addSubview(charTitle)
-        self.view.addSubview(charUUID)
-        self.view.addSubview(charValTitle)
-        self.view.addSubview(charVal)
+        
+        groupSetup(title1: serviceTitle, title1Val: serviceUUIDLabel, title1String: "Service UUID:",
+                   title2: peripheralTitle, title2Val: peripheralName, title2String: "Peripheral Name:",
+                   titleSize: titleSize, valSize: valSize)
+        groupSetup(title1: char0Title, title1Val: char0Label, title1String: "Characteristic 0 UUID:",
+                   title2: char0ValTitle, title2Val: char0Val, title2String: "Characteristic 0 Data:",
+                   titleSize: titleSize, valSize: valSize)
+        groupSetup(title1: char1Title, title1Val: char1Label, title1String: "Characteristic 1 UUID:",
+                   title2: char1ValTitle, title2Val: char1Val, title2String: "Characteristic 1 Data:",
+                   titleSize: titleSize, valSize: valSize)
+        groupSetup(title1: char2Title, title1Val: char2Label, title1String: "Characteristic 2 UUID:",
+                   title2: char2ValTitle, title2Val: char2Val, title2String: "Characteristic 2 Data:",
+                   titleSize: titleSize, valSize: valSize)
+        groupSetup(title1: char3Title, title1Val: char3Label, title1String: "Characteristic 3 UUID:",
+                   title2: char3ValTitle, title2Val: char3Val, title2String: "Characteristic 3 Data:",
+                   titleSize: titleSize, valSize: valSize)
         
         homeButton.setButtonParams(color: .gray, string: "Home", ftype: "Montserrat-Regular", fsize: 16, align: .center)
         homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
-        
         self.view.addSubview(homeButton)
     }
     
-    func setupConstraints() {
+    internal func setupConstraints() {
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         headerView.heightAnchor.constraint(equalToConstant: 100.0).isActive = true
         headerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         headerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
-        serviceTitle.translatesAutoresizingMaskIntoConstraints = false
-        serviceTitle.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 20).isActive = true
-        serviceTitle.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        serviceTitle.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        serviceTitle.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        groupConstraints(topView: headerView, title1: serviceTitle, title1Val: serviceUUIDLabel,
+                         title2: peripheralTitle, title2Val: peripheralName, titleSize: titleSize, valSize: valSize)
         
-        serviceUUIDLabel.translatesAutoresizingMaskIntoConstraints = false
-        serviceUUIDLabel.topAnchor.constraint(equalTo: serviceTitle.bottomAnchor, constant: 20).isActive = true
-        serviceUUIDLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        serviceUUIDLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        serviceUUIDLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        groupConstraints(topView: peripheralName, title1: char0Title, title1Val: char0Label,
+                         title2: char0ValTitle, title2Val: char0Val, titleSize: titleSize, valSize: valSize)
         
-        peripheralTitle.translatesAutoresizingMaskIntoConstraints = false
-        peripheralTitle.topAnchor.constraint(equalTo: serviceUUIDLabel.bottomAnchor, constant: 20).isActive = true
-        peripheralTitle.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        peripheralTitle.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        peripheralTitle.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        
-        peripheralName.translatesAutoresizingMaskIntoConstraints = false
-        peripheralName.topAnchor.constraint(equalTo: peripheralTitle.bottomAnchor, constant: 20).isActive = true
-        peripheralName.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        peripheralName.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        peripheralName.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        
-        charTitle.translatesAutoresizingMaskIntoConstraints = false
-        charTitle.topAnchor.constraint(equalTo: peripheralName.bottomAnchor, constant: 20).isActive = true
-        charTitle.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        charTitle.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        charTitle.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        
-        charUUID.translatesAutoresizingMaskIntoConstraints = false
-        charUUID.topAnchor.constraint(equalTo: charTitle.bottomAnchor, constant: 20).isActive = true
-        charUUID.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        charUUID.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        charUUID.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        
-        charValTitle.translatesAutoresizingMaskIntoConstraints = false
-        charValTitle.topAnchor.constraint(equalTo: charUUID.bottomAnchor, constant: 20).isActive = true
-        charValTitle.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        charValTitle.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        charValTitle.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
-        
-        charVal.translatesAutoresizingMaskIntoConstraints = false
-        charVal.topAnchor.constraint(equalTo: charValTitle.bottomAnchor, constant: 20).isActive = true
-        charVal.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        charVal.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
-        charVal.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        groupConstraints(topView: char0Val, title1: char1Title, title1Val: char1Label,
+                         title2: char1ValTitle, title2Val: char1Val, titleSize: titleSize, valSize: valSize)
+
+        groupConstraints(topView: char1Val, title1: char2Title, title1Val: char2Label,
+                         title2: char2ValTitle, title2Val: char2Val, titleSize: titleSize, valSize: valSize)
+
+        groupConstraints(topView: char2Val, title1: char3Title, title1Val: char3Label,
+                         title2: char3ValTitle, title2Val: char3Val, titleSize: titleSize, valSize: valSize)
         
         homeButton.translatesAutoresizingMaskIntoConstraints = false
         homeButton.topAnchor.constraint(equalTo: headerView.topAnchor).isActive = true
@@ -194,45 +181,32 @@ extension BTViewController: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-//        switch characteristic.uuid {
-//        case Master.BTVars.IMU0_UUID:
-//
-//            let charString = characteristic.value
-//            charVal.text = String(data: charString!, encoding: .utf32)
-//            charTitle.text = characteristic.uuid.uuidString
-////        case heartRateMeasurementCharacteristicCBUUID:
-////            let bpm = 69 // heartRate(from: characteristic)
-////            onHeartRateReceived(bpm)
-////            let data = characteristic.value
-////            serviceUUIDLabel.text = "."
-////            characteristicUUID.text = characteristic.uuid.uuidString
-////            bodySensorLocationLabel.text = String(data: data!, encoding: .utf8)
-//        default:
-//            print("Unhandled Characteristic UUID: \(characteristic.uuid)")
-//        }
         serviceUUIDLabel.text = serviceUUID.uuidString
         peripheralName.text = peripheral.name
-        charUUID.text = characteristic.uuid.uuidString
-        let charString = characteristic.value
-        charVal.text = String(data: charString!, encoding: .utf32)
+        switch characteristic.uuid {
+        case char0UUID:
+            char0Label.text = characteristic.uuid.uuidString
+            let data = characteristic.value!
+            char0Val.text = String(data: data, encoding: .utf8)
+        case char1UUID:
+            char1Label.text = characteristic.uuid.uuidString
+            let data = characteristic.value!
+            char1Val.text = String(data: data, encoding: .utf16)
+        case char2UUID:
+            char2Label.text = characteristic.uuid.uuidString
+            let data = characteristic.value!
+            char2Val.text = String(data: data, encoding: .utf16)
+        case char3UUID:
+            char3Label.text = characteristic.uuid.uuidString
+            let data = characteristic.value!
+            char3Val.text = String(data: data, encoding: .utf16)
+        default:
+            serviceUUIDLabel.text = "No data"
+            peripheralName.text = "No data"
+            char0Label.text = "No data"
+            char0Val.text = "No data"
+        }
     }
-    
-//    private func bodyLocation(from characteristic: CBCharacteristic) -> String {
-//        guard let characteristicData = characteristic.value,
-//            let byte = characteristicData.first else { return "Error" }
-//        
-//        switch byte {
-//        case 0: return "Other"
-//        case 1: return "Chest"
-//        case 2: return "Wrist"
-//        case 3: return "Finger"
-//        case 4: return "Hand"
-//        case 5: return "Ear Lobe"
-//        case 6: return "Foot"
-//        default:
-//            return "Reserved for future use"
-//        }
-//    }
     
     //  private func heartRate(from characteristic: CBCharacteristic) -> Int {
     //    guard let characteristicData = characteristic.value else { return -1 }
@@ -253,5 +227,47 @@ extension BTViewController: CBPeripheralDelegate {
     
     @objc func homeButtonPressed(_ sender: UIButton) {
         self.performSegue(withIdentifier: "toHomeVCFromBTVC", sender: sender)
+    }
+}
+
+extension BTViewController {
+    private func groupSetup(title1: UILabel, title1Val: UILabel, title1String: String, title2: UILabel, title2Val: UILabel, title2String: String, titleSize: CGFloat, valSize: CGFloat) {
+        title1.setLabelParams(color: .black, string: title1String, ftype: "Montserrat-Regular", fsize: titleSize, align: .left)
+        title1Val.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: valSize, align: .left)
+        self.view.addSubview(title1)
+        self.view.addSubview(title1Val)
+        
+        title2.setLabelParams(color: .black, string: title2String, ftype: "Montserrat-Regular", fsize: titleSize, align: .left)
+        title2Val.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: valSize, align: .left)
+        self.view.addSubview(title2)
+        self.view.addSubview(title2Val)
+        
+        drawRoundedRect(view: title1, origin: CGPoint(x: -10, y: -10), width: self.view.frame.width - 20, height: 110, corner: 5, color: colorTheme, strokeWidth: 1.0)
+    }
+    
+    private func groupConstraints(topView: UIView, title1: UIView, title1Val: UIView, title2: UIView, title2Val: UIView, titleSize: CGFloat, valSize: CGFloat) {
+        title1.translatesAutoresizingMaskIntoConstraints = false
+        title1.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: 30).isActive = true
+        title1.heightAnchor.constraint(equalToConstant: titleSize).isActive = true
+        title1.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        title1.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        
+        title1Val.translatesAutoresizingMaskIntoConstraints = false
+        title1Val.topAnchor.constraint(equalTo: title1.bottomAnchor, constant: 5).isActive = true
+        title1Val.heightAnchor.constraint(equalToConstant: valSize).isActive = true
+        title1Val.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        title1Val.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        
+        title2.translatesAutoresizingMaskIntoConstraints = false
+        title2.topAnchor.constraint(equalTo: title1Val.bottomAnchor, constant: 10).isActive = true
+        title2.heightAnchor.constraint(equalToConstant: titleSize).isActive = true
+        title2.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        title2.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        
+        title2Val.translatesAutoresizingMaskIntoConstraints = false
+        title2Val.topAnchor.constraint(equalTo: title2.bottomAnchor, constant: 5).isActive = true
+        title2Val.heightAnchor.constraint(equalToConstant: valSize).isActive = true
+        title2Val.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        title2Val.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
     }
 }

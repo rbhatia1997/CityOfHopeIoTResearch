@@ -8,7 +8,16 @@
 
 import UIKit
 
-class FullProgressViewController: UIViewController {
+class FullProgressViewController: UIViewController, ViewConstraintProtocol {
+    
+    internal func setupViews() {
+        
+    }
+    
+    internal func setupConstraints() {
+        
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()

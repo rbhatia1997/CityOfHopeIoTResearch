@@ -17,7 +17,7 @@ extension Goal {
     }
 
     @NSManaged public var achieved: Bool
-    @NSManaged public var entry: String?
+    @NSManaged public var entry: String
     @NSManaged public var date: Date
-
+    
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WellnessViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class WellnessViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ViewConstraintProtocol {
     
     // variable to load with core data
     var questionList = [String]()
@@ -23,6 +23,7 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
     // subviews
     let headerView = Header()
     let wellnessTableView = UITableView()
+    let submitButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,42 +35,31 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
         // provide delegate and datasource sources
         wellnessTableView.delegate = self
         wellnessTableView.dataSource = self
-        
-        // temporarily load the variables manually
-        questionList = ["Do you have pain?",
-                        "Do you have tightness?",
-                        "Do you have anxiety pain?",
-                        "Can you put on your shirt without assistance?",
-                        "Can you put on your pants without assistance?",
-                        "Can you comb your hair without assistance?",
-                        "Can you shower without assistance?",
-                        "Can you use the toilet without assistance?",
-                        "Can you perform light cooking without assistance?",
-                        "Can you perform light house cleaning without assistance?"]
-        isSliderList = [true, true, true, false, false, false, false, false, false, false]
-        yesNoResults = [false, false, false, false, false, false, false, false, false, false]
-        sliderValues = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
-        
+
         // calls everything
         setupViews()
         setupConstraints()
     }
     
-    private func setupViews() {
+    internal func setupViews() {
+        // update the header view
+        headerView.updateHeader(text: "Workouts", color: colorTheme, fsize: 30)
+        self.view.addSubview(headerView)
+        
         // setup the table view
         wellnessTableView.frame = .zero
         wellnessTableView.backgroundColor = .clear
         wellnessTableView.register(WellnessTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
-        
-        // update the header view
-        headerView.updateHeader(text: "Workouts", color: colorTheme, fsize: 30)
-        
-        // add the subviews to the main view
-        self.view.addSubview(headerView)
+        wellnessTableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         self.view.addSubview(wellnessTableView)
+        
+        // setup the submit button
+        submitButton.setButtonParams(color: .gray, string: "Submit Responses", ftype: "MontserratAlternates-Regular", fsize: 24, align: .center)
+        submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
+        self.view.addSubview(submitButton)
     }
     
-    private func setupConstraints() {
+    internal func setupConstraints() {
         // set up header view constraints
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -77,10 +67,19 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
         headerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         headerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         
+        submitButton.translatesAutoresizingMaskIntoConstraints = false
+        submitButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        submitButton.heightAnchor.constraint(equalToConstant: submitButton.frame.height + 20).isActive = true
+        submitButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        submitButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        
+        self.view.layoutIfNeeded()
+        showBorder(view: submitButton, corner: 5, color: .gray)
+        
         // setup table view constraints
         wellnessTableView.translatesAutoresizingMaskIntoConstraints = false
         wellnessTableView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 20).isActive = true
-        wellnessTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        wellnessTableView.bottomAnchor.constraint(equalTo: submitButton.topAnchor, constant: -20).isActive = true
         wellnessTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         wellnessTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
     }
@@ -127,5 +126,34 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
         
         return cell
     }
+    
+    @objc func submitButtonTapped(_ sender: UIButton) {
+        print("submit button tapped")
+        submitButton.setTitleColor(hsbShadeTint(color: colorTheme, sat: 0.40), for: .normal)
+        showBorder(view: submitButton, corner: 5, color: hsbShadeTint(color: colorTheme, sat: 0.40))
+        
+        let alert = UIAlertController(title: "Responses received!", message: "Thanks for your input!", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler:
+            { action in
+                self.submitButton.setTitleColor(.gray, for: .normal)
+                showBorder(view: self.submitButton, corner: 5, color: .gray)
+        }))
+        
+        self.present(alert, animated: true)
+    }
+}
 
+extension WellnessViewController: WellnessTableViewCellDelegate {
+    func yesNoInteract(_ tag: Int) {
+        print("pressed yesNo button")
+//        goalList[tag].achieved = !goalList[tag].achieved
+//        getData(entityName: "Goal")
+//        wellnessTableView.reloadData()
+    }
+    
+    func sliderInteract(_ tag: Int) {
+        print("slider interaction")
+    }
+    
+    
 }

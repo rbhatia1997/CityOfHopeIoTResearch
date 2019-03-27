@@ -40,7 +40,6 @@ class HomeViewController: UIViewController, ViewConstraintProtocol {
         self.tabBarItem.title = "Home"
         
         // temporarily loading these variables manually
-        goals = presetGoalList
         exerciseValues = [0.60, 0.90, 0.30, 0.40, 0.50]
         exerciseNames = ["Front Arm Raise",
                          "Side Arm Raise",
@@ -57,13 +56,20 @@ class HomeViewController: UIViewController, ViewConstraintProtocol {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        getData(entityName: "Goal")
+        goals.removeAll()
+        for i in 0..<goalList.count {
+            goals.append(goalList[i].entry)
+        }
+        goalView.updateGoals(goalList: goals)
     }
     
     internal func setupViews() {
         // update all of the views
         headerView.updateHeader(text: "Hello, Jane", color: colorTheme, fsize: 30)
-        goalView.updateGoals(goalList: goals)
-        circleGraph.updateProgressGraph(color: colorTheme, exNum: 2, exVal: exerciseValues, exName: exerciseNames)
+        
+        circleGraph.updateProgressGraph(color: colorTheme, exNum: exerciseValues.count, exVal: exerciseValues, exName: exerciseNames)
         BTView.updateBTStatus(connStat: BTDidConnect, uuidString: serviceUUID)
         
         // add the subviews to the main view

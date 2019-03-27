@@ -46,40 +46,42 @@ class SimpleProgressGraph: UIView {
         
         largeGraphView.frame = .zero
         largeGraphView.backgroundColor = .clear
-        drawSemicircleGraph(value: progressAverage,
-                            exName: "Overall",
-                            outerDia: 200,
-                            innerDia: 150,
-                            color: colorTheme,
-                            view: largeGraphView)
+//        drawSemicircleGraph(value: progressAverage,
+//                            exName: "Overall",
+//                            outerDia: 200,
+//                            innerDia: 150,
+//                            color: colorTheme,
+//                            view: largeGraphView)
         
-        stackGraphView.frame = .zero
-        stackGraphView.axis = .horizontal
-        stackGraphView.distribution = .fillEqually
+        drawFullCircleGraph(value: progressAverage, exName: "to baseline", outerDia: 250, innerDia: 180, color: colorTheme, view: largeGraphView)
         
-        var outerDia: CGFloat = 0
-        
-        for i in 0..<numberOfExercises {
-            
-            outerDia = CGFloat(160 - 20 * numberOfExercises)
-            
-            singleSmallGraphView.append(UIView())
-
-            singleSmallGraphView[i].frame = .zero
-            singleSmallGraphView[i].backgroundColor = .clear
-            drawSemicircleGraph(value: exerciseValues[i],
-                                exName: exerciseNames[i],
-                                outerDia: outerDia,
-                                innerDia: outerDia * 0.75,
-                                color: colorTheme,
-                                view: singleSmallGraphView[i])
-
-            stackGraphView.insertArrangedSubview(singleSmallGraphView[i], at: i)
-        }
+//        stackGraphView.frame = .zero
+//        stackGraphView.axis = .horizontal
+//        stackGraphView.distribution = .fillEqually
+//
+//        var outerDia: CGFloat = 0
+//
+//        for i in 0..<numberOfExercises {
+//
+//            outerDia = CGFloat(160 - 20 * numberOfExercises)
+//
+//            singleSmallGraphView.append(UIView())
+//
+//            singleSmallGraphView[i].frame = .zero
+//            singleSmallGraphView[i].backgroundColor = .clear
+//            drawSemicircleGraph(value: exerciseValues[i],
+//                                exName: exerciseNames[i],
+//                                outerDia: outerDia,
+//                                innerDia: outerDia * 0.75,
+//                                color: colorTheme,
+//                                view: singleSmallGraphView[i])
+//
+//            stackGraphView.insertArrangedSubview(singleSmallGraphView[i], at: i)
+//        }
         
         self.addSubview(title)
         self.addSubview(largeGraphView)
-        self.addSubview(stackGraphView)
+//        self.addSubview(stackGraphView)
     }
     
     private func setupConstraints() {
@@ -95,11 +97,44 @@ class SimpleProgressGraph: UIView {
         largeGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
         largeGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
         
-        stackGraphView.translatesAutoresizingMaskIntoConstraints = false
-        stackGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-        stackGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        stackGraphView.heightAnchor.constraint(equalTo: largeGraphView.heightAnchor, multiplier: 0.5).isActive = true
-        stackGraphView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+//        stackGraphView.translatesAutoresizingMaskIntoConstraints = false
+//        stackGraphView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+//        stackGraphView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+//        stackGraphView.heightAnchor.constraint(equalTo: largeGraphView.heightAnchor, multiplier: 0.5).isActive = true
+//        stackGraphView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+    }
+    
+    private func drawFullCircleGraph(value: CGFloat, exName: String, outerDia: CGFloat, innerDia: CGFloat, color: UIColor, view: UIView) {
+        let valueLabel = UILabel()
+        valueLabel.setLabelParams(color: .black, string: " \((value * 1000).rounded()/10)%",
+            ftype: "Montserrat-ExtraLight", fsize: innerDia / 4, align: .center)
+        
+        let exLabel = UILabel()
+        exLabel.setLabelParams(color: .black, string: exName, ftype: "Montserrat-ExtraLight",
+                               fsize: innerDia / 6, align: .center)
+        
+        view.addSubview(valueLabel)
+        view.addSubview(exLabel)
+        
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.widthAnchor.constraint(equalToConstant: valueLabel.frame.width).isActive = true
+        valueLabel.heightAnchor.constraint(equalToConstant: valueLabel.frame.height).isActive = true
+        valueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        valueLabel.bottomAnchor.constraint(equalTo: view.centerYAnchor, constant: 20).isActive = true
+        
+        exLabel.translatesAutoresizingMaskIntoConstraints = false
+        exLabel.widthAnchor.constraint(equalToConstant: exLabel.frame.width).isActive = true
+        exLabel.heightAnchor.constraint(equalToConstant: exLabel.frame.height).isActive = true
+        exLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        exLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor).isActive = true //innerDia/8
+        
+        singleCircleGraph(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height),
+                          endAng: value * CGFloat.pi,
+                          outerDia: outerDia,
+                          innerDia: innerDia,
+                          color: color,
+                          fullCircle: true,
+                          view: valueLabel)
     }
     
     private func drawSemicircleGraph(value: CGFloat, exName: String, outerDia: CGFloat, innerDia: CGFloat, color: UIColor, view: UIView) {
@@ -160,7 +195,7 @@ class SimpleProgressGraph: UIView {
         let progPath = UIBezierPath(arcCenter: center,
                                     radius: trackCenterRadius,
                                     startAngle: fullCircle ? -degToRad(deg: 90) : -degToRad(deg: 180),
-                                    endAngle: fullCircle ? (endAng - degToRad(deg: 90)) : (endAng/2 - degToRad(deg: 180)),
+                                    endAngle: fullCircle ? (endAng*2 - degToRad(deg: 90)) : (endAng/2 - degToRad(deg: 180)),
                                     clockwise: true)
         let progColor = hsbShadeTint(color: color, sat: darkestSaturation)
         

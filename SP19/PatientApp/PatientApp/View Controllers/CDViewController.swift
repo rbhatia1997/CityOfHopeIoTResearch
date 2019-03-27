@@ -5,6 +5,20 @@
 //  Created by Darien Joso on 3/23/19.
 //  Copyright © 2019 Darien Joso. All rights reserved.
 //
+// template for entity selection
+//if entitySelection.selectedSegmentIndex == 0 {
+//
+//} else if entitySelection.selectedSegmentIndex == 1 {
+//
+//} else if entitySelection.selectedSegmentIndex == 2 {
+//
+//} else if entitySelection.selectedSegmentIndex == 3 {
+//
+//} else if entitySelection.selectedSegmentIndex == 4 {
+//
+//} else {
+//
+//}
 
 import UIKit
 import CoreData
@@ -56,6 +70,71 @@ class CDViewController: UIViewController {
 }
 
 extension CDViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if entitySelection.selectedSegmentIndex == 0 {
+            return 1
+        } else if entitySelection.selectedSegmentIndex == 1 {
+            return exerciseList.count
+        } else if entitySelection.selectedSegmentIndex == 2 {
+            return 1
+        } else if entitySelection.selectedSegmentIndex == 3 {
+            return 1
+        } else if entitySelection.selectedSegmentIndex == 4 {
+            return wellnessQuestionList.count
+        } else {
+            return 1
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if (entitySelection.selectedSegmentIndex == 1) || (entitySelection.selectedSegmentIndex == 4) {
+            let headerView = UIView()
+            headerView.backgroundColor = hsbShadeTint(color: colorTheme, sat: 0.20)
+            
+            let string = self.tableView(tableView, titleForHeaderInSection: section)!
+            let headerLabel = UILabel()
+            headerLabel.setLabelParams(color: .gray, string: string, ftype: "MontserratAlternates-Regular", fsize: 15, align: .left)
+            headerView.addSubview(headerLabel)
+            
+            headerLabel.translatesAutoresizingMaskIntoConstraints = false
+            headerLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 5).isActive = true
+            headerLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -5).isActive = true
+            headerLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 10).isActive = true
+            headerLabel.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -10).isActive = true
+            
+            return headerView
+        } else {
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if (entitySelection.selectedSegmentIndex == 1) || (entitySelection.selectedSegmentIndex == 4) {
+            return UITableView.automaticDimension
+        } else {
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if entitySelection.selectedSegmentIndex == 1 {
+            var exerciseString = [String]()
+            for i in 0..<exerciseList.count {
+                exerciseString.append(exerciseList[i].exerciseName)
+            }
+            return "\(exerciseString[section])"
+        } else if entitySelection.selectedSegmentIndex == 4 {
+            getData(entityName: "WellnessQuestion")
+            var questionString = [String]()
+            for i in 0..<wellnessQuestionList.count {
+                questionString.append(wellnessQuestionList[i].question)
+            }
+            return "\(questionString[section])"
+        } else {
+            return nil
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let section = entitySelection.selectedSegmentIndex
         if section == 0 {
@@ -234,23 +313,25 @@ extension CDViewController {
         switch entitySelection.selectedSegmentIndex {
         case 0: // exercise
             dataTable.rowHeight = 60
-            getData(entityName: entity)
+            getData(entityName: "Exercise")
             dataTable.reloadData()
         case 1: // stats
-            dataTable.rowHeight = 20
-            getData(entityName: entity)
+            dataTable.rowHeight = 110
+            getData(entityName: "Exercise")
+            getData(entityName: "ExerciseSessionStats")
             dataTable.reloadData()
         case 2: // goal
             dataTable.rowHeight = 85
-            getData(entityName: entity)
+            getData(entityName: "Goal")
             dataTable.reloadData()
         case 3: // question
             dataTable.rowHeight = 85
-            getData(entityName: entity)
+            getData(entityName: "WellnessQuestion")
             dataTable.reloadData()
         case 4: // response
-            dataTable.rowHeight = 30
-            getData(entityName: entity)
+            dataTable.rowHeight = 110
+            getData(entityName: "WellnessQuestion")
+            getData(entityName: "WellnessResponse")
             dataTable.reloadData()
         default:
             print("No entity selected")

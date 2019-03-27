@@ -46,7 +46,7 @@
 		F8471B5122489D9200960B8C /* Goal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8471B3F22488F4A00960B8C /* Goal+CoreDataProperties.swift */; };
 		F8471B532249373200960B8C /* CDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8471B522249373200960B8C /* CDTableViewCell.swift */; };
 		F8471B5522498B3800960B8C /* GoalsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8471B5422498B3800960B8C /* GoalsTableViewCell.swift */; };
-		F850383C22388679009B79A0 /* FullProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F850383B22388679009B79A0 /* FullProgressViewController.swift */; };
+		F850383C22388679009B79A0 /* ProgressCompViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F850383B22388679009B79A0 /* ProgressCompViewController.swift */; };
 		F850383E22388699009B79A0 /* ProgressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F850383D22388699009B79A0 /* ProgressTableViewCell.swift */; };
 		F8503841223B62DB009B79A0 /* SweepGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8503840223B62DB009B79A0 /* SweepGraph.swift */; };
 		F8EC34F72237B2A30054B30D /* BTViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8EC34F62237B2A30054B30D /* BTViewController.swift */; };
@@ -98,7 +98,7 @@
 		F8471B4C2248940400960B8C /* UILabel+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extensions.swift"; sourceTree = "<group>"; };
 		F8471B522249373200960B8C /* CDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDTableViewCell.swift; sourceTree = "<group>"; };
 		F8471B5422498B3800960B8C /* GoalsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsTableViewCell.swift; sourceTree = "<group>"; };
-		F850383B22388679009B79A0 /* FullProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullProgressViewController.swift; sourceTree = "<group>"; };
+		F850383B22388679009B79A0 /* ProgressCompViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCompViewController.swift; sourceTree = "<group>"; };
 		F850383D22388699009B79A0 /* ProgressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressTableViewCell.swift; sourceTree = "<group>"; };
 		F850383F22389B87009B79A0 /* PatientApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PatientApp.entitlements; sourceTree = "<group>"; };
 		F8503840223B62DB009B79A0 /* SweepGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SweepGraph.swift; sourceTree = "<group>"; };
@@ -143,14 +143,14 @@
 			children = (
 				F8EC34FA2237B5A10054B30D /* Master.swift */,
 				F829C99822370EE100D1E57B /* Data Processing */,
-				F8280C892249E8F30067E2F7 /* Protocols */,
-				F8471B462248938500960B8C /* Extensions */,
 				F8471B452248931900960B8C /* View Controllers */,
 				F8471B44224892E900960B8C /* Cells */,
-				F8471B43224892CE00960B8C /* Views */,
 				F8471B3D22488F1D00960B8C /* Core Data */,
 				F8471B422248928E00960B8C /* Resources */,
+				F8471B43224892CE00960B8C /* Views */,
 				F8187189222F3C640043DCBE /* Info.plist */,
+				F8280C892249E8F30067E2F7 /* Protocols */,
+				F8471B462248938500960B8C /* Extensions */,
 				F83702B8222F570900AC753C /* fonts */,
 			);
 			path = PatientApp;
@@ -250,7 +250,7 @@
 				F83702AD222F4E9A00AC753C /* ExerciseViewController.swift */,
 				F8EC34FC22382E190054B30D /* ExerciseGuideViewController.swift */,
 				F83702AF222F4EA300AC753C /* ProgressViewController.swift */,
-				F850383B22388679009B79A0 /* FullProgressViewController.swift */,
+				F850383B22388679009B79A0 /* ProgressCompViewController.swift */,
 				F83702B1222F4EAC00AC753C /* GoalsViewController.swift */,
 				F8FEE0122240C3FC005ECB35 /* WellnessViewController.swift */,
 			);
@@ -364,7 +364,7 @@
 				F8EC34FD22382E190054B30D /* ExerciseGuideViewController.swift in Sources */,
 				F8280C9E224AB0BF0067E2F7 /* Exercise+CoreDataClass.swift in Sources */,
 				F8280C862249BEB70067E2F7 /* DataManagement.swift in Sources */,
-				F850383C22388679009B79A0 /* FullProgressViewController.swift in Sources */,
+				F850383C22388679009B79A0 /* ProgressCompViewController.swift in Sources */,
 				F8280CA6224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataClass.swift in Sources */,
 				F8280CA5224AB0F80067E2F7 /* WellnessResponse+CoreDataProperties.swift in Sources */,
 				F83702B7222F4ED000AC753C /* Header.swift in Sources */,

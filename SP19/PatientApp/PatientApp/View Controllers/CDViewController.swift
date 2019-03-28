@@ -69,6 +69,7 @@ class CDViewController: UIViewController {
     }
 }
 
+// tableView functions
 extension CDViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if entitySelection.selectedSegmentIndex == 0 {
@@ -210,6 +211,7 @@ extension CDViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// view and constraint setups
 extension CDViewController: ViewConstraintProtocol {
     func setupViews() {
         headerView.updateHeader(text: "Core Data", color: hsbShadeTint(color: colorTheme, sat: 0.20), fsize: 30)
@@ -313,25 +315,23 @@ extension CDViewController {
         switch entitySelection.selectedSegmentIndex {
         case 0: // exercise
             dataTable.rowHeight = 60
-            getData(entityName: "Exercise")
+            getData(entityName: entity)
             dataTable.reloadData()
         case 1: // stats
             dataTable.rowHeight = 110
-            getData(entityName: "Exercise")
-            getData(entityName: "ExerciseSessionStats")
+            getData(entityName: entity)
             dataTable.reloadData()
         case 2: // goal
             dataTable.rowHeight = 85
-            getData(entityName: "Goal")
+            getData(entityName: entity)
             dataTable.reloadData()
         case 3: // question
             dataTable.rowHeight = 85
-            getData(entityName: "WellnessQuestion")
+            getData(entityName: entity)
             dataTable.reloadData()
         case 4: // response
             dataTable.rowHeight = 110
-            getData(entityName: "WellnessQuestion")
-            getData(entityName: "WellnessResponse")
+            getData(entityName: entity)
             dataTable.reloadData()
         default:
             print("No entity selected")
@@ -381,15 +381,19 @@ extension CDViewController {
         if entitySelection.selectedSegmentIndex == 0 {
             addExercise(exerciseName: "Exercise number \(number)", stats: nil)
         } else if entitySelection.selectedSegmentIndex == 1 {
-//            addExerciseSessionStats(rom: Float(number), reps: number, exercise: )
+            if exerciseList.count == 0 {
+                addExercise(exerciseName: "Default Exercise", stats: nil)
+            }
+            addExerciseSessionStats(rom: Float.random(in: 0..<180), reps: Int.random(in: 0..<20), exercise: exerciseList.randomElement()!)
         } else if entitySelection.selectedSegmentIndex == 2 {
             addGoal(achieved: Bool.random(), entry: "Goal number \(number)")
         } else if entitySelection.selectedSegmentIndex == 3 {
             addWellnessQuestion(question: "Question number \(number)", isSlider: Bool.random(), response: nil)
         } else if entitySelection.selectedSegmentIndex == 4 {
-//            addWellnessResponse(slider: 5, bool: Bool.random(), question: )
-        } else {
-            
+            if wellnessQuestionList.count == 0 {
+                addWellnessQuestion(question: "Default Question", isSlider: Bool.random(), response: nil)
+            }
+            addWellnessResponse(slider: Float.random(in: 0..<11), bool: Bool.random(), question: wellnessQuestionList.randomElement()!)
         }
         
         getData(entityName: self.entity)

@@ -19,7 +19,7 @@
     <entity name="WellnessQuestion" representedClassName="WellnessQuestion" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isSlider" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="question" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="question" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="wellnessResponse" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WellnessResponse" inverseName="wellnessQuestion" inverseEntity="WellnessResponse" syncable="YES"/>
     </entity>
     <entity name="WellnessResponse" representedClassName="WellnessResponse" syncable="YES">
@@ -30,9 +30,9 @@
     </entity>
     <elements>
         <element name="Exercise" positionX="-288.99609375" positionY="19.2421875" width="128" height="88"/>
-        <element name="Goal" positionX="-290.05859375" positionY="153.203125" width="128" height="88"/>
+        <element name="Goal" positionX="-286.24609375" positionY="154.44921875" width="125.80859375" height="88"/>
         <element name="WellnessQuestion" positionX="-285.19921875" positionY="297.3046875" width="128" height="103"/>
         <element name="WellnessResponse" positionX="-47.13671875" positionY="298.22265625" width="128" height="103"/>
-        <element name="ExerciseSessionStats" positionX="-73.0078125" positionY="5.11328125" width="128" height="103"/>
+        <element name="ExerciseSessionStats" positionX="-53.28125" positionY="4.9140625" width="128" height="103"/>
     </elements>
 </model>

@@ -16,7 +16,7 @@ void Sensor::init(int num_imus){
     Wire.setSDA(I2C_SDA_PIN);
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
-        Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... "); 
+        //Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... "); 
         // Configure CS pin as output and pull it low
         pinMode(CS_pins[imu],OUTPUT);
         digitalWrite(CS_pins[imu],LOW);
@@ -26,10 +26,10 @@ void Sensor::init(int num_imus){
         // INITIALIZE FILTERING METHOD (OR DO IN INO FILE)
 
         if (!imu_list[imu].begin()){
-            Serial.println("Failed");
+            //Serial.println("Failed");
             while (1); // don't continue
         }
-        Serial.println("Success");
+        //Serial.println("Success");
         digitalWrite(CS_pins[imu],HIGH);
     }
 

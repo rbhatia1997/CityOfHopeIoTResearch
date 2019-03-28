@@ -53,13 +53,15 @@ BLECharacteristic* pCharacteristic3 = NULL; // define global variable - characte
 BLECharacteristic* pCharacteristic4 = NULL; // define global variable - characteristic
 
 bool deviceConnected = false;
-bool oldDeviceConnected = false;
 
 // Values pre-defined for representing Quaternion 1.
-int myInt1 = 1;
-int myInt2 = 2;
-int myInt3 = 3;
-int myInt4 = 4;
+
+float quat[] = {0.000, 0.000, 0.000, 0.000};
+
+int myInt_Q1_1 = 1;
+int myInt_Q1_2 = 2;
+int myInt_Q1_3 = 3;
+int myInt_Q1_4 = 4;
 
 // Values pre-defined for representing Quaternion 2.
 
@@ -162,31 +164,37 @@ void setup() {
 
   BLEDevice::init("City of Hope BLE Testing");
   BLEServer *pServer = BLEDevice::createServer();
+
+  pServer->setCallbacks(new MyServerCallbacks());
+
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
-                                         CHARACTERISTIC_UUID,
-                                         BLECharacteristic::PROPERTY_READ |
-                                         BLECharacteristic::PROPERTY_NOTIFY
-                                       );
+  
+  Serial.println("Creating BLE Server & Callback Function Success");
 
-  BLECharacteristic *pCharacteristic2 = pService->createCharacteristic(
-                                          CHARACTERISTIC_UUID2,
-                                          BLECharacteristic::PROPERTY_READ |
-                                          BLECharacteristic::PROPERTY_NOTIFY
-                                        );
+  pCharacteristic = pService->createCharacteristic(
+                      CHARACTERISTIC_UUID,
+                      BLECharacteristic::PROPERTY_READ |
+                      BLECharacteristic::PROPERTY_NOTIFY
+                    );
 
-  BLECharacteristic *pCharacteristic3 = pService->createCharacteristic(
-                                          CHARACTERISTIC_UUID3,
-                                          BLECharacteristic::PROPERTY_READ |
-                                          BLECharacteristic::PROPERTY_NOTIFY
-                                        );
+  pCharacteristic2 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID2,
+                       BLECharacteristic::PROPERTY_READ |
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
+
+  pCharacteristic3 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID3,
+                       BLECharacteristic::PROPERTY_READ |
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
 
 
-  BLECharacteristic *pCharacteristic4 = pService->createCharacteristic(
-                                          CHARACTERISTIC_UUID4,
-                                          BLECharacteristic::PROPERTY_READ |
-                                          BLECharacteristic::PROPERTY_NOTIFY
-                                        );
+  pCharacteristic4 = pService->createCharacteristic(
+                       CHARACTERISTIC_UUID4,
+                       BLECharacteristic::PROPERTY_READ |
+                       BLECharacteristic::PROPERTY_NOTIFY
+                     );
 
   pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic2->addDescriptor(new BLE2902());
@@ -216,91 +224,101 @@ void loop() {
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
     // UPDATE: This will be four integers instead of a byte Array with floats for speed & ease of use.
 
-    char q1String[2];
-    char q2String[2];
-    char q3String[2];
-    char q4String[2];
+//    char q1_Q1_String[2];
+//    char q2_Q1_String[2];
+//    char q3_Q1_String[2];
+//    char q4_Q1_String[2];
+//
+//    char q1_Q2_String[2];
+//    char q2_Q2_String[2];
+//    char q3_Q2_String[2];
+//    char q4_Q2_String[2];
+//
+//    char q1_Q3_String[2];
+//    char q2_Q3_String[2];
+//    char q3_Q3_String[2];
+//    char q4_Q3_String[2];
+//
+//    char q1_Q4_String[2];
+//    char q2_Q4_String[2];
+//    char q3_Q4_String[2];
+//    char q4_Q4_String[2];
 
-    char q1_Q2_String[2];
-    char q2_Q2_String[2];
-    char q3_Q2_String[2];
-    char q4_Q2_String[2];
+//    char str1[8];
+//    char str2[8];
+//    char str3[8];
+//    char str4[8];
+//
+//    dtostrf(quat[0], 8, 3, str1);
+//    dtostrf(quat[1], 8, 3, str2);
+//    dtostrf(quat[2], 8, 3, str3);
+//    dtostrf(quat[3], 8, 3, str4);
+//
+//    char qDataString[35];
+//
+//    sprintf(qDataString, "%s %s %s %s", str1, str2, str3, str4);
+//
+//    quat[0] += 0.001;
+//    quat[1] += 0.01;
+//    quat[2] += 0.1;
+//    quat[3] += 1.;
+//
+//    for (int i = 0; i < 4; ++i) {
+//      if (quat[i] > 9999.) {
+//        quat[i] = 0.0;
+//      }
+//    }
 
-    char q1_Q3_String[2];
-    char q2_Q3_String[2];
-    char q3_Q3_String[2];
-    char q4_Q3_String[2];
-
-    char q1_Q4_String[2];
-    char q2_Q4_String[2];
-    char q3_Q4_String[2];
-    char q4_Q4_String[2];
-
-    char qDataString[20];
+    char q1DataString[20];
     char q2DataString[20];
     char q3DataString[20];
     char q4DataString[20];
 
-    dtostrf(myInt1, 1, 2, q1String);
-    dtostrf(myInt2, 1, 2, q2String);
-    dtostrf(myInt3, 1, 2, q3String);
-    dtostrf(myInt4, 1, 2, q4String);
-    sprintf(qDataString, "%d,%d,%d,%d", myInt1, myInt2, myInt3, myInt4);
+//    dtostrf(myInt_Q1_1, 1, 2, q1_Q1_String);
+//    dtostrf(myInt_Q1_2, 1, 2, q2_Q1_String);
+//    dtostrf(myInt_Q1_3, 1, 2, q3_Q1_String);
+//    dtostrf(myInt_Q1_4, 1, 2, q4_Q1_String);
 
-    //    dtostrf(myInt_Q2_1, 1, 2, q1_Q2_String);
-    //    dtostrf(myInt_Q2_2, 1, 2, q2_Q2_String);
-    //    dtostrf(myInt_Q2_3, 1, 2, q3_Q2_String);
-    //    dtostrf(myInt_Q2_4, 1, 2, q4_Q2_String);
-    //
-    //    sprintf(q2DataString, "%d,%d,%d,%d", myInt_Q2_1, myInt_Q2_2, myInt_Q2_3, myInt_Q2_4);
-    //
-    //    dtostrf(myInt_Q3_1, 1, 2, q1_Q3_String);
-    //    dtostrf(myInt_Q3_2, 1, 2, q2_Q3_String);
-    //    dtostrf(myInt_Q3_3, 1, 2, q3_Q3_String);
-    //    dtostrf(myInt_Q3_4, 1, 2, q4_Q3_String);
-    //
-    //    sprintf(q3DataString, "%d,%d,%d,%d", myInt_Q3_1, myInt_Q3_2, myInt_Q3_3, myInt_Q3_4);
-    //
-    //    dtostrf(myInt_Q4_1, 1, 2, q1_Q4_String);
-    //    dtostrf(myInt_Q4_2, 1, 2, q2_Q4_String);
-    //    dtostrf(myInt_Q4_3, 1, 2, q3_Q4_String);
-    //    dtostrf(myInt_Q4_4, 1, 2, q4_Q4_String);
-    //
-    //    sprintf(q4DataString, "%d,%d,%d,%d", myInt_Q4_1, myInt_Q4_2, myInt_Q4_3, myInt_Q4_4);
+    sprintf(q1DataString, "%d,%d,%d,%d", myInt_Q1_1, myInt_Q1_2, myInt_Q1_3, myInt_Q1_4);
 
-    pCharacteristic->setValue(qDataString);
+//    dtostrf(myInt_Q2_1, 1, 2, q1_Q2_String);
+//    dtostrf(myInt_Q2_2, 1, 2, q2_Q2_String);
+//    dtostrf(myInt_Q2_3, 1, 2, q3_Q2_String);
+//    dtostrf(myInt_Q2_4, 1, 2, q4_Q2_String);
+
+    sprintf(q2DataString, "%d,%d,%d,%d", myInt_Q2_1, myInt_Q2_2, myInt_Q2_3, myInt_Q2_4);
+
+//    dtostrf(myInt_Q3_1, 1, 2, q1_Q3_String);
+//    dtostrf(myInt_Q3_2, 1, 2, q2_Q3_String);
+//    dtostrf(myInt_Q3_3, 1, 2, q3_Q3_String);
+//    dtostrf(myInt_Q3_4, 1, 2, q4_Q3_String);
+
+    sprintf(q3DataString, "%d,%d,%d,%d", myInt_Q3_1, myInt_Q3_2, myInt_Q3_3, myInt_Q3_4);
+
+//    dtostrf(myInt_Q4_1, 1, 2, q1_Q4_String);
+//    dtostrf(myInt_Q4_2, 1, 2, q2_Q4_String);
+//    dtostrf(myInt_Q4_3, 1, 2, q3_Q4_String);
+//    dtostrf(myInt_Q4_4, 1, 2, q4_Q4_String);
+
+    sprintf(q4DataString, "%d,%d,%d,%d", myInt_Q4_1, myInt_Q4_2, myInt_Q4_3, myInt_Q4_4);
+
+    pCharacteristic->setValue(q1DataString);
     pCharacteristic->notify();
+    delay(3);
 
-    pCharacteristic2->setValue(qDataString);
+    pCharacteristic2->setValue(q2DataString);
     pCharacteristic2->notify();
 
-    pCharacteristic3->setValue(qDataString);
+    pCharacteristic3->setValue(q3DataString);
     pCharacteristic3->notify();
 
-    pCharacteristic4->setValue(qDataString);
+    pCharacteristic4->setValue(q4DataString);
     pCharacteristic4->notify();
 
-    //    delay(10);
-    //
-    //    pCharacteristic2->setValue(q2DataString);
-    //    pCharacteristic2->notify();
-    //
-    //    delay(10);
-    //
-    //    pCharacteristic3->setValue(q3DataString);
-    //    pCharacteristic3->notify();
-    //
-    //    delay(10);
-    //
-    //    pCharacteristic4->setValue(q4DataString);
-    //    pCharacteristic4->notify();
-    //
-    //    delay(10);
-
-    myInt1++;
-    myInt2++;
-    myInt3++;
-    myInt4++;
+    myInt_Q1_1++;
+    myInt_Q1_2++;
+    myInt_Q1_3++;
+    myInt_Q1_4++;
 
     myInt_Q2_1++;
     myInt_Q2_2++;
@@ -318,6 +336,6 @@ void loop() {
     myInt_Q4_4++;
 
     // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
-    delay(2000);
+    delay(10);
   }
 }

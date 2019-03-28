@@ -167,6 +167,6 @@ void loop() {
     myInt4++;
 
     // The delay represents how fast the code can go. Currently, we are operating at 10 Hz. 
-    delay(100);
+    delay(10);
   }
 }

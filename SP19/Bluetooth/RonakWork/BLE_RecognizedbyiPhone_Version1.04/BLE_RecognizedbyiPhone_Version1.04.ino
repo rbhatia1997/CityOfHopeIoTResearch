@@ -113,52 +113,95 @@ class MyServerCallbacks: public BLEServerCallbacks {
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
   Serial.println("Initialzing ESP32 as BLE Device...");
+  //
+  //BLEDevice::init("City of Hope Bluetooth Testing"); // designating this as a test.
+  //
+  //  // Create the BLE Server
+  //  BLEServer *pServer = BLEDevice::createServer();
+  //
+  //  Serial.println("Creating a BLE Server...");
+  //
+  //  // Create BLE service using the service UUID.
+  //  BLEService *pService = pServer->createService(SERVICE_UUID);
+  //
+  //  // Add characteristics...
+  //  // PROPERTY_WRITE, PROPERTY_NOTIFY, PROPERTY_WRITE are the properties of the characteristics.
+  //
+  //  // We need these lines to identify which property to ascribe to which characteristic.
+  //  // Creating multiple characteristics with the notify property, which enables communication to the iOS application.
+  //
+  //  pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  ////  pCharacteristic2 = pService->createCharacteristic(CHARACTERISTIC_UUID2, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  ////  pCharacteristic3 = pService->createCharacteristic(CHARACTERISTIC_UUID3, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  ////  pCharacteristic4 = pService->createCharacteristic(CHARACTERISTIC_UUID4, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  //
+  //  // This descriptor allows for information on the characteristics to accurately translate to the iOS application.
+  //  pCharacteristic->addDescriptor(new BLE2902());
+  ////  pCharacteristic2->addDescriptor(new BLE2902());
+  ////  pCharacteristic3->addDescriptor(new BLE2902());
+  ////  pCharacteristic4->addDescriptor(new BLE2902());
+  //
+  //  //Add callback
+  //  pServer->setCallbacks(new MyServerCallbacks());
+  //
+  //  // Start the BLE Service
+  //  pService->start();
+  //  Serial.println("Service started");
+  //
+  //  // Code that starts advertising the information
+  //  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  //  pAdvertising->addServiceUUID(SERVICE_UUID);
+  //  pAdvertising->setScanResponse(true);
+  //
+  //  // Functions that help with iPhone connections issue
+  //  pAdvertising->setMinPreferred(0x06);
+  //  pAdvertising->setMinPreferred(0x12);
+  //  BLEDevice::startAdvertising();
+  //
+  //  Serial.println("Characteristics defined! ESP32 Waiting to Send Data...");
 
-  BLEDevice::init("City of Hope Bluetooth Testing"); // designating this as a test.
+  BLEDevice::init("City of Hope BLE Testing");
+  BLEServer *pServer = BLEDevice::createServer();
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+                                         CHARACTERISTIC_UUID,
+                                         BLECharacteristic::PROPERTY_READ |
+                                         BLECharacteristic::PROPERTY_NOTIFY
+                                       );
 
-  // Create the BLE Server
-  pServer = BLEDevice::createServer();
+  BLECharacteristic *pCharacteristic2 = pService->createCharacteristic(
+                                          CHARACTERISTIC_UUID2,
+                                          BLECharacteristic::PROPERTY_READ |
+                                          BLECharacteristic::PROPERTY_NOTIFY
+                                        );
 
-  //Add callback
-  pServer->setCallbacks(new MyServerCallbacks());
+  BLECharacteristic *pCharacteristic3 = pService->createCharacteristic(
+                                          CHARACTERISTIC_UUID3,
+                                          BLECharacteristic::PROPERTY_READ |
+                                          BLECharacteristic::PROPERTY_NOTIFY
+                                        );
 
-  Serial.println("Creating a BLE Server...");
 
-  // Create BLE service using the service UUID.
-  pService = pServer->createService(SERVICE_UUID);
+  BLECharacteristic *pCharacteristic4 = pService->createCharacteristic(
+                                          CHARACTERISTIC_UUID4,
+                                          BLECharacteristic::PROPERTY_READ |
+                                          BLECharacteristic::PROPERTY_NOTIFY
+                                        );
 
-  // Add characteristics...
-  // PROPERTY_WRITE, PROPERTY_NOTIFY, PROPERTY_WRITE are the properties of the characteristics.
-
-  // We need these lines to identify which property to ascribe to which characteristic.
-  // Creating multiple characteristics with the notify property, which enables communication to the iOS application.
-
-  pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic2 = pService->createCharacteristic(CHARACTERISTIC_UUID2, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic3 = pService->createCharacteristic(CHARACTERISTIC_UUID3, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic4 = pService->createCharacteristic(CHARACTERISTIC_UUID4, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
-  // This descriptor allows for information on the characteristics to accurately translate to the iOS application.
   pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic2->addDescriptor(new BLE2902());
   pCharacteristic3->addDescriptor(new BLE2902());
   pCharacteristic4->addDescriptor(new BLE2902());
 
-  // Start the BLE Service
   pService->start();
-  Serial.println("Service started");
-
-  // Code that starts advertising the information
+  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-
-  // Functions that help with iPhone connections issue
-  pAdvertising->setMinPreferred(0x06);
+  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
-
-  Serial.println("Characteristics defined! ESP32 Waiting to Send Data...");
+  Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
 void loop() {
@@ -204,46 +247,55 @@ void loop() {
     dtostrf(myInt4, 1, 2, q4String);
     sprintf(qDataString, "%d,%d,%d,%d", myInt1, myInt2, myInt3, myInt4);
 
-    dtostrf(myInt_Q2_1, 1, 2, q1_Q2_String);
-    dtostrf(myInt_Q2_2, 1, 2, q2_Q2_String);
-    dtostrf(myInt_Q2_3, 1, 2, q3_Q2_String);
-    dtostrf(myInt_Q2_4, 1, 2, q4_Q2_String);
-
-    sprintf(q2DataString, "%d,%d,%d,%d", myInt_Q2_1, myInt_Q2_2, myInt_Q2_3, myInt_Q2_4);
-
-    dtostrf(myInt_Q3_1, 1, 2, q1_Q3_String);
-    dtostrf(myInt_Q3_2, 1, 2, q2_Q3_String);
-    dtostrf(myInt_Q3_3, 1, 2, q3_Q3_String);
-    dtostrf(myInt_Q3_4, 1, 2, q4_Q3_String);
-
-    sprintf(q3DataString, "%d,%d,%d,%d", myInt_Q3_1, myInt_Q3_2, myInt_Q3_3, myInt_Q3_4);
-
-    dtostrf(myInt_Q4_1, 1, 2, q1_Q4_String);
-    dtostrf(myInt_Q4_2, 1, 2, q2_Q4_String);
-    dtostrf(myInt_Q4_3, 1, 2, q3_Q4_String);
-    dtostrf(myInt_Q4_4, 1, 2, q4_Q4_String);
-
-    sprintf(q4DataString, "%d,%d,%d,%d", myInt_Q4_1, myInt_Q4_2, myInt_Q4_3, myInt_Q4_4);
+    //    dtostrf(myInt_Q2_1, 1, 2, q1_Q2_String);
+    //    dtostrf(myInt_Q2_2, 1, 2, q2_Q2_String);
+    //    dtostrf(myInt_Q2_3, 1, 2, q3_Q2_String);
+    //    dtostrf(myInt_Q2_4, 1, 2, q4_Q2_String);
+    //
+    //    sprintf(q2DataString, "%d,%d,%d,%d", myInt_Q2_1, myInt_Q2_2, myInt_Q2_3, myInt_Q2_4);
+    //
+    //    dtostrf(myInt_Q3_1, 1, 2, q1_Q3_String);
+    //    dtostrf(myInt_Q3_2, 1, 2, q2_Q3_String);
+    //    dtostrf(myInt_Q3_3, 1, 2, q3_Q3_String);
+    //    dtostrf(myInt_Q3_4, 1, 2, q4_Q3_String);
+    //
+    //    sprintf(q3DataString, "%d,%d,%d,%d", myInt_Q3_1, myInt_Q3_2, myInt_Q3_3, myInt_Q3_4);
+    //
+    //    dtostrf(myInt_Q4_1, 1, 2, q1_Q4_String);
+    //    dtostrf(myInt_Q4_2, 1, 2, q2_Q4_String);
+    //    dtostrf(myInt_Q4_3, 1, 2, q3_Q4_String);
+    //    dtostrf(myInt_Q4_4, 1, 2, q4_Q4_String);
+    //
+    //    sprintf(q4DataString, "%d,%d,%d,%d", myInt_Q4_1, myInt_Q4_2, myInt_Q4_3, myInt_Q4_4);
 
     pCharacteristic->setValue(qDataString);
     pCharacteristic->notify();
 
-    delay(10);
-
-    pCharacteristic2->setValue(q2DataString);
+    pCharacteristic2->setValue(qDataString);
     pCharacteristic2->notify();
 
-    delay(10);
-
-    pCharacteristic3->setValue(q3DataString);
+    pCharacteristic3->setValue(qDataString);
     pCharacteristic3->notify();
 
-    delay(10);
-
-    pCharacteristic4->setValue(q4DataString);
+    pCharacteristic4->setValue(qDataString);
     pCharacteristic4->notify();
 
-    delay(10);
+    //    delay(10);
+    //
+    //    pCharacteristic2->setValue(q2DataString);
+    //    pCharacteristic2->notify();
+    //
+    //    delay(10);
+    //
+    //    pCharacteristic3->setValue(q3DataString);
+    //    pCharacteristic3->notify();
+    //
+    //    delay(10);
+    //
+    //    pCharacteristic4->setValue(q4DataString);
+    //    pCharacteristic4->notify();
+    //
+    //    delay(10);
 
     myInt1++;
     myInt2++;
@@ -267,17 +319,5 @@ void loop() {
 
     // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
     delay(2000);
-  }
-  // disconnecting
-  if (!deviceConnected && oldDeviceConnected) {
-    delay(500); // give the bluetooth stack the chance to get things ready
-    pServer->startAdvertising(); // restart advertising
-    Serial.println("start advertising");
-    oldDeviceConnected = deviceConnected;
-  }
-  // connecting
-  if (deviceConnected && !oldDeviceConnected) {
-    // do stuff here on connecting
-    oldDeviceConnected = deviceConnected;
   }
 }

@@ -22,6 +22,8 @@
 		F8280CA6224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8280CA2224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataClass.swift */; };
 		F8280CA7224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8280CA3224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataProperties.swift */; };
 		F8280CA9224ABA950067E2F7 /* PresetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8280CA8224ABA950067E2F7 /* PresetData.swift */; };
+		F8280CAC224E117F0067E2F7 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8280CAB224E117F0067E2F7 /* String+Extensions.swift */; };
+		F8280CAE224E15C30067E2F7 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8280CAD224E15C30067E2F7 /* Data+Extension.swift */; };
 		F829C99422362B5500D1E57B /* WellnessTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829C99322362B5500D1E57B /* WellnessTableViewCell.swift */; };
 		F829C9962236FC5200D1E57B /* ExerciseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F829C9952236FC5200D1E57B /* ExerciseTableViewCell.swift */; };
 		F83702AC222F4E8D00AC753C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83702AB222F4E8D00AC753C /* HomeViewController.swift */; };
@@ -75,6 +77,8 @@
 		F8280CA2224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseSessionStats+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F8280CA3224AB0F80067E2F7 /* ExerciseSessionStats+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseSessionStats+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F8280CA8224ABA950067E2F7 /* PresetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetData.swift; sourceTree = "<group>"; };
+		F8280CAB224E117F0067E2F7 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		F8280CAD224E15C30067E2F7 /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		F829C99322362B5500D1E57B /* WellnessTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessTableViewCell.swift; sourceTree = "<group>"; };
 		F829C9952236FC5200D1E57B /* ExerciseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewCell.swift; sourceTree = "<group>"; };
 		F83702AB222F4E8D00AC753C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -263,6 +267,8 @@
 				F8471B47224893AE00960B8C /* UIColor+Extensions.swift */,
 				F8471B49224893D300960B8C /* UIButton+Extensions.swift */,
 				F8471B4C2248940400960B8C /* UILabel+Extensions.swift */,
+				F8280CAB224E117F0067E2F7 /* String+Extensions.swift */,
+				F8280CAD224E15C30067E2F7 /* Data+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -369,6 +375,7 @@
 				F8280CA5224AB0F80067E2F7 /* WellnessResponse+CoreDataProperties.swift in Sources */,
 				F83702B7222F4ED000AC753C /* Header.swift in Sources */,
 				F8EC34F72237B2A30054B30D /* BTViewController.swift in Sources */,
+				F8280CAC224E117F0067E2F7 /* String+Extensions.swift in Sources */,
 				F83702D12230A72800AC753C /* BTConn.swift in Sources */,
 				F83702D3223205B700AC753C /* SimpleProgressGraph.swift in Sources */,
 				F8EC34FB2237B5A10054B30D /* Master.swift in Sources */,
@@ -376,6 +383,7 @@
 				F8471B4A224893D300960B8C /* UIButton+Extensions.swift in Sources */,
 				F83702CF2230A25900AC753C /* HomeMotivator.swift in Sources */,
 				F8503841223B62DB009B79A0 /* SweepGraph.swift in Sources */,
+				F8280CAE224E15C30067E2F7 /* Data+Extension.swift in Sources */,
 				F8280C8B2249E9310067E2F7 /* ViewConstraintProtocol.swift in Sources */,
 				F8471B4D2248940400960B8C /* UILabel+Extensions.swift in Sources */,
 				F83702AC222F4E8D00AC753C /* HomeViewController.swift in Sources */,

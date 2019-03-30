@@ -14,11 +14,11 @@ class BTViewController: UIViewController, ViewConstraintProtocol {
     
     private let colorTheme: UIColor = hsbShadeTint(color: .blue, sat: 0.50)
     
-    var serviceUUID = CBUUID(string: "2f391f0f-1c30-46fb-a972-a22c2f7570ee")
-    var char0UUID = CBUUID(string: "beb5483e-36e1-4688-b7f5-ea07361b26a8")
-    var char1UUID = CBUUID(string: "a2e9cff5-1454-44f4-8829-4fa1ddfecd01")
-    var char2UUID = CBUUID(string: "621c1bb5-318d-4520-a0f9-00ddeabc776f")
-    var char3UUID = CBUUID(string: "4b181c20-a0f1-4b20-80b8-8229248c1800")
+    var serviceUUID = CBUUID(string: "2f391f0f-1c30-46fb-a972-a22c2f7570ee") //"2f391f0f-1c30-46fb-a972-a22c2f7570ee"
+    var char0UUID = CBUUID(string: "beb5483e-36e1-4688-b7f5-ea07361b26a8") //"beb5483e-36e1-4688-b7f5-ea07361b26a8"
+    var char1UUID = CBUUID(string: "beb5484e-36e1-4688-b7f5-ea07361b26a8") //"a2e9cff5-1454-44f4-8829-4fa1ddfecd01"
+    var char2UUID = CBUUID(string: "beb5485e-36e1-4688-b7f5-ea07361b26a8") //"621c1bb5-318d-4520-a0f9-00ddeabc776f"
+    var char3UUID = CBUUID(string: "beb5486e-36e1-4688-b7f5-ea07361b26a8") //"4b181c20-a0f1-4b20-80b8-8229248c1800"
     
     let headerView = Header()
     let serviceTitle = UILabel()
@@ -152,6 +152,19 @@ extension BTViewController: CBCentralManagerDelegate {
         print(peripheral.name ?? "not detected")
         wearablePeripheral.discoverServices([serviceUUID])
     }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        serviceUUIDLabel.text = "--"
+        peripheralName.text = "--"
+        char0Label.text = "--"
+        char0Val.text = "--"
+        char1Label.text = "--"
+        char1Val.text = "--"
+        char2Label.text = "--"
+        char2Val.text = "--"
+        char3Label.text = "--"
+        char3Val.text = "--"
+    }
 }
 
 extension BTViewController: CBPeripheralDelegate {
@@ -187,43 +200,44 @@ extension BTViewController: CBPeripheralDelegate {
         case char0UUID:
             char0Label.text = characteristic.uuid.uuidString
             let data = characteristic.value!
-            char0Val.text = String(data: data, encoding: .utf8)
+            let farr: [Float] = dataToFloats(data: data, numFloats: 4)
+            var s = "floats:"
+            for i in 0..<farr.count {
+                s += String(format: " %.3f", farr[i])
+            }
+            char0Val.text = s
         case char1UUID:
             char1Label.text = characteristic.uuid.uuidString
             let data = characteristic.value!
-            char1Val.text = String(data: data, encoding: .utf16)
+            let farr: [Float] = dataToFloats(data: data, numFloats: 4)
+            var s = "floats:"
+            for i in 0..<farr.count {
+                s += String(format: " %.3f", farr[i])
+            }
+            char1Val.text = s
         case char2UUID:
             char2Label.text = characteristic.uuid.uuidString
             let data = characteristic.value!
-            char2Val.text = String(data: data, encoding: .utf16)
+            let farr: [Float] = dataToFloats(data: data, numFloats: 4)
+            var s = "floats:"
+            for i in 0..<farr.count {
+                s += String(format: " %.3f", farr[i])
+            }
+            char2Val.text = s
         case char3UUID:
             char3Label.text = characteristic.uuid.uuidString
             let data = characteristic.value!
-            char3Val.text = String(data: data, encoding: .utf16)
+            let farr: [Float] = dataToFloats(data: data, numFloats: 4)
+            var s = "floats:"
+            for i in 0..<farr.count {
+                s += String(format: " %.3f", farr[i])
+            }
+            char3Val.text = s
         default:
             serviceUUIDLabel.text = "No data"
             peripheralName.text = "No data"
-            char0Label.text = "No data"
-            char0Val.text = "No data"
         }
     }
-    
-    //  private func heartRate(from characteristic: CBCharacteristic) -> Int {
-    //    guard let characteristicData = characteristic.value else { return -1 }
-    //    let byteArray = [UInt8](characteristicData)
-    //
-    //    // See: https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.heart_rate_measurement.xml
-    //    // The heart rate mesurement is in the 2nd, or in the 2nd and 3rd bytes, i.e. one one or in two bytes
-    //    // The first byte of the first bit specifies the length of the heart rate data, 0 == 1 byte, 1 == 2 bytes
-    //    let firstBitValue = byteArray[0] & 0x01
-    //    if firstBitValue == 0 {
-    //      // Heart Rate Value Format is in the 2nd byte
-    //      return Int(byteArray[1])
-    //    } else {
-    //      // Heart Rate Value Format is in the 2nd and 3rd bytes
-    //      return (Int(byteArray[1]) << 8) + Int(byteArray[2])
-    //    }
-    //  }
     
     @objc func homeButtonPressed(_ sender: UIButton) {
         self.performSegue(withIdentifier: "toHomeVCFromBTVC", sender: sender)

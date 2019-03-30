@@ -81,15 +81,15 @@ float q1[] = {0, 0, 0, 0};
 float q2[] = {0, 0, 0, 0};
 float q3[] = {0, 0, 0, 0};
 
-char quat0Arr[6] = ""; // format is -1.111 (space for plus or minus, ones, decimal point, then 3 after decimal)
-char quat1Arr[6] = ""; // value is contained within -1 and 1
-char quat2Arr[6] = "";
-char quat3Arr[6] = "";
+char quat0Data[33] = "";
+char quat1Data[33] = "";
+char quat2Data[33] = "";
+char quat3Data[33] = "";
 
-char quat0Data[24] = "";
-char quat1Data[24] = "";
-char quat2Data[24] = "";
-char quat3Data[24] = "";
+union {
+  float fval;
+  byte barr[];
+} fb;
 
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
@@ -146,18 +146,6 @@ void loop() {
      */
 
     for (int i = 0; i < 4; ++i) {
-      dtostrf(q0[i], 6, 3, quat0Arr); // convert float into string (char array)
-      strcat(quat0Data, quat0Arr); // add string (char array) to the larger data string (char array)
-      
-      dtostrf(q1[i], 6, 3, quat1Arr);
-      strcat(quat1Data, quat1Arr);
-      
-      dtostrf(q2[i], 6, 3, quat2Arr);
-      strcat(quat2Data, quat2Arr);
-      
-      dtostrf(q3[i], 6, 3, quat3Arr);
-      strcat(quat3Data, quat3Arr);
-
       // fake data
       q0[i] += 0.001;
       q1[i] += 0.005;
@@ -171,6 +159,35 @@ void loop() {
       if (q3[i] >= 1.) { q3[i] = -1.; }
     }
 
+    String str0 = "";
+    String str1 = "";
+    String str2 = "";
+    String str3 = "";
+    
+    for (int i = 0; i < 4; ++i) {
+      str0 += floatToHexString(q0[i]);
+      str1 += floatToHexString(q1[i]);
+      str2 += floatToHexString(q2[i]);
+      str3 += floatToHexString(q3[i]);
+    }
+
+    Serial.print(q0[0]);
+    Serial.print(" ");
+    Serial.print(q0[1]);
+    Serial.print(" ");
+    Serial.print(q0[2]);
+    Serial.print(" ");
+    Serial.print(q0[3]);
+    Serial.print("\n");
+    Serial.print(str0);
+
+    str0.toCharArray(quat0Data, 33);
+    str1.toCharArray(quat1Data, 33);
+    str2.toCharArray(quat2Data, 33);
+    str3.toCharArray(quat3Data, 33);
+    
+    
+    
     // update the characteristic values
     pCharacteristic0->setValue(quat0Data);
     pCharacteristic0->notify();
@@ -180,11 +197,26 @@ void loop() {
 
     pCharacteristic2->setValue(quat2Data);
     pCharacteristic2->notify();
-
+    
     pCharacteristic3->setValue(quat3Data);
     pCharacteristic3->notify();
 
     Serial.println("ESP32 is connected to the app... Sending Data!");
-    delay(0); // delay not required
+    delay(200); // delay not required
   }
+}
+
+String floatToHexString(float f) {
+  fb.fval = f;
+  String s = "";
+  int val = 0;
+  
+  for (int i = 0; i < 4; ++i) {
+      val = fb.barr[3-i];
+      if (val < 16) {
+        s += "0";
+      }
+      s += String(val, HEX);
+    }
+    return s;
 }

@@ -43,7 +43,7 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
     
     internal func setupViews() {
         // update the header view
-        headerView.updateHeader(text: "Workouts", color: colorTheme, fsize: 30)
+        headerView.updateHeader(text: "Wellness", color: colorTheme, fsize: 30)
         self.view.addSubview(headerView)
         
         // setup the table view
@@ -112,17 +112,10 @@ class WellnessViewController: UIViewController, UITableViewDelegate, UITableView
         cell.selectedBackgroundView = colorView
         cell.updateQuestionCell(color: colorTheme,
                                 questionNum: (indexPath.row + 1),
-                                text: questionList[indexPath.row],
-                                slider: isSliderList[indexPath.row],
+                                text: wellnessQuestionList[indexPath.row].question,
+                                slider: wellnessQuestionList[indexPath.row].isSlider,
                                 yes: yesNoResults[indexPath.row],
                                 sliderVal: sliderValues[indexPath.row])
-//        cell.isSlider = Master.WellnessVars.isSliderList[indexPath.row]
-//        print("\(indexPath.row): \(cell.isSlider ?? true)")
-//        cell.setNeedsDisplay()
-        
-//        WellnessVars.yesNoResults[indexPath.row] = cell.getYN()
-//        print(WellnessVars.yesNoResults[0])
-//        WellnessVars.sliderValues[indexPath.row] = cell.getSlider()
         
         return cell
     }

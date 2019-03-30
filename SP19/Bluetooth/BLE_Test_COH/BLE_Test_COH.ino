@@ -3,6 +3,19 @@
     Based on the Arduino ESP32 Port by Evandro Copercini & Chegewara
     General changes & adaptation for iOS by Ronak Bhatia & Darien Joso from City of Hope's HMC Clinic
     Last Date Updated: Sunday, March 27, 2019
+
+    See the following for generating UUIDs:
+    https://www.uuidgenerator.net/
+
+    The purpose of this code is to create a Bluetooth (BLE) Server, which does the following steps:
+    (1) Create a BLE Server
+    (2) Create a BLE Service
+    (3) Create a BLE Characteristic based on this service
+    (4) Create a BLE Descriptor based on the characteristic
+    (5) Start the service and then start advertising
+    In other words, a GATT server creates a service, which can contain multiple characteristics that
+    include metadata, which in our case will be the data from the IMU (Quaternion or otherwise).
+    A Quaternion is a four-element vector used to encode any rotation in a 3D coordinate system.
 */
 
 // The following are libraries necessary for enabling BLE connection
@@ -17,25 +30,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/*
-   The BLE Peripheral is typically the board you are programming. It connects the BLE central to
-   expose its characteristics. In our case, the iPhone is the BLE central, which is the device that
-   asks the BLE peripheral its data. That's why we won't be using a BLECentral constructor.
-   Characteristics contain at least two attributes: (1) characteristic declaration, which has metadata
-   about the data, and (2) the characteristic value, which contains the data itself.
-   Characteristics have names, UUIDs, values, and read/write/notify properties. There are many types
-   of characteristics constructors depending on the data type wanting to be used.
-   The purpose of this code is to create a Bluetooth (BLE) Server, which does the following steps:
-   (1) Create a BLE Server
-   (2) Create a BLE Service
-   (3) Create a BLE Characteristic based on this service
-   (4) Create a BLE Descriptor based on the characteristic
-   (5) Start the service and then start advertising
-   In other words, a GATT server creates a service, which can contain multiple characteristics that
-   include metadata, which in our case will be the data from the IMU (Quaternion or otherwise).
-   A Quaternion is a four-element vector used to encode any rotation in a 3D coordinate system.
-*/
-
 BLEServer* pServer = NULL; // null instance of BLE Server
 BLEService *pService = NULL;
 
@@ -47,15 +41,6 @@ BLECharacteristic* pCharacteristic2 = NULL; // define global variable - characte
 BLECharacteristic* pCharacteristic3 = NULL; // define global variable - characteristic
 
 bool deviceConnected = false;
-
- /*
- See the following for generating UUIDs:
- https://www.uuidgenerator.net/
-
- Important to note that normally one would set up a UUID_TX and UUID_RX
- However, because we only want to transmit data not receive any from the iPhone,
- we just need one Characteristic UUID for TX, which we call Characteristic UUID.
- */
 
 #define SERVICE_UUID         "2f391f0f-1c30-46fb-a972-a22c2f7570ee"
 #define CHARACTERISTIC_UUID0 "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -81,15 +66,11 @@ float q1[] = {0, 0, 0, 0};
 float q2[] = {0, 0, 0, 0};
 float q3[] = {0, 0, 0, 0};
 
+// quaternion hex strings
 char quat0Data[33] = "";
 char quat1Data[33] = "";
 char quat2Data[33] = "";
 char quat3Data[33] = "";
-
-union {
-  float fval;
-  byte barr[];
-} fb;
 
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
@@ -136,14 +117,6 @@ void setup() {
 
 void loop() {
   if (deviceConnected == true) {
-     /*
-     It's necessary to update the values sent to the iPhone here.
-     In other words, Quaternion values sent to the ESP32 pin will be updated here.
-
-     My understanding, as of now, is that we will have Quaternion values constantly update.
-     Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
-     UPDATE: This will be four integers instead of a byte Array with floats for speed & ease of use.
-     */
 
     for (int i = 0; i < 4; ++i) {
       // fake data
@@ -186,8 +159,6 @@ void loop() {
     str2.toCharArray(quat2Data, 33);
     str3.toCharArray(quat3Data, 33);
     
-    
-    
     // update the characteristic values
     pCharacteristic0->setValue(quat0Data);
     pCharacteristic0->notify();
@@ -205,6 +176,11 @@ void loop() {
     delay(200); // delay not required
   }
 }
+
+union {
+  float fval;
+  byte barr[];
+} fb;
 
 String floatToHexString(float f) {
   fb.fval = f;

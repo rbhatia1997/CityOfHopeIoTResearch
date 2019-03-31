@@ -115,52 +115,8 @@ class MyServerCallbacks: public BLEServerCallbacks {
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
   Serial.println("Initialzing ESP32 as BLE Device...");
-  //
-  //BLEDevice::init("City of Hope Bluetooth Testing"); // designating this as a test.
-  //
-  //  // Create the BLE Server
-  //  BLEServer *pServer = BLEDevice::createServer();
-  //
-  //  Serial.println("Creating a BLE Server...");
-  //
-  //  // Create BLE service using the service UUID.
-  //  BLEService *pService = pServer->createService(SERVICE_UUID);
-  //
-  //  // Add characteristics...
-  //  // PROPERTY_WRITE, PROPERTY_NOTIFY, PROPERTY_WRITE are the properties of the characteristics.
-  //
-  //  // We need these lines to identify which property to ascribe to which characteristic.
-  //  // Creating multiple characteristics with the notify property, which enables communication to the iOS application.
-  //
-  //  pCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  ////  pCharacteristic2 = pService->createCharacteristic(CHARACTERISTIC_UUID2, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  ////  pCharacteristic3 = pService->createCharacteristic(CHARACTERISTIC_UUID3, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  ////  pCharacteristic4 = pService->createCharacteristic(CHARACTERISTIC_UUID4, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  //
-  //  // This descriptor allows for information on the characteristics to accurately translate to the iOS application.
-  //  pCharacteristic->addDescriptor(new BLE2902());
-  ////  pCharacteristic2->addDescriptor(new BLE2902());
-  ////  pCharacteristic3->addDescriptor(new BLE2902());
-  ////  pCharacteristic4->addDescriptor(new BLE2902());
-  //
-  //  //Add callback
-  //  pServer->setCallbacks(new MyServerCallbacks());
-  //
-  //  // Start the BLE Service
-  //  pService->start();
-  //  Serial.println("Service started");
-  //
-  //  // Code that starts advertising the information
-  //  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  //  pAdvertising->addServiceUUID(SERVICE_UUID);
-  //  pAdvertising->setScanResponse(true);
-  //
-  //  // Functions that help with iPhone connections issue
-  //  pAdvertising->setMinPreferred(0x06);
-  //  pAdvertising->setMinPreferred(0x12);
-  //  BLEDevice::startAdvertising();
-  //
-  //  Serial.println("Characteristics defined! ESP32 Waiting to Send Data...");
+
+  // Initializing the BLE Service
 
   BLEDevice::init("City of Hope BLE Testing");
   BLEServer *pServer = BLEDevice::createServer();
@@ -168,8 +124,10 @@ void setup() {
   pServer->setCallbacks(new MyServerCallbacks());
 
   BLEService *pService = pServer->createService(SERVICE_UUID);
-  
+
   Serial.println("Creating BLE Server & Callback Function Success");
+
+  // Definiting the BLE Characteristics w/ Notify Properties
 
   pCharacteristic = pService->createCharacteristic(
                       CHARACTERISTIC_UUID,
@@ -196,10 +154,14 @@ void setup() {
                        BLECharacteristic::PROPERTY_NOTIFY
                      );
 
+  // Adding BLE descriptors
+
   pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic2->addDescriptor(new BLE2902());
   pCharacteristic3->addDescriptor(new BLE2902());
   pCharacteristic4->addDescriptor(new BLE2902());
+
+  // Starting the BLE service and Giving BLE Start-up Message
 
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
@@ -209,7 +171,7 @@ void setup() {
   pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
-  Serial.println("Characteristic defined! Now you can read it in your phone!");
+  Serial.println("Characteristics defined! Waiting for BLE Connection...");
 }
 
 void loop() {
@@ -224,87 +186,23 @@ void loop() {
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
     // UPDATE: This will be four integers instead of a byte Array with floats for speed & ease of use.
 
-//    char q1_Q1_String[2];
-//    char q2_Q1_String[2];
-//    char q3_Q1_String[2];
-//    char q4_Q1_String[2];
-//
-//    char q1_Q2_String[2];
-//    char q2_Q2_String[2];
-//    char q3_Q2_String[2];
-//    char q4_Q2_String[2];
-//
-//    char q1_Q3_String[2];
-//    char q2_Q3_String[2];
-//    char q3_Q3_String[2];
-//    char q4_Q3_String[2];
-//
-//    char q1_Q4_String[2];
-//    char q2_Q4_String[2];
-//    char q3_Q4_String[2];
-//    char q4_Q4_String[2];
-
-//    char str1[8];
-//    char str2[8];
-//    char str3[8];
-//    char str4[8];
-//
-//    dtostrf(quat[0], 8, 3, str1);
-//    dtostrf(quat[1], 8, 3, str2);
-//    dtostrf(quat[2], 8, 3, str3);
-//    dtostrf(quat[3], 8, 3, str4);
-//
-//    char qDataString[35];
-//
-//    sprintf(qDataString, "%s %s %s %s", str1, str2, str3, str4);
-//
-//    quat[0] += 0.001;
-//    quat[1] += 0.01;
-//    quat[2] += 0.1;
-//    quat[3] += 1.;
-//
-//    for (int i = 0; i < 4; ++i) {
-//      if (quat[i] > 9999.) {
-//        quat[i] = 0.0;
-//      }
-//    }
-
     char q1DataString[20];
     char q2DataString[20];
     char q3DataString[20];
     char q4DataString[20];
 
-//    dtostrf(myInt_Q1_1, 1, 2, q1_Q1_String);
-//    dtostrf(myInt_Q1_2, 1, 2, q2_Q1_String);
-//    dtostrf(myInt_Q1_3, 1, 2, q3_Q1_String);
-//    dtostrf(myInt_Q1_4, 1, 2, q4_Q1_String);
-
     sprintf(q1DataString, "%d,%d,%d,%d", myInt_Q1_1, myInt_Q1_2, myInt_Q1_3, myInt_Q1_4);
-
-//    dtostrf(myInt_Q2_1, 1, 2, q1_Q2_String);
-//    dtostrf(myInt_Q2_2, 1, 2, q2_Q2_String);
-//    dtostrf(myInt_Q2_3, 1, 2, q3_Q2_String);
-//    dtostrf(myInt_Q2_4, 1, 2, q4_Q2_String);
 
     sprintf(q2DataString, "%d,%d,%d,%d", myInt_Q2_1, myInt_Q2_2, myInt_Q2_3, myInt_Q2_4);
 
-//    dtostrf(myInt_Q3_1, 1, 2, q1_Q3_String);
-//    dtostrf(myInt_Q3_2, 1, 2, q2_Q3_String);
-//    dtostrf(myInt_Q3_3, 1, 2, q3_Q3_String);
-//    dtostrf(myInt_Q3_4, 1, 2, q4_Q3_String);
-
     sprintf(q3DataString, "%d,%d,%d,%d", myInt_Q3_1, myInt_Q3_2, myInt_Q3_3, myInt_Q3_4);
-
-//    dtostrf(myInt_Q4_1, 1, 2, q1_Q4_String);
-//    dtostrf(myInt_Q4_2, 1, 2, q2_Q4_String);
-//    dtostrf(myInt_Q4_3, 1, 2, q3_Q4_String);
-//    dtostrf(myInt_Q4_4, 1, 2, q4_Q4_String);
 
     sprintf(q4DataString, "%d,%d,%d,%d", myInt_Q4_1, myInt_Q4_2, myInt_Q4_3, myInt_Q4_4);
 
+    // Sending the Data to the iPhone 
+
     pCharacteristic->setValue(q1DataString);
     pCharacteristic->notify();
-    delay(3);
 
     pCharacteristic2->setValue(q2DataString);
     pCharacteristic2->notify();
@@ -314,6 +212,8 @@ void loop() {
 
     pCharacteristic4->setValue(q4DataString);
     pCharacteristic4->notify();
+
+    // Updating the Fake Data. 
 
     myInt_Q1_1++;
     myInt_Q1_2++;
@@ -335,7 +235,7 @@ void loop() {
     myInt_Q4_3++;
     myInt_Q4_4++;
 
-    // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
+    // We don't need delay at all - real-time data transfer is complete. 
     delay(10);
   }
 }

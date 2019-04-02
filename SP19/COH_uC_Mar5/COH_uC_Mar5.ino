@@ -46,7 +46,7 @@ void setup()
     filter.init();
     //bluetooth.init();
 
-    // Calibrate sensors
+     //Calibrate sensors
 //     sensor.calibrate_ag(false);
 //     for(int imu = 0; imu < NUM_SENSORS; imu++){
 //         Serial.println(sensor.print_a_cal_offsets(imu));
@@ -62,14 +62,14 @@ void loop(){
         sensor.read_sensors();
         filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
-            //Serial.println(filter.print_rpy_intertial_imu(imu));
+            Serial.println(filter.print_rpy_intertial_imu(0));
             //Serial.println(sensor.print_accel_raw(imu));
             //Serial.println(sensor.print_gyro_raw(imu));
             //Serial.println(sensor.print_mag_raw(imu));
             //Serial.println(sensor.print_accel(imu));
             //Serial.println(sensor.print_gyro(imu));
             //Serial.println(sensor.print_mag(imu));
-            Serial.println(filter.print_q_inertial_imu(imu));
+            //Serial.println(filter.print_q_inertial_imu(imu));
         }
 
     }
@@ -94,4 +94,3 @@ void loop(){
 }
 
       
-

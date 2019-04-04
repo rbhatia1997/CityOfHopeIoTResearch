@@ -22,6 +22,13 @@
 #define RXD2 16
 #define TXD2 17
 
+/*
+ * To provide more information on the specific wiring, we will be using the TX2 and RX2 pins on the Teensy microcontroller. This will be different for the
+ * Teensy 3.6 versus the 3.2 and may need to be changed. The TX2 pin of the Teensy connects to the RX pin of the ESP32 and the RX2 pin of the Teensy connects 
+ * to the TX pin of the ESP32. The GPIO pin 7 of the ESP32 will connect to the RTS pin on the Teensy (pin 22 on the Teensy 3.2). The GPIO6 pin on the ESP32 will 
+ * connect to the CTS pin on the Teensy (pin next to 22, so 21 - it's arbitrary). 
+ */
+
 // The following are libraries necessary for enabling BLE connection
 // They are in-built into the ESP-32 Library and wouldn't need one to manually install.
 

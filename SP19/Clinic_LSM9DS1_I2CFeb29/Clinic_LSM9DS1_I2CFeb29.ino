@@ -186,8 +186,8 @@ void setup()
 
     
     // set I2C pins
-    Wire.setSCL(I2C_SCL);
-    Wire.setSDA(I2C_SDA);
+//    Wire.setSCL(I2C_SCL);
+//    Wire.setSDA(I2C_SDA);
 
 
     for( int imu = 0; imu < NUM_IMUS; imu++){

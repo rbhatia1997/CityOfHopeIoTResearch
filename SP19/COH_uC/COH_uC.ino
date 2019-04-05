@@ -64,7 +64,7 @@ void loop(){
           float testValue = 42.787;
           blue.testSendFloat(testValue);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
-            Serial.println(filter.print_rpy_intertial_imu(imu));
+            //Serial.println(filter.print_rpy_intertial_imu(imu));
             //Serial.println(sensor.print_accel_raw(imu));
             //Serial.println(sensor.print_gyro_raw(imu));
             //Serial.println(sensor.print_mag_raw(imu));

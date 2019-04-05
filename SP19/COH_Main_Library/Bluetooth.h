@@ -4,9 +4,9 @@
 //#include "library.h"
 #include "Filter.h"
 
-#define HWSERIAL Serial1 //sets which serial bus to use on Teensy
+#define HWSERIAL Serial2 //sets which serial bus to use on Teensy
 #define COMPSERIAL Serial //sets serial for computer
-#define baudRate 115200 //sets the baud rate (bits per second)
+#define baudRate 250000 //sets the baud rate (bits per second)
 
 class Bluetooth
 {
@@ -23,6 +23,8 @@ public:
 
 private:
   int NUM_FILTERS;
+
+  byte start[4] = {255,255,255,255};
 
 
 };

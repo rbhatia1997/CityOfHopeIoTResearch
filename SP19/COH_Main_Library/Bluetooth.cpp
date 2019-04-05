@@ -1,6 +1,7 @@
 #include "Bluetooth.h"
 
-Bluetooth::Bluetooth(void){
+Bluetooth::Bluetooth(int num_filters){
+  NUM_FILTERS = num_filters;
 
 }
 
@@ -21,18 +22,35 @@ void Bluetooth::float2Byte(float value)
   floatAsByte.fval = value;
 }
 
-void Bluetooth::sendData()
+void Bluetooth::sendData(filter_state_t * filter_state)
 {
-  COMPSERIAL.write("Sending Data...");
-  for(int i = 0; i<3; i++)
+  for(int i = 0; i<NUM_FILTERS;i++)
   {
-    HWSERIAL.write(floatAsByte.bval[i]);
-    COMPSERIAL.write("sent + String(i)");
+    floatAsByte.fval = filter_state->q_inertial_imu[i].q0;
+    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.bval[i]);}
+    COMPSERIAL.write("sent q0");
+
+    floatAsByte.fval = filter_state->q_inertial_imu[i].q1;
+    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.bval[i]);}
+    COMPSERIAL.write("sent q1");
+
+    floatAsByte.fval = filter_state->q_inertial_imu[i].q2;
+    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.bval[i]);}
+    COMPSERIAL.write("sent q2");
+
+    floatAsByte.fval = filter_state->q_inertial_imu[i].q3;
+    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.bval[i]);}
+    COMPSERIAL.write("sent q3");
   }
 }
 
-//testing to see if I have access to filter class
-int Bluetooth::testFilterAccess(filterData * filterID)
-{
-  return filterID->data[1];
-}
+  void Bluetooth::testSendFloat(float value)
+  {
+    COMPSERIAL.write("sending float");
+    floatAsByte.fval=value;
+    for (int i = 0; i <3; i++)
+    {
+      HWSERIAL.write(floatAsByte.bval[i]);
+    }
+    COMPSERIAL.write("send");
+  }

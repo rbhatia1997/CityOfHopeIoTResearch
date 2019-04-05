@@ -5,18 +5,17 @@
 ///////////////// Public Functions //////////////////
 /////////////////////////////////////////////////////
 
-Sensor::Sensor(void){
+Sensor::Sensor(int num_imus){
+  NUM_IMUS = num_imus;
 }
 
-void Sensor::init(int num_imus){
-
-    NUM_IMUS = num_imus;
+void Sensor::init(){
 
     Wire.setSCL(I2C_SCL_PIN);
     Wire.setSDA(I2C_SDA_PIN);
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
-        Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... "); 
+        Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... ");
         // Configure CS pin as output and pull it low
         pinMode(CS_pins[imu],OUTPUT);
         digitalWrite(CS_pins[imu],LOW);
@@ -30,7 +29,7 @@ void Sensor::init(int num_imus){
         Serial.println("Success");
         digitalWrite(CS_pins[imu],HIGH);
     }
-    pinMode(CALIB_BUTTON_PIN,INPUT);   
+    pinMode(CALIB_BUTTON_PIN,INPUT);
 }
 
 
@@ -74,7 +73,7 @@ void Sensor::calibrate_ag(bool stop_after){
           sum_accel[imu][2] += imu_list[imu].calcAccel(imu_list[imu].az);
         }
         digitalWrite(CS_pins[imu],HIGH);
-    
+
         avg_gyro[imu][0] = sum_gyro[imu][0]/32;
         avg_gyro[imu][1] = sum_gyro[imu][1]/32;
         avg_gyro[imu][2] = sum_gyro[imu][2]/32;
@@ -85,9 +84,9 @@ void Sensor::calibrate_ag(bool stop_after){
     ///////////////////////////////////////////////////////////////////////
     // Calibrate y axis of accelerometer
     ///////////////////////////////////////////////////////////////////////
-      
+
     Serial.println("Rotate to negative 90deg around X, then press the button to begin");
-          
+
     // wait for button to be pressed
     while(true) { if(digitalRead(CALIB_BUTTON_PIN)) break; }
     Serial.print("Collecting data...");
@@ -96,7 +95,7 @@ void Sensor::calibrate_ag(bool stop_after){
     // loop through each imu
     for(int imu = 0; imu < NUM_IMUS; imu++){
         digitalWrite(CS_pins[imu],LOW);
-        // collect 32 samples            
+        // collect 32 samples
         for( int j = 0; j<32; j++){
             imu_list[imu].readAccel();
             sum_accel[imu][1] += imu_list[imu].calcAccel(imu_list[imu].ay);
@@ -105,18 +104,18 @@ void Sensor::calibrate_ag(bool stop_after){
         avg_accel[imu][1] = sum_accel[imu][1]/32;
     }
     Serial.println("  done"); Serial.println("");
-  
+
     ///////////////////////////////////////////////////////////////////////
     // Calibrate x axis of accelerometer
     ///////////////////////////////////////////////////////////////////////
-      
+
     Serial.println("Rotate to positive 90deg around Y, then press the button to begin");
-  
-    // wait for button to be pressed    
+
+    // wait for button to be pressed
     while(true) { if(digitalRead(CALIB_BUTTON_PIN)) break; }
     Serial.print("Collecting data...");
     delay(500);
-    
+
     for(int imu = 0; imu < NUM_IMUS; imu++){
         digitalWrite(CS_pins[imu],LOW);
         // collect 32 samples
@@ -125,28 +124,28 @@ void Sensor::calibrate_ag(bool stop_after){
             sum_accel[imu][0] += -imu_list[imu].calcAccel(imu_list[imu].ax); // negated for RHR
         }
         digitalWrite(CS_pins[imu],HIGH);
-        avg_accel[imu][0] = sum_accel[imu][0]/32; 
+        avg_accel[imu][0] = sum_accel[imu][0]/32;
     }
     Serial.println("  done"); Serial.println("");
 
     ///////////////////////////////////////////////////////////////////////
     // Calculate offsets
     ///////////////////////////////////////////////////////////////////////
-        
+
     for(int imu = 0; imu < NUM_IMUS; imu++){
         custom_a_offsets[imu][0] = (1 - avg_accel[imu][0]);
         custom_a_offsets[imu][1] = (1 - avg_accel[imu][1]);
         custom_a_offsets[imu][2] = (1 - avg_accel[imu][2]);
-        
+
         custom_g_offsets[imu][0] = (0 - avg_gyro[imu][0]);
         custom_g_offsets[imu][0] = (0 - avg_gyro[imu][0]);
         custom_g_offsets[imu][0] = (0 - avg_gyro[imu][0]);
     }
 
     Serial.println("Done with calibration for accelerometer and gyroscope");
-    
+
     // while(stop_after){}
-}  
+}
 
 
 void Sensor::calibrate_m(bool stop_after){
@@ -407,9 +406,3 @@ void Sensor::apply_calibrations(void){
         sensor_state.mag_data[imu][2] = mx * mag_scaling[imu][2][0] + my * mag_scaling[imu][2][1] + mz * mag_scaling[imu][2][2];
     }
 }
-
-
-
-
-
-

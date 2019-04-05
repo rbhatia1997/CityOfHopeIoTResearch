@@ -45,9 +45,9 @@ private:
     float KP = 10; // mahony
     float KI = 0.0;
     float beta = 0.001; // madgwick
-    
+
     // Creat Mahony filter objects
-    Mahony mahony0, mahony1, mahony2, mahony3;       
+    Mahony mahony0, mahony1, mahony2, mahony3;
     Mahony mahony_list[MAX_NUM_SENSORS] = {mahony0, mahony1, mahony2, mahony3};
 
     // Creat Madgwick filter objects

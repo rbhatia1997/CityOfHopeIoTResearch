@@ -7,7 +7,7 @@
 #include <Wire.h>
 
 // define I2C addresses for a/g and m
-// CS is connected to SDO_M and SDO_AG. We want an imu to be active if CS is pulled low 
+// CS is connected to SDO_M and SDO_AG. We want an imu to be active if CS is pulled low
 #define LSM9DS1_M   0x1C // Address chanhes to 0x1E when SDO_M is HIGH
 #define LSM9DS1_AG	0x6A // Address chanhes to 0x6B when SDO_AG is HIGH
 
@@ -22,10 +22,10 @@ class Sensor
 {
 public:
     // contructor: takes number of connected imus as input
-    Sensor(void);
+    Sensor(int num_imus);
 
     // initializes I2C bus and configures imu settings
-    void init(int num_imus);
+    void init(void);
 
     // reads and calibrates data from all the imus
     void read_sensors(void);

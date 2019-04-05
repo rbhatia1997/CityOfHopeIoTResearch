@@ -16,7 +16,11 @@ public:
 
     void init(void);
 
+    void float2Byte(float value);
+
     void sendData(void);
+
+    int testFilterAccess(filterData * filterID);
 
 
 

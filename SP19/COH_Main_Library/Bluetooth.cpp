@@ -1,6 +1,5 @@
 #include "Bluetooth.h"
 
-
 Bluetooth::Bluetooth(void){
 
 }
@@ -17,12 +16,12 @@ union{
   byte bval[4];
 }floatAsByte;
 
-void float2Byte(float value)
+void Bluetooth::float2Byte(float value)
 {
   floatAsByte.fval = value;
 }
 
-void sendData()
+void Bluetooth::sendData()
 {
   COMPSERIAL.write("Sending Data...");
   for(int i = 0; i<3; i++)
@@ -30,4 +29,10 @@ void sendData()
     HWSERIAL.write(floatAsByte.bval[i]);
     COMPSERIAL.write("sent + String(i)");
   }
+}
+
+//testing to see if I have access to filter class
+int Bluetooth::testFilterAccess(filterData * filterID)
+{
+  return filterID->data[1];
 }

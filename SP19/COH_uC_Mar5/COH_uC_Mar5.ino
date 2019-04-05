@@ -14,10 +14,9 @@ COH AMT Clinic Team microcontroller code
 
 #include <Arduino.h>
 #include <Wire.h>
-//#include <SPI.h>
 #include "Filter.h"
 #include "Sensor.h"
-#include "Bluetooth.h"
+//#include "Bluetooth.h"
 #include "Led.h"
 #include "Pinouts.h"
 
@@ -30,7 +29,6 @@ unsigned long prevTime = 0;
 // Instantiate objects
 Sensor sensor;
 Filter filter = Filter(NUM_SENSORS,SAMPLE_FREQ);
-//Bluetooth bluetooth;
 Led status_led = Led(STATUS_LED_PIN);
 
 void setup() 
@@ -44,7 +42,6 @@ void setup()
     sensor.init(NUM_SENSORS);
     status_led.turn_off();
     filter.init();
-    //bluetooth.init();
 
     // Calibrate sensors
 //     sensor.calibrate_ag(false);
@@ -57,40 +54,36 @@ void setup()
 
     
 void loop(){
-    if(micros() - prevTime > 1000000.0/SAMPLE_FREQ){
-        prevTime = micros();
-        sensor.read_sensors();
-        filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
-        for(int imu = 0; imu < NUM_SENSORS; imu++){
-            //Serial.println(filter.print_rpy_intertial_imu(imu));
-            //Serial.println(sensor.print_accel_raw(imu));
-            //Serial.println(sensor.print_gyro_raw(imu));
-            //Serial.println(sensor.print_mag_raw(imu));
-            //Serial.println(sensor.print_accel(imu));
-            //Serial.println(sensor.print_gyro(imu));
-            //Serial.println(sensor.print_mag(imu));
-            Serial.println(filter.print_q_inertial_imu(imu));
-        }
-
-    }
-
-// For testing sample frequency
-
-//    delay(1000);
-//    int numSamples = 500;
-//    long t1;
-//    long t2;
-//    t1 = micros();
-//    for(int i = 0; i<numSamples; i++){
-//      sensor.read_sensors();
-//      filter.update(sensor.accel_data,sensor.gyro_data,sensor.mag_data);
+//    if(micros() - prevTime > 1000000.0/SAMPLE_FREQ){
+//        prevTime = micros();
+//        sensor.read_sensors();
+//        filter.update(&sensor.sensor_state);
+//        for(int imu = 0; imu < NUM_SENSORS; imu++){
+//            Serial.println(filter.print_rpy_intertial_imu(imu));
+//            //Serial.println(sensor.print_accel_raw(imu));
+//            //Serial.println(sensor.print_gyro_raw(imu));
+//            //Serial.println(sensor.print_mag_raw(imu));
+//            //Serial.println(sensor.print_accel(imu));
+//            //Serial.println(sensor.print_gyro(imu));
+//            //Serial.println(sensor.print_mag(imu));
+//            //Serial.println(filter.print_q_inertial_imu(imu));
+//        }
 //    }
-//    t2 = micros();
-//    float f = 1000000*numSamples/(t2-t1);
-//    Serial.print("Sample Frequency: ");
-//    Serial.println(f);
-//    delay(1000);
-
+    // For testing sample frequency
+    delay(1000);
+    int numSamples = 500;
+    long t1;
+    long t2;
+    t1 = micros();
+    for(int i = 0; i<numSamples; i++){
+      sensor.read_sensors();
+      filter.update(&sensor.sensor_state);
+    }
+    t2 = micros();
+    float f = 1000000*numSamples/(t2-t1);
+    Serial.print("Sample Frequency: ");
+    Serial.println(f);
+    delay(1000);
 }
 
       

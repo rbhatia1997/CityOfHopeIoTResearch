@@ -16,21 +16,25 @@ void Sensor::init(int num_imus){
     Wire.setSDA(I2C_SDA_PIN);
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
-        Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... "); 
+        //Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... "); 
         // Configure CS pin as output and pull it low
         pinMode(CS_pins[imu],OUTPUT);
         digitalWrite(CS_pins[imu],LOW);
         // Configure imu settings such as sample rate
         config_imu_settings(imu);
+        
+        // INITIALIZE FILTERING METHOD (OR DO IN INO FILE)
 
         if (!imu_list[imu].begin()){
             //Serial.println("Failed");
             while (1); // don't continue
         }
-        Serial.println("Success");
+        //Serial.println("Success");
         digitalWrite(CS_pins[imu],HIGH);
     }
-    pinMode(CALIB_BUTTON_PIN,INPUT);   
+
+    pinMode(CALIB_BUTTON_PIN,INPUT);
+        
 }
 
 
@@ -157,33 +161,33 @@ void Sensor::calibrate_m(bool stop_after){
 String Sensor::print_accel(int imu){
     // resturns a string of space-delimited accelerations for one imu
     String print_string = "";
-    print_string += String(sensor_state.accel_data[imu][0]);
+    print_string += String(accel_data[imu][0]);
     print_string += "  ";
-    print_string += String(sensor_state.accel_data[imu][1]);
+    print_string += String(accel_data[imu][1]);
     print_string += "  ";
-    print_string += String(sensor_state.accel_data[imu][2]);
+    print_string += String(accel_data[imu][2]);
     return print_string;
 }
 
 String Sensor::print_gyro(int imu){
     // resturns a string of space-delimited rotation rates for one imu
     String print_string = "";
-    print_string += String(sensor_state.gyro_data[imu][0]);
+    print_string += String(gyro_data[imu][0]);
     print_string += "  ";
-    print_string += String(sensor_state.gyro_data[imu][1]);
+    print_string += String(gyro_data[imu][1]);
     print_string += "  ";
-    print_string += String(sensor_state.gyro_data[imu][2]);
+    print_string += String(gyro_data[imu][2]);
     return print_string;
 }
 
 String Sensor::print_mag(int imu){
     // resturns a string of space-delimited magnetic flux density measuremnets for one imu
     String print_string = "";
-    print_string += String(sensor_state.mag_data[imu][0]);
+    print_string += String(mag_data[imu][0]);
     print_string += "  ";
-    print_string += String(sensor_state.mag_data[imu][1]);
+    print_string += String(mag_data[imu][1]);
     print_string += "  ";
-    print_string += String(sensor_state.mag_data[imu][2]);
+    print_string += String(mag_data[imu][2]);
     return print_string;
 }
 
@@ -385,26 +389,26 @@ void Sensor::get_data(void){
 }
 
 void Sensor::apply_calibrations(void){
-    // populates calibrated data struct using the raw data arrays and the
+    // populates calibrated data arrays using the raw data arrays and the
     // offsets in Calibrations.h
     for( int imu = 0; imu < NUM_IMUS; imu++){
         // remove accel offsets
-        sensor_state.accel_data[imu][0] = accel_data_raw[imu][0] - accel_offsets[imu][0];
-        sensor_state.accel_data[imu][1] = accel_data_raw[imu][1] - accel_offsets[imu][1];
-        sensor_state.accel_data[imu][2] = accel_data_raw[imu][2] - accel_offsets[imu][2];
+        accel_data[imu][0] = accel_data_raw[imu][0] - accel_offsets[imu][0];
+        accel_data[imu][1] = accel_data_raw[imu][1] - accel_offsets[imu][1];
+        accel_data[imu][2] = accel_data_raw[imu][2] - accel_offsets[imu][2];
         // remove gyro offsets
-        sensor_state.gyro_data[imu][0] = gyro_data_raw[imu][0] - gyro_offsets[imu][0];
-        sensor_state.gyro_data[imu][1] = gyro_data_raw[imu][1] - gyro_offsets[imu][1];
-        sensor_state.gyro_data[imu][2] = gyro_data_raw[imu][2] - gyro_offsets[imu][2];
+        gyro_data[imu][0] = gyro_data_raw[imu][0] - gyro_offsets[imu][0];
+        gyro_data[imu][1] = gyro_data_raw[imu][1] - gyro_offsets[imu][1];
+        gyro_data[imu][2] = gyro_data_raw[imu][2] - gyro_offsets[imu][2];
         // remove mag offsets
         float mx = mag_data_raw[imu][0] - mag_offsets[imu][0];
         float my = mag_data_raw[imu][1] - mag_offsets[imu][1];
         float mz = mag_data_raw[imu][2] - mag_offsets[imu][2];
 
         // apply soft iron compensation
-        sensor_state.mag_data[imu][0] = mx * mag_scaling[imu][0][0] + my * mag_scaling[imu][0][1] + mz * mag_scaling[imu][0][2];
-        sensor_state.mag_data[imu][1] = mx * mag_scaling[imu][1][0] + my * mag_scaling[imu][1][1] + mz * mag_scaling[imu][1][2];
-        sensor_state.mag_data[imu][2] = mx * mag_scaling[imu][2][0] + my * mag_scaling[imu][2][1] + mz * mag_scaling[imu][2][2];
+        mag_data[imu][0] = mx * mag_scaling[imu][0][0] + my * mag_scaling[imu][0][1] + mz * mag_scaling[imu][0][2];
+        mag_data[imu][1] = mx * mag_scaling[imu][1][0] + my * mag_scaling[imu][1][1] + mz * mag_scaling[imu][1][2];
+        mag_data[imu][2] = mx * mag_scaling[imu][2][0] + my * mag_scaling[imu][2][1] + mz * mag_scaling[imu][2][2];
     }
 }
 

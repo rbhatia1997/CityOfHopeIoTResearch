@@ -33,10 +33,10 @@
 
 Mahony::Mahony()
 {
-	q.q0 = 1.0f;
-	q.q1 = 0.0f;
-	q.q2 = 0.0f;
-	q.q3 = 0.0f;
+	q0 = 1.0f;
+	q1 = 0.0f;
+	q2 = 0.0f;
+	q3 = 0.0f;
 	integralFBx = 0.0f;
 	integralFBy = 0.0f;
 	integralFBz = 0.0f;
@@ -80,16 +80,16 @@ void Mahony::update(float gx, float gy, float gz, float ax, float ay, float az, 
 		mz *= recipNorm;
 
 		// Auxiliary variables to avoid repeated arithmetic
-		q0q0 = q.q0 * q.q0;
-		q0q1 = q.q0 * q.q1;
-		q0q2 = q.q0 * q.q2;
-		q0q3 = q.q0 * q.q3;
-		q1q1 = q.q1 * q.q1;
-		q1q2 = q.q1 * q.q2;
-		q1q3 = q.q1 * q.q3;
-		q2q2 = q.q2 * q.q2;
-		q2q3 = q.q2 * q.q3;
-		q3q3 = q.q3 * q.q3;
+		q0q0 = q0 * q0;
+		q0q1 = q0 * q1;
+		q0q2 = q0 * q2;
+		q0q3 = q0 * q3;
+		q1q1 = q1 * q1;
+		q1q2 = q1 * q2;
+		q1q3 = q1 * q3;
+		q2q2 = q2 * q2;
+		q2q3 = q2 * q3;
+		q3q3 = q3 * q3;
 
 		// Reference direction of Earth's magnetic field
 		hx = 2.0f * (mx * (0.5f - q2q2 - q3q3) + my * (q1q2 - q0q3) + mz * (q1q3 + q0q2));
@@ -136,20 +136,20 @@ void Mahony::update(float gx, float gy, float gz, float ax, float ay, float az, 
 	gx *= (0.5f * invSampleFreq);		// pre-multiply common factors
 	gy *= (0.5f * invSampleFreq);
 	gz *= (0.5f * invSampleFreq);
-	qa = q.q0;
-	qb = q.q1;
-	qc = q.q2;
-	q.q0 += (-qb * gx - qc * gy - q.q3 * gz);
-	q.q1 += (qa * gx + qc * gz - q.q3 * gy);
-	q.q2 += (qa * gy - qb * gz + q.q3 * gx);
-	q.q3 += (qa * gz + qb * gy - qc * gx);
+	qa = q0;
+	qb = q1;
+	qc = q2;
+	q0 += (-qb * gx - qc * gy - q3 * gz);
+	q1 += (qa * gx + qc * gz - q3 * gy);
+	q2 += (qa * gy - qb * gz + q3 * gx);
+	q3 += (qa * gz + qb * gy - qc * gx);
 
 	// Normalise quaternion
-	recipNorm = invSqrt(q.q0 * q.q0 + q.q1 * q.q1 + q.q2 * q.q2 + q.q3 * q.q3);
-	q.q0 *= recipNorm;
-	q.q1 *= recipNorm;
-	q.q2 *= recipNorm;
-	q.q3 *= recipNorm;
+	recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+	q0 *= recipNorm;
+	q1 *= recipNorm;
+	q2 *= recipNorm;
+	q3 *= recipNorm;
 	anglesComputed = 0;
 }
 
@@ -174,9 +174,9 @@ float Mahony::invSqrt(float x)
 
 void Mahony::computeAngles()
 {
-	roll = atan2f(q.q0*q.q1 + q.q2*q.q3, 0.5f - q.q1*q.q1 - q.q2*q.q2);
-	pitch = asinf(-2.0f * (q.q1*q.q3 - q.q0*q.q2));
-	yaw = atan2f(q.q1*q.q2 + q.q0*q.q3, 0.5f - q.q2*q.q2 - q.q3*q.q3);
+	roll = atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2);
+	pitch = asinf(-2.0f * (q1*q3 - q0*q2));
+	yaw = atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3);
 	anglesComputed = 1;
 }
 

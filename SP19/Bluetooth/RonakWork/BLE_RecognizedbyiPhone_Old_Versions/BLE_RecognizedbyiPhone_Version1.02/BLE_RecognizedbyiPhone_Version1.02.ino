@@ -122,11 +122,11 @@ void loop() {
     // It's necessary to update the values sent to the iPhone here.
     // In other words, Quaternion values sent to the ESP32 pin will be updated here.
 
-    // My understanding, as of now, is that we will have Quaternion values constantly update. 
+    // My understanding, as of now, is that we will have Quaternion values constantly update.
     // Quaternion values are just floats arranged in an array. We will have four to represent four IMU data.
 
     char humidityString[2];
-    char temperatureString[2]; 
+    char temperatureString[2];
 
     humidity = humidity + 2;
     temperature = temperature + 10;
@@ -140,14 +140,14 @@ void loop() {
     pCharacteristic->setValue(dhtDataString);
 
     // Sends the values to the iPhone application
-    pCharacteristic->notify(); 
+    pCharacteristic->notify();
 
     // Serial Printing the Values for Testing Purposes
     Serial.print("*** Current Value: ");
     Serial.print(dhtDataString);
     Serial.println(" ***");
-    
-    // This is currently the fastest rate we can get the app to read data, 0.5 Hz. 
-    delay(2000); 
+
+    // This is currently the fastest rate we can get the app to read data, 0.5 Hz.
+    delay(2000);
   }
 }

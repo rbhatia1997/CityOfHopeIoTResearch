@@ -18,19 +18,11 @@
 //--------------------------------------------------------------------------------------------
 // Variable declaration
 
-typedef struct {
-	float q0;
-	float q1;
-	float q2;
-	float q3;
-} quat;
-
-
 class Mahony {
 private:
 	float twoKp;		// 2 * proportional gain (Kp)
 	float twoKi;		// 2 * integral gain (Ki)
-	quat q; 			// quaternion of sensor frame relative to auxiliary frame
+	float q0, q1, q2, q3;	// quaternion of sensor frame relative to auxiliary frame
 	float integralFBx, integralFBy, integralFBz;  // integral error terms scaled by Ki
 	float invSampleFreq;
 	float roll, pitch, yaw;
@@ -70,22 +62,35 @@ public:
 		return yaw;
 	}
 	float get_q0() {
-		return q.q0;
+		return q0;
 	}
 	float get_q1() {
-		return q.q1;
+		return q1;
 	}
 	float get_q2() {
-		return q.q2;
+		return q2;
 	}
 	float get_q3() {
-		return q.q3;
+		return q3;
 	}
-
-	quat get_q(){
+	//SC March 3, 2019
+	//adding function to read out the values of the quaternion calculated by the filter`
+	float *getQuaternion(){
+		float *q = new float[4];
+		// float *q = malloc(sizeof(float)*4); //Or C-style:
+		q[0] = q0;
+		q[1] = q1;
+		q[2] = q2;
+		q[3] = q3;
 		return q;
 	}
 
-
+	// need to statically create float array then pass address to fcn
+	void getQuaternion2(float *q){
+		q[0] = q0;
+		q[1] = q1;
+		q[2] = q2;
+		q[3] = q3;
+	}
 };
 #endif

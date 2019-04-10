@@ -19,12 +19,15 @@ union{
 
 void Bluetooth::float2Byte(float value)
 {
-  floatAsByte.f_arr = value;
+  floatAsByte.f_val = value;
 }
 
 void Bluetooth::sendData(filter_state_t * filter_state)
 {
-  HWSERIAL.write(start);
+  for(int k = 0; k < 3; k++){
+    HWSERIAL.write(start[k]);
+  }
+  COMPSERIAL.write("Sent start");
   
   for(int i = 0; i<NUM_FILTERS;i++)
   {
@@ -48,12 +51,12 @@ void Bluetooth::sendData(filter_state_t * filter_state)
 
   void Bluetooth::testSendFloat(float value)
   {
-    COMPSERIAL.write("sending float... ");
-    float data_arr[4] = {1.01, 1.02, 1.03, 1.04};
-    floatAsByte.f_arr = {1.01, 1.02, 1.03, 1.04};
+    // COMPSERIAL.write("sending float... ");
+    // // float data_arr[4] = {1.01, 1.02, 1.03, 1.04};
+    // // floatAsByte.f_arr = {1.01, 1.02, 1.03, 1.04};
 
-    HWSERIAL.write(start,4);
-    HWSERIAL.write(floatAsByte.b_arr,16);
-    COMPSERIAL.write("sent\n");
+    // HWSERIAL.write(start,4);
+    // HWSERIAL.write(floatAsByte.b_arr,16);
+    // COMPSERIAL.write("sent\n");
 
   }

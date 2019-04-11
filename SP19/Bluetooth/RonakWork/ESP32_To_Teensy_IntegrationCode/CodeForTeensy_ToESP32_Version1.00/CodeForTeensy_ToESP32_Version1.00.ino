@@ -64,4 +64,3 @@ void loop() { //Choose Serial1 or Serial2 as required
     }
   }
 }
-

@@ -23,11 +23,11 @@
 #define TXD2 17
 
 /*
- * To provide more information on the specific wiring, we will be using the TX2 and RX2 pins on the Teensy microcontroller. This will be different for the
- * Teensy 3.6 versus the 3.2 and may need to be changed. The TX2 pin of the Teensy connects to the RX pin of the ESP32 and the RX2 pin of the Teensy connects 
- * to the TX pin of the ESP32. The GPIO pin 7 of the ESP32 will connect to the RTS pin on the Teensy (pin 22 on the Teensy 3.2). The GPIO6 pin on the ESP32 will 
- * connect to the CTS pin on the Teensy (pin next to 22, so 21 - it's arbitrary). 
- */
+   To provide more information on the specific wiring, we will be using the TX2 and RX2 pins on the Teensy microcontroller. This will be different for the
+   Teensy 3.6 versus the 3.2 and may need to be changed. The TX2 pin of the Teensy connects to the RX pin of the ESP32 and the RX2 pin of the Teensy connects
+   to the TX pin of the ESP32. The GPIO pin 7 of the ESP32 will connect to the RTS pin on the Teensy (pin 22 on the Teensy 3.2). The GPIO6 pin on the ESP32 will
+   connect to the CTS pin on the Teensy (pin next to 22, so 21 - it's arbitrary).
+*/
 
 // The following are libraries necessary for enabling BLE connection
 // They are in-built into the ESP-32 Library and wouldn't need one to manually install.
@@ -47,17 +47,11 @@ BLEService *pService = NULL;
 // We are using Four characteristics to represent the Four Quaternions from the Four IMUs.
 
 BLECharacteristic* pCharacteristic0 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic1 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic2 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic3 = NULL; // define global variable - characteristic
 
 bool deviceConnected = false;
 
 #define SERVICE_UUID         "2f391f0f-1c30-46fb-a972-a22c2f7570ee"
 #define CHARACTERISTIC_UUID0 "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID1 "beb5484e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID2 "beb5485e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID3 "beb5486e-36e1-4688-b7f5-ea07361b26a8"
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -69,19 +63,15 @@ class MyServerCallbacks: public BLEServerCallbacks {
     }
 };
 
-// Global variables initialization
+bool searching = true; // searching for the 4 bytes of 255
+int startCounter = 0;
+int arrayCounter = 0;
+byte byteArray[68];
+char charArray[137];
 
-// quaternions
-float q0[] = {0, 0, 0, 0};
-float q1[] = {0, 0, 0, 0};
-float q2[] = {0, 0, 0, 0};
-float q3[] = {0, 0, 0, 0};
-
-// quaternion hex strings
-char quat0Data[33] = "";
-char quat1Data[33] = "";
-char quat2Data[33] = "";
-char quat3Data[33] = "";
+uint32_t ti;
+uint32_t tf;
+uint8_t td;
 
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
@@ -107,18 +97,9 @@ void setup() {
   // setup characteristics
   pCharacteristic0 = pService->createCharacteristic(CHARACTERISTIC_UUID0,
                      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic1 = pService->createCharacteristic(CHARACTERISTIC_UUID1,
-                     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic2 = pService->createCharacteristic(CHARACTERISTIC_UUID2,
-                     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic3 = pService->createCharacteristic(CHARACTERISTIC_UUID3,
-                     BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
 
   // add descriptors to characteristics
   pCharacteristic0->addDescriptor(new BLE2902());
-  pCharacteristic1->addDescriptor(new BLE2902());
-  pCharacteristic2->addDescriptor(new BLE2902());
-  pCharacteristic3->addDescriptor(new BLE2902());
 
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
@@ -130,100 +111,53 @@ void setup() {
   BLEDevice::startAdvertising();
 
   Serial.println("Characteristic defined!");
+
+  // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
+  Serial.begin(115200);
+  //Serial1.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  Serial2.begin(250000, SERIAL_8N1, RXD2, TXD2);
+  Serial.println("Serial Txd is on pin: " + String(TXD2));
+  Serial.println("Serial Rxd is on pin: " + String(RXD2));
 }
 
 void loop() {
   if (deviceConnected == true) {
+    while (Serial2.available()) {
+      byte checkByte = byte(Serial2.read());
 
-    Serial.print(byte(Serial2.read()));
-    Serial.println("Hi Ronak... the Teensy-ESP32 Stuff is working");
+      if (searching) {
+        if (checkByte == 255) {
+          startCounter++;
+          if (startCounter == 4) {
+            startCounter = 0;
+            searching = false;
+          }
+        }
+      } else {
+        byteArray[arrayCounter] = checkByte;
+        arrayCounter++;
+        if (arrayCounter == 68) {
+          searching = true;
+          arrayCounter = 0;
 
-    for (int i = 0; i < 4; ++i) {
-      // fake data
-      q0[i] += 0.001;
-      q1[i] += 0.005;
-      q2[i] += 0.010;
-      q3[i] += 0.050;
+          String s = "";
+          int val;
 
-      // data must be contained between 1 and -1
-      if (q0[i] >= 1.) {
-        q0[i] = -1.;
-      }
-      if (q1[i] >= 1.) {
-        q1[i] = -1.;
-      }
-      if (q2[i] >= 1.) {
-        q2[i] = -1.;
-      }
-      if (q3[i] >= 1.) {
-        q3[i] = -1.;
+          for (int i = 0; i < 68; ++i) {
+            val = byteArray[i];
+            if (val < 16) {
+              s += "0";
+            }
+            s += String(val, HEX);
+          }
+
+          s.toCharArray(charArray, 137);
+          pCharacteristic0->setValue(quat0Data);
+          pCharacteristic0->notify();
+        }
       }
     }
-
-    String str0 = "";
-    String str1 = "";
-    String str2 = "";
-    String str3 = "";
-
-    for (int i = 0; i < 4; ++i) {
-      str0 += floatToHexString(q0[i]);
-      str1 += floatToHexString(q1[i]);
-      str2 += floatToHexString(q2[i]);
-      str3 += floatToHexString(q3[i]);
-    }
-
-    Serial.print(q0[0]);
-    Serial.print(" ");
-    Serial.print(q0[1]);
-    Serial.print(" ");
-    Serial.print(q0[2]);
-    Serial.print(" ");
-    Serial.print(q0[3]);
-    Serial.print("\n");
-    Serial.print(str0);
-
-    str0.toCharArray(quat0Data, 33);
-    str1.toCharArray(quat1Data, 33);
-    str2.toCharArray(quat2Data, 33);
-    str3.toCharArray(quat3Data, 33);
-
-    // update the characteristic values
-    
-    pCharacteristic0->setValue(quat0Data);
-    pCharacteristic0->notify();
-
-    pCharacteristic1->setValue(quat1Data);
-    pCharacteristic1->notify();
-
-    pCharacteristic2->setValue(quat2Data);
-    pCharacteristic2->notify();
-
-    pCharacteristic3->setValue(quat3Data);
-    pCharacteristic3->notify();
-
     Serial.println("ESP32 is connected to the app... Sending Data!");
     delay(200); // delay not required
   }
 }
-
-union {
-  float fval;
-  byte barr[];
-} fb;
-
-String floatToHexString(float f) {
-  fb.fval = f;
-  String s = "";
-  int val = 0;
-
-  for (int i = 0; i < 4; ++i) {
-    val = fb.barr[3 - i];
-    if (val < 16) {
-      s += "0";
-    }
-    s += String(val, HEX);
-  }
-  return s;
-}
-
-

@@ -11,14 +11,16 @@ Sensor::Sensor(int num_imus){
 
 void Sensor::init(){
 
+
     Wire.setSCL(I2C_SCL_PIN);
     Wire.setSDA(I2C_SDA_PIN);
+    Wire.setClock(100000);
 
     for( int imu = 0; imu < NUM_IMUS; imu++){
         Serial.print("Initializing IMU#: "); Serial.print(imu); Serial.print("... ");
         // Configure CS pin as output and pull it low
         pinMode(CS_pins[imu],OUTPUT);
-        digitalWrite(CS_pins[imu],LOW);
+        digitalWriteFast(CS_pins[imu],LOW);
         // Configure imu settings such as sample rate
         config_imu_settings(imu);
 
@@ -27,15 +29,19 @@ void Sensor::init(){
             while (1); // don't continue
         }
         Serial.println("Success");
-        digitalWrite(CS_pins[imu],HIGH);
+        digitalWriteFast(CS_pins[imu],HIGH);
     }
     pinMode(CALIB_BUTTON_PIN,INPUT);
 }
 
 
 void Sensor::read_sensors(void){
+long int startTime = micros();
     get_data();
+    Serial.print("get_data elaspsed: ");
+    Serial.println(micros() - startTime);
     apply_calibrations();
+
 }
 
 
@@ -62,7 +68,7 @@ void Sensor::calibrate_ag(bool stop_after){
 
     // loop through each imu
     for(int imu = 0; imu < NUM_IMUS; imu++){
-        digitalWrite(CS_pins[imu],LOW);
+        digitalWriteFast(CS_pins[imu],LOW);
         // collect 32 samples
         for( int i = 0; i< 32; i++){
           imu_list[imu].readAccel();
@@ -72,7 +78,7 @@ void Sensor::calibrate_ag(bool stop_after){
           sum_gyro[imu][2] += imu_list[imu].calcGyro(imu_list[imu].gz);
           sum_accel[imu][2] += imu_list[imu].calcAccel(imu_list[imu].az);
         }
-        digitalWrite(CS_pins[imu],HIGH);
+        digitalWriteFast(CS_pins[imu],HIGH);
 
         avg_gyro[imu][0] = sum_gyro[imu][0]/32;
         avg_gyro[imu][1] = sum_gyro[imu][1]/32;
@@ -94,13 +100,13 @@ void Sensor::calibrate_ag(bool stop_after){
 
     // loop through each imu
     for(int imu = 0; imu < NUM_IMUS; imu++){
-        digitalWrite(CS_pins[imu],LOW);
+        digitalWriteFast(CS_pins[imu],LOW);
         // collect 32 samples
         for( int j = 0; j<32; j++){
             imu_list[imu].readAccel();
             sum_accel[imu][1] += imu_list[imu].calcAccel(imu_list[imu].ay);
         }
-        digitalWrite(CS_pins[imu],HIGH);
+        digitalWriteFast(CS_pins[imu],HIGH);
         avg_accel[imu][1] = sum_accel[imu][1]/32;
     }
     Serial.println("  done"); Serial.println("");
@@ -117,13 +123,13 @@ void Sensor::calibrate_ag(bool stop_after){
     delay(500);
 
     for(int imu = 0; imu < NUM_IMUS; imu++){
-        digitalWrite(CS_pins[imu],LOW);
+        digitalWriteFast(CS_pins[imu],LOW);
         // collect 32 samples
         for(int k = 0 ; k < 32 ; k++){
             imu_list[imu].readAccel();
             sum_accel[imu][0] += -imu_list[imu].calcAccel(imu_list[imu].ax); // negated for RHR
         }
-        digitalWrite(CS_pins[imu],HIGH);
+        digitalWriteFast(CS_pins[imu],HIGH);
         avg_accel[imu][0] = sum_accel[imu][0]/32;
     }
     Serial.println("  done"); Serial.println("");
@@ -353,11 +359,15 @@ void Sensor::get_data(void){
     for( int imu = 0; imu < NUM_IMUS; imu++){
 
         // pull CS line low for one imu
-        digitalWrite(CS_pins[imu],LOW);
+        digitalWriteFast(CS_pins[imu],LOW);
 
         // check to see if data is available and if so sample the imu
+
         if (imu_list[imu].accelAvailable()){
+          // long int startTime = micros();
           imu_list[imu].readAccel();
+          // Serial.print("Time elaspsed: ");
+          // Serial.println(micros() - startTime);
         }
         if (imu_list[imu].gyroAvailable()){
           imu_list[imu].readGyro();
@@ -365,6 +375,8 @@ void Sensor::get_data(void){
         if (imu_list[imu].magAvailable()){
           imu_list[imu].readMag();
         }
+
+
 
         // update raw data arrays with new values
         accel_data_raw[imu][0] = -imu_list[imu].calcAccel(imu_list[imu].ax); // negated for RHR
@@ -379,7 +391,7 @@ void Sensor::get_data(void){
         mag_data_raw[imu][1] = imu_list[imu].calcMag(imu_list[imu].my);
         mag_data_raw[imu][2] = imu_list[imu].calcMag(imu_list[imu].mz);
 
-        digitalWrite(CS_pins[imu],HIGH);
+        digitalWriteFast(CS_pins[imu],HIGH);
     }
 }
 

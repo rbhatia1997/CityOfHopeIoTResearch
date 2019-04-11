@@ -33,8 +33,8 @@ void Bluetooth::sendData(filter_state_t * filter_state)
   // delay(100);
 
   //test data to send over
-  // long int prevTime = millis();
-  // byte testData = 0;
+  long int prevTime = micros();
+  byte testData = 0;
 
   float farr[17];
   farr[16] = 0.201;
@@ -57,10 +57,10 @@ void Bluetooth::sendData(filter_state_t * filter_state)
 
   for (int i = 0; i < 17; ++i) {
     floatAsByte.f_val = farr[i];
-    array[4*i] = floatAsByte.b_arr[3];
-    array[4*i+1] = floatAsByte.b_arr[2];
-    array[4*i+2] = floatAsByte.b_arr[1];
-    array[4*i+3] = floatAsByte.b_arr[0];
+    array[4*i] = floatAsByte.b_arr[0];
+    array[4*i+1] = floatAsByte.b_arr[1];
+    array[4*i+2] = floatAsByte.b_arr[2];
+    array[4*i+3] = floatAsByte.b_arr[3];
   }
 
   for(int i = 0; i < 68; i++)
@@ -68,10 +68,10 @@ void Bluetooth::sendData(filter_state_t * filter_state)
     // testData++;
     HWSERIAL.write(array[i]);
     // COMPSERIAL.println(testData);
-    delay(5);
+    //delayMicroseconds(1);
   }
-  // long int loopTime = millis() - prevTime;
-  // if (printToScreen) {COMPSERIAL.print("Sent test Data:"); COMPSERIAL.println(loopTime);}
+  long int loopTime = micros() - prevTime;
+  if (printToScreen) {COMPSERIAL.print("Sent test Data:"); COMPSERIAL.println(loopTime);}
 
 
   // for(int i = 0; i<NUM_FILTERS;i++)

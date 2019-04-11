@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
-    <device id="retina6_5" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+    <device id="retina6_1" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,6 +13,7 @@
         <!--Home-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
                 <viewController id="9pv-A4-QxB" customClass="HomeViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -24,11 +25,11 @@
                     <connections>
                         <segue destination="mk8-j4-8vs" kind="show" identifier="toBluetoothVC" id="bOW-1G-LVU"/>
                         <segue destination="EHL-F2-et9" kind="show" identifier="toCoreDataVC" id="uO3-RA-wzc"/>
+                        <segue destination="Yo6-Ig-l22" kind="show" identifier="toSettingsVC" id="hwR-N0-q8y"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2" y="359"/>
+            <point key="canvasLocation" x="-717" y="360"/>
         </scene>
         <!--Exercise-->
         <scene sceneID="wg7-f3-ORb">
@@ -60,7 +61,7 @@
                         <viewLayoutGuide key="safeArea" id="7Lw-Iq-ihw"/>
                     </view>
                     <connections>
-                        <segue destination="Uok-6W-NSd" kind="unwind" identifier="toExerciseVC" unwindAction="unwindToExerciseVCWithSegue:" id="1eV-2z-K8q"/>
+                        <segue destination="Uok-6W-NSd" kind="unwind" identifier="toExerciseVCfromGuideVC" unwindAction="unwindToExerciseVCWithSegue:" id="1eV-2z-K8q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63B-uh-o29" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -68,10 +69,10 @@
             </objects>
             <point key="canvasLocation" x="749" y="1107"/>
         </scene>
-        <!--Progress Comp View Controller-->
+        <!--Single Progress View Controller-->
         <scene sceneID="X4m-Pu-fdc">
             <objects>
-                <viewController id="0yG-eN-jpK" customClass="ProgressCompViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="0yG-eN-jpK" customClass="SingleProgressViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="qZx-NN-zeq">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -176,7 +177,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DM3-Mk-u0t" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Gmt-K1-2Ca" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-761" y="1107"/>
+            <point key="canvasLocation" x="-1446" y="1108"/>
         </scene>
         <!--Item-->
         <scene sceneID="Geg-iE-cYI">
@@ -196,7 +197,26 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KgA-Kd-uiY" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="eCg-Zl-dQf" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1" y="1107"/>
+            <point key="canvasLocation" x="-716" y="1108"/>
+        </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="gvc-wo-Rc3">
+            <objects>
+                <viewController id="Yo6-Ig-l22" customClass="SettingsViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="YFW-n5-fyU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="1gG-b6-nDW"/>
+                    </view>
+                    <connections>
+                        <segue destination="VYA-ft-dZH" kind="unwind" identifier="toHomeVCfromSettingsVC" unwindAction="unwindToHomeVCWithSegue:" id="W8Y-cq-JWX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AlL-7C-zCl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="VYA-ft-dZH" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="16" y="1107"/>
         </scene>
     </scenes>
     <resources>

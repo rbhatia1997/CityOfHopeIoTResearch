@@ -32,6 +32,22 @@ extension UIColor {
             return (0, 0, 0, 0)
         }
     }
+    
+    func hsbSat(_ sat: CGFloat) -> UIColor {
+        let hue = hsba.hue
+        let brt = hsba.brightness
+        let alp = hsba.alpha
+        
+        return UIColor(hue: hue, saturation: sat, brightness: brt, alpha: alp)
+    }
+    
+    func hsbBrt(_ brt: CGFloat) -> UIColor {
+        let hue = hsba.hue
+        let sat = hsba.saturation
+        let alp = hsba.alpha
+        
+        return UIColor(hue: hue, saturation: sat, brightness: brt, alpha: alp)
+    }
 }
 
 func hsbShadeTint(color: UIColor, sat: CGFloat) -> UIColor {

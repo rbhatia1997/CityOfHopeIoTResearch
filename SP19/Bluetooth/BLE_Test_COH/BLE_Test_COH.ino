@@ -1,5 +1,6 @@
 /*
-    Based on Neil Kolban example for IDF: https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleServer.cpp
+    Based on Neil Kolban example for IDF: 
+    https://github.com/nkolban/esp32-snippets/blob/master/cpp_utils/tests/BLE%20Tests/SampleServer.cpp
     Based on the Arduino ESP32 Port by Evandro Copercini & Chegewara
     General changes & adaptation for iOS by Ronak Bhatia & Darien Joso from City of Hope's HMC Clinic
     Last Date Updated: Sunday, March 27, 2019
@@ -33,20 +34,12 @@
 BLEServer* pServer = NULL; // null instance of BLE Server
 BLEService *pService = NULL;
 
-// We are using Four characteristics to represent the Four Quaternions from the Four IMUs.
-
 BLECharacteristic* pCharacteristic0 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic1 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic2 = NULL; // define global variable - characteristic
-BLECharacteristic* pCharacteristic3 = NULL; // define global variable - characteristic
 
 bool deviceConnected = false;
 
 #define SERVICE_UUID         "2f391f0f-1c30-46fb-a972-a22c2f7570ee"
 #define CHARACTERISTIC_UUID0 "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID1 "beb5484e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID2 "beb5485e-36e1-4688-b7f5-ea07361b26a8"
-#define CHARACTERISTIC_UUID3 "beb5486e-36e1-4688-b7f5-ea07361b26a8"
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
@@ -67,10 +60,12 @@ float q2[] = {0, 0, 0, 0};
 float q3[] = {0, 0, 0, 0};
 
 // quaternion hex strings
-char quat0Data[33] = "";
-char quat1Data[33] = "";
-char quat2Data[33] = "";
-char quat3Data[33] = "";
+char quat0Data[137] = "";
+
+// time variables
+uint32_t ti;
+uint32_t tf;
+float td;
 
 void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
@@ -90,25 +85,16 @@ void setup() {
   // setup characteristics
   pCharacteristic0 = pService->createCharacteristic(CHARACTERISTIC_UUID0,
                        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic1 = pService->createCharacteristic(CHARACTERISTIC_UUID1,
-                       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic2 = pService->createCharacteristic(CHARACTERISTIC_UUID2,
-                       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-  pCharacteristic3 = pService->createCharacteristic(CHARACTERISTIC_UUID3,
-                       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-
+                       
   // add descriptors to characteristics
   pCharacteristic0->addDescriptor(new BLE2902());
-  pCharacteristic1->addDescriptor(new BLE2902());
-  pCharacteristic2->addDescriptor(new BLE2902());
-  pCharacteristic3->addDescriptor(new BLE2902());
 
   pService->start();
-  // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+  // BLEAdvertising *pAdvertising = pServer->getAdvertising(); // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+  pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
   
@@ -117,15 +103,16 @@ void setup() {
 
 void loop() {
   if (deviceConnected == true) {
-
+    tf = millis();
+    td = float( (tf - ti)/1000.0 );
+    ti = tf;
+    
     for (int i = 0; i < 4; ++i) {
-      // fake data
-      q0[i] += 0.001;
-      q1[i] += 0.005;
-      q2[i] += 0.010;
-      q3[i] += 0.050;
+      q0[i] += 0.001*i;
+      q1[i] += 0.001*(i+4);
+      q2[i] += 0.001*(i+8);
+      q3[i] += 0.001*(i+12);
 
-      // data must be contained between 1 and -1
       if (q0[i] >= 1.) { q0[i] = -1.; }
       if (q1[i] >= 1.) { q1[i] = -1.; }
       if (q2[i] >= 1.) { q2[i] = -1.; }
@@ -133,47 +120,24 @@ void loop() {
     }
 
     String str0 = "";
-    String str1 = "";
-    String str2 = "";
-    String str3 = "";
+
+    str0 += floatToHexString(td);
     
     for (int i = 0; i < 4; ++i) {
       str0 += floatToHexString(q0[i]);
-      str1 += floatToHexString(q1[i]);
-      str2 += floatToHexString(q2[i]);
-      str3 += floatToHexString(q3[i]);
+      str0 += floatToHexString(q1[i]);
+      str0 += floatToHexString(q2[i]);
+      str0 += floatToHexString(q3[i]);
     }
 
-    Serial.print(q0[0]);
-    Serial.print(" ");
-    Serial.print(q0[1]);
-    Serial.print(" ");
-    Serial.print(q0[2]);
-    Serial.print(" ");
-    Serial.print(q0[3]);
-    Serial.print("\n");
-    Serial.print(str0);
+    str0.toCharArray(quat0Data, 137);
 
-    str0.toCharArray(quat0Data, 33);
-    str1.toCharArray(quat1Data, 33);
-    str2.toCharArray(quat2Data, 33);
-    str3.toCharArray(quat3Data, 33);
-    
     // update the characteristic values
     pCharacteristic0->setValue(quat0Data);
     pCharacteristic0->notify();
 
-    pCharacteristic1->setValue(quat1Data);
-    pCharacteristic1->notify();
-
-    pCharacteristic2->setValue(quat2Data);
-    pCharacteristic2->notify();
-    
-    pCharacteristic3->setValue(quat3Data);
-    pCharacteristic3->notify();
-
-    Serial.println("ESP32 is connected to the app... Sending Data!");
-    delay(200); // delay not required
+//    Serial.println("ESP32 is connected to the app... Sending Data!");
+    delay(10); // delay not required
   }
 }
 

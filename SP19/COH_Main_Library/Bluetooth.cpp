@@ -1,7 +1,8 @@
 #include "Bluetooth.h"
 
-Bluetooth::Bluetooth(int num_filters){
+Bluetooth::Bluetooth(int num_filters, bool printBool){
   NUM_FILTERS = num_filters;
+  printToScreen = printBool;
 
 }
 
@@ -24,29 +25,50 @@ void Bluetooth::float2Byte(float value)
 
 void Bluetooth::sendData(filter_state_t * filter_state)
 {
-  for(int k = 0; k < 3; k++){
+  for(int k = 0; k < 4; k++){
     HWSERIAL.write(start[k]);
+    // delay(5);
   }
-  COMPSERIAL.write("Sent start");
-  
-  for(int i = 0; i<NUM_FILTERS;i++)
+  if (printToScreen) {COMPSERIAL.write("Sent start\n");}
+  // delay(100);
+
+  //test data to send over
+  long int prevTime = millis();
+  byte testData = 0;
+  for(int i = 0; i < 68; i++)
   {
-    floatAsByte.f_val = filter_state->q_inertial_imu[i].q0;
-    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
-    COMPSERIAL.write("sent q0");
-
-    floatAsByte.f_val = filter_state->q_inertial_imu[i].q1;
-    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
-    COMPSERIAL.write("sent q1");
-
-    floatAsByte.f_val = filter_state->q_inertial_imu[i].q2;
-    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
-    COMPSERIAL.write("sent q2");
-
-    floatAsByte.f_val = filter_state->q_inertial_imu[i].q3;
-    for(int j = 0; j<3; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
-    COMPSERIAL.write("sent q3");
+    testData++;
+    HWSERIAL.write(testData);
+    // COMPSERIAL.println(testData);
+    delay(5);
   }
+  long int loopTime = millis() - prevTime;
+  if (printToScreen) {COMPSERIAL.print("Sent test Data:"); COMPSERIAL.println(loopTime);}
+
+
+  // for(int i = 0; i<NUM_FILTERS;i++)
+  // {
+  //   floatAsByte.f_val = filter_state->q_inertial_imu[i].q0;
+  //   for(int j = 0; j<4; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
+  //   if (printToScreen) {COMPSERIAL.write("sent q0\n");}
+  //
+  //   floatAsByte.f_val = filter_state->q_inertial_imu[i].q1;
+  //   for(int j = 0; j<4; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
+  //   if (printToScreen) {COMPSERIAL.write("sent q1\n");}
+  //
+  //   floatAsByte.f_val = filter_state->q_inertial_imu[i].q2;
+  //   for(int j = 0; j<4; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
+  //   if (printToScreen) {COMPSERIAL.write("sent q2\n");}
+  //
+  //   floatAsByte.f_val = filter_state->q_inertial_imu[i].q3;
+  //   for(int j = 0; j<4; j++){HWSERIAL.write(floatAsByte.b_arr[i]);}
+  //   if (printToScreen) {COMPSERIAL.write("sent q3\n");}
+  //
+  //   floatAsByte.f_val = millis();
+  //   for(int j = 0; j<4; j++) {HWSERIAL.write(floatAsByte.b_arr[i]);}
+  //   if (printToScreen) {COMPSERIAL.write("sent time\n");}
+  //
+  // }
 }
 
   void Bluetooth::testSendFloat(float value)

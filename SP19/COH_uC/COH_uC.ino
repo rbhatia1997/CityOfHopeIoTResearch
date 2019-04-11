@@ -21,13 +21,14 @@ COH AMT Clinic Team microcontroller code
 #include "Pinouts.h"
 
 
-#define NUM_SENSORS 4
+#define NUM_SENSORS 1
+bool printToScreen = true;
 
 float SAMPLE_FREQ = 100; // sample frequency in hertz
 unsigned long prevTime = 0;
 
 // Instantiate objects
-Bluetooth blue = Bluetooth(NUM_SENSORS);
+Bluetooth blue = Bluetooth(NUM_SENSORS,printToScreen);
 Sensor sensor = Sensor(NUM_SENSORS);
 Filter filter = Filter(NUM_SENSORS,SAMPLE_FREQ);
 Led status_led = Led(STATUS_LED_PIN);
@@ -60,18 +61,16 @@ void loop(){
         prevTime = micros();
         sensor.read_sensors();
         filter.update(&sensor.sensor_state);
-//        blue.sendData(&filter.filter_state);
-          float testValue = 42.787;
-          blue.testSendFloat(testValue);
+        blue.sendData(&filter.filter_state);
         for(int imu = 0; imu < NUM_SENSORS; imu++){
-            //Serial.println(filter.print_rpy_intertial_imu(imu));
+//            Serial.println(filter.print_rpy_intertial_imu(imu));
             //Serial.println(sensor.print_accel_raw(imu));
             //Serial.println(sensor.print_gyro_raw(imu));
             //Serial.println(sensor.print_mag_raw(imu));
             //Serial.println(sensor.print_accel(imu));
             //Serial.println(sensor.print_gyro(imu));
             //Serial.println(sensor.print_mag(imu));
-            //Serial.println(filter.print_q_inertial_imu(imu));
+//            Serial.println(filter.print_q_inertial_imu(imu));
         }
     }
 //    // For testing sample frequency

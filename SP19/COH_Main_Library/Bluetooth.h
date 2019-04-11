@@ -12,19 +12,20 @@ class Bluetooth
 {
 public:
 
-    Bluetooth(int num_filters);
+    Bluetooth(int num_filters,bool printBool);
 
     void init(void);
 
     void float2Byte(float value);
 
-    void sendData(filter_state_t * filter_state); 
+    void sendData(filter_state_t * filter_state);
     void testSendFloat(float value);
 
 private:
   int NUM_FILTERS;
+  bool printToScreen;
 
   byte start[4] = {255,255,255,255};
-  
+
 };
 #endif

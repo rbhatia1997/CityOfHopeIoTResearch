@@ -87,7 +87,7 @@ void setup() {
   Serial.begin(115200); // this BAUD rate is set intentionally
   // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
   // Serial2 is the transmission protocol used between the Teensy and the ESP32.
-  Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  Serial2.begin(250000, SERIAL_8N1, RXD2, TXD2);
   // Prints the Pins for the ESP32 for the TX/RX in case you forget.
   Serial.println("Serial Txd is on pin: " + String(TXD2));
   Serial.println("Serial Rxd is on pin: " + String(RXD2));
@@ -188,6 +188,7 @@ void loop() {
     str3.toCharArray(quat3Data, 33);
 
     // update the characteristic values
+    
     pCharacteristic0->setValue(quat0Data);
     pCharacteristic0->notify();
 

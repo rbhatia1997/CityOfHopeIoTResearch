@@ -92,7 +92,8 @@ void setup() {
 
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
-  Serial.println("Creating BLE Server & Callback Function Success");
+  Serial.println("Creating BLE Server & Callback");
+  Serial.println("");
 
   // setup characteristics
   pCharacteristic0 = pService->createCharacteristic(CHARACTERISTIC_UUID0,
@@ -116,8 +117,10 @@ void setup() {
   Serial.begin(115200);
   //Serial1.begin(9600, SERIAL_8N1, RXD2, TXD2);
   Serial2.begin(250000, SERIAL_8N1, RXD2, TXD2);
+  Serial.println(""); 
   Serial.println("Serial Txd is on pin: " + String(TXD2));
-  Serial.println("Serial Rxd is on pin: " + String(RXD2));
+  Serial.println("Serial Rxd is on pin: " + String(RXD2)); 
+  Serial.println(""); 
 }
 
 void loop() {
@@ -152,12 +155,13 @@ void loop() {
           }
 
           s.toCharArray(charArray, 137);
-          pCharacteristic0->setValue(quat0Data);
+          Serial.println(s); 
+          pCharacteristic0->setValue(charArray);
           pCharacteristic0->notify();
         }
       }
     }
-    Serial.println("ESP32 is connected to the app... Sending Data!");
-    delay(200); // delay not required
+//    Serial.println("ESP32 is connected to the app... Sending Data!");
+//    delay(200); // delay not required
   }
 }

@@ -66,8 +66,8 @@ class MyServerCallbacks: public BLEServerCallbacks {
 bool searching = true; // searching for the 4 bytes of 255
 int startCounter = 0;
 int arrayCounter = 0;
-byte byteArray[68];
-char charArray[137];
+byte byteArray[72];
+char charArray[145];
 
 uint32_t ti;
 uint32_t tf;
@@ -139,14 +139,14 @@ void loop() {
       } else {
         byteArray[arrayCounter] = checkByte;
         arrayCounter++;
-        if (arrayCounter == 68) {
+        if (arrayCounter == 72) {
           searching = true;
           arrayCounter = 0;
 
           String s = "";
           int val;
 
-          for (int i = 0; i < 68; ++i) {
+          for (int i = 0; i < 72; ++i) {
             val = byteArray[i];
             if (val < 16) {
               s += "0";
@@ -154,14 +154,12 @@ void loop() {
             s += String(val, HEX);
           }
 
-          s.toCharArray(charArray, 137);
-          Serial.println(s); 
+          s.toCharArray(charArray, 145);
+          //Serial.println(s); 
           pCharacteristic0->setValue(charArray);
           pCharacteristic0->notify();
         }
       }
     }
-//    Serial.println("ESP32 is connected to the app... Sending Data!");
-//    delay(200); // delay not required
   }
 }

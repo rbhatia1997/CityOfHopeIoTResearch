@@ -42,7 +42,8 @@ class Header: UIView {
         label.font = UIFont(name: "MontserratAlternates-ExtraLight", size: fontSize)
         label.textColor = .black
         label.text = headerString
-        label.sizeToFit()
+//        label.sizeToFit()
+        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
         
         self.addSubview(label)
@@ -52,6 +53,7 @@ class Header: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
+        label.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
     }
     
     func updateHeader(text: String, color: UIColor, fsize: CGFloat) {

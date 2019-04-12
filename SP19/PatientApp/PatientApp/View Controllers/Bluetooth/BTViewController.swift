@@ -122,23 +122,27 @@ extension BTViewController: CBPeripheralDelegate {
         case char0UUID:
             char0Label.text = characteristic.uuid.uuidString
             let data = characteristic.value!
-            let farr: [Float] = dataToFloats(data: data, numFloats: 17)
-            var s = "floats:"
-            for i in 0..<farr.count {
-                if i == 0 {
-                    s += String(format: " %.0f", farr[i])
-                } else {
-                    s += String(format: " %.3f", farr[i])
+            let farr: [Float] = dataToFloats(data: data, numFloats: 18)
+            var roll = String()
+            var pitch = String()
+            var yaw = String()
+            var s = ""
+            if farr.count == 18 {
+                s += "timestep: \(String(format: " %.3f", farr[16]))\n"
+                for i in 0..<4 {
+                    s += "q\(i): [\(String(format: " %.2f", farr[4*i])), \(String(format: " %.2f", farr[4*i+1])), \(String(format: " %.2f", farr[4*i+2])), \(String(format: " %.2f", farr[4*i+3]))]\n"
+                    roll = String(format: "%.2f", 180/Float.pi*get_roll(q: [ farr[4*i], farr[4*i+1], farr[4*i+2], farr[4*i+3] ]))
+                    pitch = String(format: "%.2f", 180/Float.pi*get_pitch(q: [ farr[4*i], farr[4*i+1], farr[4*i+2], farr[4*i+3] ]))
+                    yaw = String(format: "%.2f", 180/Float.pi*get_yaw(q: [ farr[4*i], farr[4*i+1], farr[4*i+2], farr[4*i+3] ]))
+                    s += "rpy\(i): [\(roll), \(pitch), \(yaw)] \n"
                 }
+                char0Val.text = s
             }
-            char0Val.text = s
         default:
             serviceUUIDLabel.text = "No data"
             peripheralName.text = "No data"
         }
     }
-    
-    
 }
 
 extension BTViewController: ViewConstraintProtocol {
@@ -171,7 +175,7 @@ extension BTViewController: ViewConstraintProtocol {
         
         groupConstraints(topView: peripheralName, title1: char0Title, title1Val: char0Label,
                          title2: char0ValTitle, title2Val: char0Val, titleSize: titleSize, valSize: valSize)
-        drawRoundedRect(view: char0Title, origin: CGPoint(x: -10, y: -10), width: self.view.frame.width - 20, height: 145, corner: 5, color: colorTheme, strokeWidth: 1.0)
+        drawRoundedRect(view: char0Title, origin: CGPoint(x: -10, y: -10), width: self.view.frame.width - 20, height: 280, corner: 5, color: colorTheme, strokeWidth: 1.0)
         
         homeButton.translatesAutoresizingMaskIntoConstraints = false
         homeButton.heightAnchor.constraint(equalToConstant: 50).isActive = true

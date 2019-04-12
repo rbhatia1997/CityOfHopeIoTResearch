@@ -18,7 +18,6 @@ class HomeViewController: UIViewController {
     
     // private variables
     private let colorTheme = UIColor(named: "blue")!
-    private let dev: Bool = true
     private let settingsButton = UIButton()
 
     // subviews
@@ -52,14 +51,13 @@ class HomeViewController: UIViewController {
         // displayUI
         setupViews()
         setupConstraints()
-        
-//        self.view.layoutIfNeeded()
-//        showBorder(view: BTButton)
-//        showBorder(view: CDButton)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        reloadUser()
+        headerView.updateHeader(text: "Hello, \(user.name)", color: colorTheme, fsize: 30)
         
         onVC = true
         centralManager.scanForPeripherals(withServices: [serviceUUID])
@@ -67,6 +65,15 @@ class HomeViewController: UIViewController {
         reloadLocalVariables()
         goalView.updateGoals(goalList: goalString)
         circleGraph.updateProgressGraph(color: colorTheme, exNum: exerciseValues.count, exVal: exerciseValues, exName: exerciseNames)
+        
+        if devMode {
+            devButtonSetup()
+        } else {
+            if BTButton.tag == 104 && CDButton.tag == 104{
+                BTButton.removeFromSuperview()
+                CDButton.removeFromSuperview()
+            }
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -204,7 +211,8 @@ extension HomeViewController {
 extension HomeViewController: ViewConstraintProtocol {
     internal func setupViews() {
         // update all of the views
-        headerView.updateHeader(text: "Hello, \(username)", color: colorTheme, fsize: 30)
+        reloadUser()
+        headerView.updateHeader(text: "Hello, \(user.name)", color: colorTheme, fsize: 30)
         BTView.updateBTStatus(connStat: false, deviceString: "N/A")
         
         // add the subviews to the main view
@@ -216,17 +224,6 @@ extension HomeViewController: ViewConstraintProtocol {
         settingsButton.setButtonParams(color: .gray, string: "Settings", ftype: "Montserrat-Regular", fsize: 16, align: .center)
         settingsButton.addTarget(self, action: #selector(SettingsButtonPressed), for: .touchUpInside)
         self.view.addSubview(settingsButton)
-        
-        // if needed for testing, include the BT tab
-        if dev {
-            BTButton.setButtonParams(color: .gray, string: "BT", ftype: "Montserrat-Regular", fsize: 16, align: .center)
-            BTButton.addTarget(self, action: #selector(BTButtonPressed), for: .touchUpInside)
-            self.view.addSubview(BTButton)
-            
-            CDButton.setButtonParams(color: .gray, string: "CD", ftype: "Montserrat-Regular", fsize: 16, align: .center)
-            CDButton.addTarget(self, action: #selector(CDButtonPressed), for: .touchUpInside)
-            self.view.addSubview(CDButton)
-        }
 }
     
     internal func setupConstraints() {
@@ -263,21 +260,30 @@ extension HomeViewController: ViewConstraintProtocol {
         settingsButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor).isActive = true
         settingsButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         settingsButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+    }
+    
+    func devButtonSetup() {
+        BTButton.setButtonParams(color: .gray, string: "BT", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        BTButton.addTarget(self, action: #selector(BTButtonPressed), for: .touchUpInside)
+        BTButton.tag = 104
+        self.view.addSubview(BTButton)
         
-        // if needed for testing, add the BT button constraints
-        if dev {
-            BTButton.translatesAutoresizingMaskIntoConstraints = false
-            BTButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            BTButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
-            BTButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor).isActive = true
-            BTButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor).isActive = true
-            
-            CDButton.translatesAutoresizingMaskIntoConstraints = false
-            CDButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            CDButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
-            CDButton.bottomAnchor.constraint(equalTo: BTButton.topAnchor).isActive = true
-            CDButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor).isActive = true
-        }
+        CDButton.setButtonParams(color: .gray, string: "CD", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        CDButton.addTarget(self, action: #selector(CDButtonPressed), for: .touchUpInside)
+        CDButton.tag = 104
+        self.view.addSubview(CDButton)
+        
+        BTButton.translatesAutoresizingMaskIntoConstraints = false
+        BTButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        BTButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        BTButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor).isActive = true
+        BTButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor).isActive = true
+        
+        CDButton.translatesAutoresizingMaskIntoConstraints = false
+        CDButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        CDButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        CDButton.bottomAnchor.constraint(equalTo: BTButton.topAnchor).isActive = true
+        CDButton.leadingAnchor.constraint(equalTo: headerView.leadingAnchor).isActive = true
     }
     
     @objc func SettingsButtonPressed(_ sender: UIButton) {

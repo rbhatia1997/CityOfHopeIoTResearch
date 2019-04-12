@@ -59,15 +59,16 @@ func reloadAllExerciseData(_ sort: [NSSortDescriptor]) {
     exercises = getAllExerciseData(sort)
 }
 
-func addExerciseData(id: String, name: String, image: String, icon: String, use: Bool, detection: String) {
+func addExerciseData(id: String, name: String, icon: String, use: Bool, detection: String, rep: Int16, rom: Float) {
     let exercise = Exercise(context: context)
     exercise.id = id
     exercise.name = name
-    exercise.image = image
     exercise.icon = icon
     exercise.meta = Set<Meta>()
     exercise.use = use
     exercise.detection = detection
+    exercise.baselineRep = rep
+    exercise.baselineRom = rom
     
     do {
         try context.save()

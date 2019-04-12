@@ -290,10 +290,12 @@ extension SweepGraph: ViewConstraintProtocol {
         leftButton.translatesAutoresizingMaskIntoConstraints = false
         leftButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
         leftButton.centerXAnchor.constraint(equalTo: self.leadingAnchor, constant: 50).isActive = true
+        leftButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
         
         rightButton.translatesAutoresizingMaskIntoConstraints = false
         rightButton.centerYAnchor.constraint(equalTo: leftButton.centerYAnchor).isActive = true
         rightButton.centerXAnchor.constraint(equalTo: self.trailingAnchor, constant: -50).isActive = true
+        rightButton.widthAnchor.constraint(equalToConstant: 120).isActive = true
         
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -304,13 +306,13 @@ extension SweepGraph: ViewConstraintProtocol {
         leftButton.setButtonParams(color: leftColor, string: "Left-arm\nexercise", ftype: "Montserrat-Regular", fsize: 16, align: .center)
         leftButton.titleLabel?.numberOfLines = 2
         leftButton.titleLabel?.textAlignment = .center
-        leftButton.setButtonFrame(width: 100, borderWidth: 1.0, borderColor: leftColor, cornerRadius: 5, fillColor: .clear)
+        leftButton.setButtonFrame(borderWidth: 1.0, borderColor: leftColor, cornerRadius: leftButton.frame.height/2, fillColor: .clear, inset: 10)
         leftButton.addTarget(self, action: #selector(leftButtonPressed), for: .touchUpInside)
         
         rightButton.setButtonParams(color: rightColor, string: "Right-arm\nexercise", ftype: "Montserrat-Regular", fsize: 16, align: .center)
         rightButton.titleLabel?.numberOfLines = 2
         rightButton.titleLabel?.textAlignment = .center
-        rightButton.setButtonFrame(width: 100, borderWidth: 1.0, borderColor: rightColor, cornerRadius: 5, fillColor: .clear)
+        rightButton.setButtonFrame(borderWidth: 1.0, borderColor: rightColor, cornerRadius: rightButton.frame.height/2, fillColor: .clear, inset: 10)
         rightButton.addTarget(self, action: #selector(rightButtonPressed), for: .touchUpInside)
     }
 }

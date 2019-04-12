@@ -27,11 +27,6 @@ class GoalsTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func achievedButtonPressed(_ tag: Int) {
-        achieved = !achieved
-        updateGoalCell(number: number, goal: goalString, isDone: achieved)
-    }
-    
     func updateGoalCell(number: Int, goal: String, isDone: Bool) {
         self.number = number
         goalString = goal
@@ -57,18 +52,10 @@ extension GoalsTableViewCell: ViewConstraintProtocol {
         goalLabel.setLabelParams(color: .black, string: goalString, ftype: "Montserrat-Regular", fsize: 16, align: .left)
         self.addSubview(goalLabel)
         
-        doneButton.setButtonParams(color: .gray, string: achieved ? "Complete: ✅" : "Complete: ❌", ftype: "Montserrat-Regular", fsize: 12, align: .left)
+        doneButton.setButtonParams(color: .gray, string: achieved ? "Complete: ✅" : "Complete: ❌", ftype: "Montserrat-Regular", fsize: 12, align: .center)
+        doneButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: doneButton.frame.height/2, fillColor: .clear, inset: 5)
         doneButton.addTarget(self, action: #selector(tapCompleteButton), for: .touchUpInside)
         self.addSubview(doneButton)
-        
-        let screen = CGRect(x: -5, y: 0, width: doneButton.frame.width + 10, height: doneButton.frame.height)
-        let screenPath = UIBezierPath(roundedRect: screen, cornerRadius: 5)
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = screenPath.cgPath
-        shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.strokeColor = UIColor.gray.cgColor
-        shapeLayer.lineWidth = 1.0
-        doneButton.layer.addSublayer(shapeLayer)
     }
     
     internal func setupConstraints() {
@@ -82,12 +69,12 @@ extension GoalsTableViewCell: ViewConstraintProtocol {
         goalLabel.topAnchor.constraint(equalTo: numberLabel.topAnchor).isActive = true
         goalLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true
         goalLabel.leadingAnchor.constraint(equalTo: numberLabel.trailingAnchor).isActive = true
-        goalLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -110).isActive = true
+        goalLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -120).isActive = true
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         doneButton.centerYAnchor.constraint(equalTo: goalLabel.centerYAnchor).isActive = true
         doneButton.heightAnchor.constraint(equalToConstant: doneButton.frame.height).isActive = true
         doneButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
-        doneButton.widthAnchor.constraint(equalToConstant: 50)
+        doneButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }
 }

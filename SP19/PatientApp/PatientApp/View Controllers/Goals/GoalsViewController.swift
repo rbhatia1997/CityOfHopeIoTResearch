@@ -81,10 +81,12 @@ extension GoalsViewController: ViewConstraintProtocol {
         self.view.addSubview(headerView)
         
         addButton.setButtonParams(color: .gray, string: "Add", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        addButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 15, fillColor: .clear, inset: 10)
         addButton.addTarget(self, action: #selector(addGoalsCell), for: .touchUpInside)
         self.view.addSubview(addButton)
         
         removeButton.setButtonParams(color: .gray, string: "Delete", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        removeButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 15, fillColor: .clear, inset: 10)
         removeButton.addTarget(self, action: #selector(removeGoalsCell), for: .touchUpInside)
         self.view.addSubview(removeButton)
         
@@ -119,10 +121,6 @@ extension GoalsViewController: ViewConstraintProtocol {
         removeButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 100).isActive = true
         removeButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         removeButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        self.view.layoutIfNeeded()
-        showBorder(view: addButton, corner: 5, color: .gray)
-        showBorder(view: removeButton, corner: 5, color: .gray)
     }
 }
 

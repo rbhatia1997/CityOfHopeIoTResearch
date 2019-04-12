@@ -17,10 +17,11 @@ extension Exercise {
         return NSFetchRequest<Exercise>(entityName: "Exercise")
     }
 
+    @NSManaged public var baselineRep: Int16
+    @NSManaged public var baselineRom: Float
     @NSManaged public var id: String
     @NSManaged public var name: String
     @NSManaged public var icon: String
-    @NSManaged public var image: String
     @NSManaged public var meta: Set<Meta>
     @NSManaged public var use: Bool
     @NSManaged public var detection: String

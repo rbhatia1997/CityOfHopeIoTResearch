@@ -9,6 +9,11 @@
 import UIKit
 
 protocol WellnessTableViewCellDelegate : AnyObject {
-    func yesNoInteract(_ tag: Int)
-    func sliderInteract(_ tag: Int)
+    func yesInteract(_ tag: Int)
+    func noInteract(_ tag: Int)
+    func sliderInteract(_ tag: Int, _ value: Float)
 }
+
+//extension WellnessTableViewCellDelegate {
+//    func getSliderValue(f: Float) -> Float
+//}

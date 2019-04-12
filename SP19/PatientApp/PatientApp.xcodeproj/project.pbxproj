@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		25C0F0ACEFFF08ECAD72B3BF /* Pods_PatientApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 551E61D6644D81CCB9E1A09A /* Pods_PatientApp.framework */; };
 		F801AAB1225EAAC600D8EE52 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAB0225EAAC600D8EE52 /* SettingsViewController.swift */; };
+		F801AAB42260505D00D8EE52 /* PickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAB32260505D00D8EE52 /* PickerTableViewCell.swift */; };
+		F801AABD2260842F00D8EE52 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABB2260842F00D8EE52 /* User+CoreDataClass.swift */; };
+		F801AABE2260842F00D8EE52 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABC2260842F00D8EE52 /* User+CoreDataProperties.swift */; };
+		F801AAC022611DBB00D8EE52 /* PickerTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABF22611DBB00D8EE52 /* PickerTableViewCellDelegate.swift */; };
 		F818717C222F3C630043DCBE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F818717B222F3C630043DCBE /* AppDelegate.swift */; };
 		F8187183222F3C630043DCBE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8187181222F3C630043DCBE /* Main.storyboard */; };
 		F8187185222F3C640043DCBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8187184222F3C640043DCBE /* Assets.xcassets */; };
@@ -83,6 +87,10 @@
 		551E61D6644D81CCB9E1A09A /* Pods_PatientApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PatientApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE82AD43BB24DB702580C9D8 /* Pods-PatientApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PatientApp.debug.xcconfig"; path = "Target Support Files/Pods-PatientApp/Pods-PatientApp.debug.xcconfig"; sourceTree = "<group>"; };
 		F801AAB0225EAAC600D8EE52 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		F801AAB32260505D00D8EE52 /* PickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerTableViewCell.swift; sourceTree = "<group>"; };
+		F801AABB2260842F00D8EE52 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		F801AABC2260842F00D8EE52 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F801AABF22611DBB00D8EE52 /* PickerTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerTableViewCellDelegate.swift; sourceTree = "<group>"; };
 		F8187178222F3C630043DCBE /* PatientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PatientApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F818717B222F3C630043DCBE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8187182222F3C630043DCBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -188,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				F801AAB0225EAAC600D8EE52 /* SettingsViewController.swift */,
+				F801AAB32260505D00D8EE52 /* PickerTableViewCell.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -233,6 +242,7 @@
 				F8280CB72252F4280067E2F7 /* WellnessTableViewCellDelegate.swift */,
 				F8280CB92252F4590067E2F7 /* GoalsTableViewCellDelegate.swift */,
 				F86AB15F225436EB00C4F95E /* LoadLocalProtocol.swift */,
+				F801AABF22611DBB00D8EE52 /* PickerTableViewCellDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -314,7 +324,7 @@
 		F8471B3D22488F1D00960B8C /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
-				F86AB1FE2256085F00C4F95E /* User */,
+				F86AB1FE2256085F00C4F95E /* User Data */,
 				F8280CA8224ABA950067E2F7 /* PresetData.swift */,
 				F8280C852249BEB70067E2F7 /* DataManagement.swift */,
 				F8FEE01622417069005ECB35 /* PatientAppDataModel.xcdatamodeld */,
@@ -447,12 +457,14 @@
 			path = "Response Data";
 			sourceTree = "<group>";
 		};
-		F86AB1FE2256085F00C4F95E /* User */ = {
+		F86AB1FE2256085F00C4F95E /* User Data */ = {
 			isa = PBXGroup;
 			children = (
 				F86AB1FF2256087500C4F95E /* UserDataManagement.swift */,
+				F801AABB2260842F00D8EE52 /* User+CoreDataClass.swift */,
+				F801AABC2260842F00D8EE52 /* User+CoreDataProperties.swift */,
 			);
-			path = User;
+			path = "User Data";
 			sourceTree = "<group>";
 		};
 		F86AB2032256F29500C4F95E /* Bluetooth */ = {
@@ -630,6 +642,7 @@
 				F8471B4A224893D300960B8C /* UIButton+Extensions.swift in Sources */,
 				F83702CF2230A25900AC753C /* HomeMotivator.swift in Sources */,
 				F86AB1EB2255F0C800C4F95E /* Processed+CoreDataProperties.swift in Sources */,
+				F801AAC022611DBB00D8EE52 /* PickerTableViewCellDelegate.swift in Sources */,
 				F86AB160225436EB00C4F95E /* LoadLocalProtocol.swift in Sources */,
 				F8503841223B62DB009B79A0 /* SweepGraph.swift in Sources */,
 				F8280CAE224E15C30067E2F7 /* Data+Extensions.swift in Sources */,
@@ -640,13 +653,16 @@
 				F86AB1E62255F05F00C4F95E /* Exercise+CoreDataClass.swift in Sources */,
 				F86AB1F52255F92400C4F95E /* QuestionDataManagement.swift in Sources */,
 				F83702B0222F4EA300AC753C /* ProgressViewController.swift in Sources */,
+				F801AABE2260842F00D8EE52 /* User+CoreDataProperties.swift in Sources */,
 				F8FEE011223F72A6005ECB35 /* OverallProgressView.swift in Sources */,
 				F829C9962236FC5200D1E57B /* ExerciseTableViewCell.swift in Sources */,
 				F8471B48224893AE00960B8C /* UIColor+Extensions.swift in Sources */,
 				F801AAB1225EAAC600D8EE52 /* SettingsViewController.swift in Sources */,
 				F86AB1E42255F05F00C4F95E /* Meta+CoreDataClass.swift in Sources */,
+				F801AAB42260505D00D8EE52 /* PickerTableViewCell.swift in Sources */,
 				F86AB15E22541FBC00C4F95E /* DataProcessing.swift in Sources */,
 				F8280CA9224ABA950067E2F7 /* PresetData.swift in Sources */,
+				F801AABD2260842F00D8EE52 /* User+CoreDataClass.swift in Sources */,
 				F8471B5522498B3800960B8C /* GoalsTableViewCell.swift in Sources */,
 				F850383E22388699009B79A0 /* ProgressTableViewCell.swift in Sources */,
 				F83702B2222F4EAC00AC753C /* GoalsViewController.swift in Sources */,

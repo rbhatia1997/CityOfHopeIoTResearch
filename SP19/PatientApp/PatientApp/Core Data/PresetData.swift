@@ -20,9 +20,9 @@ struct ExerciseStruct {
 let presetExerciseList =
     [ExerciseStruct(name: "Front Arm Raise", icon: "frontArmRaise", image: "frontArmRaise-img", use: true, detection: "pitch"),
      ExerciseStruct(name: "Side Arm Raise", icon: "sideArmRaise", image: "sideArmRaise-img", use: true, detection: "roll"),
-     ExerciseStruct(name: "Medicine Ball Overhead Circles", icon: "medicineBallOverheadCircles", image: "medicineBallOverheadCircles-img", use: false, detection: "none"),
-     ExerciseStruct(name: "Arnold Shoulder Press", icon: "arnoldShoulderPress", image: "arnoldShoulderPress-img", use: false, detection: "none"),
-     ExerciseStruct(name: "Dumbell Shoulder Press", icon: "dumbellShoulderPress", image: "dumbellShoulderPress-img", use: false, detection: "none")]
+     ExerciseStruct(name: "Medicine Ball Overhead Circles", icon: "medicineBallOverheadCircles", image: "medicineBallOverheadCircles-img", use: false, detection: "other"),
+     ExerciseStruct(name: "Arnold Shoulder Press", icon: "arnoldShoulderPress", image: "arnoldShoulderPress-img", use: false, detection: "other"),
+     ExerciseStruct(name: "Dumbell Shoulder Press", icon: "dumbellShoulderPress", image: "dumbellShoulderPress-img", use: false, detection: "other")]
 
 // Goals
 let presetGoalList = ["Cook for my kids",

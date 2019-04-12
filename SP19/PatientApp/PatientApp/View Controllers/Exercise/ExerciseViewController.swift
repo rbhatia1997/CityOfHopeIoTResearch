@@ -13,7 +13,6 @@ class ExerciseViewController: UIViewController {
     // load these variables with core data
     var exerciseNames = [String]()
     var exerciseIcons = [UIImage]()
-    var exerciseImages = [UIImage]()
     
     // private variables
     private let colorTheme = UIColor(named: "pink")!
@@ -45,14 +44,12 @@ class ExerciseViewController: UIViewController {
         super.viewWillAppear(animated)
         
         exerciseNames.removeAll()
-        exerciseImages.removeAll()
         exerciseIcons.removeAll()
         
         reloadExerciseData()
         
         for exercise in exercises {
             exerciseNames.append(exercise.name)
-            exerciseImages.append(UIImage(named: exercise.image) ?? UIImage(named: "replace-me")!)
             exerciseIcons.append(UIImage(named: exercise.icon) ?? UIImage(named: "replace-me")!)
         }
         
@@ -70,7 +67,7 @@ extension ExerciseViewController: ViewConstraintProtocol {
         exerciseTableView.backgroundColor = .clear
         exerciseTableView.rowHeight = 120
         exerciseTableView.register(ExerciseTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
-        exerciseTableView.separatorStyle = UITableViewCell.SeparatorStyle.none;
+        exerciseTableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         self.view.addSubview(exerciseTableView)
         
         // update the header view
@@ -131,7 +128,7 @@ extension ExerciseViewController: UITableViewDataSource, UITableViewDelegate {
             if let selectedRow = sender as? Int {
                 destination.colorTheme = colorTheme
                 destination.exerciseName = exerciseNames[selectedRow]
-                destination.exerciseImage = exerciseImages[selectedRow]
+                destination.exerciseImage = exerciseIcons[selectedRow]
             }
         }
     }

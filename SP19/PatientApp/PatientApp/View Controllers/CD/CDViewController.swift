@@ -63,6 +63,7 @@ class CDViewController: UIViewController {
         dataTable.rowHeight = 110
         
         reloadAllExerciseData()
+        reloadQuestionData()
         dataTable.reloadData()
     }
 }
@@ -104,8 +105,8 @@ extension CDViewController: UITableViewDelegate, UITableViewDataSource {
             
             dateString = "id: \(exercises[indexPath.row].id)"
             data0String = "name: \(exercises[indexPath.row].name)"
-            data1String = "meta count: \(exercises[indexPath.row].meta.count)"
-            data2String = "use: \(exercises[indexPath.row].use)"
+            data1String = "meta count: \(exercises[indexPath.row].meta.count), use: \(exercises[indexPath.row].use)"
+            data2String = "detection: \(exercises[indexPath.row].detection)"
             
         } else if entitySelection.selectedSegmentIndex == 1 {
 
@@ -202,7 +203,7 @@ extension CDViewController {
         print("load data")
         if entitySelection.selectedSegmentIndex == 0 {
             for item in presetExerciseList {
-                addExerciseData(id: generateID(), name: item.name, image: item.image, icon: item.icon, use: item.use, detection: item.detection)
+                addExerciseData(id: generateID(), name: item.name, icon: item.icon, use: item.use, detection: item.detection, rep: 0, rom: 0)
             }
             reloadAllExerciseData()
         } else if entitySelection.selectedSegmentIndex == 1 {
@@ -496,7 +497,7 @@ extension CDViewController: ViewConstraintProtocol {
     
     func groupButtonSetup(button: UIButton, text: String, action: Selector) {
         button.setButtonParams(color: .white, string: text, ftype: "Montserrat-Regular", fsize: 16, align: .center)
-        button.setButtonFrame(borderWidth: 1.5, borderColor: colorTheme, cornerRadius: 20, fillColor: colorTheme)
+        button.setButtonFrame(borderWidth: 1.5, borderColor: colorTheme, cornerRadius: 20, fillColor: colorTheme, inset: 0)
         button.setTitleColor(.darkGray, for: .highlighted)
         button.addTarget(self, action: action, for: .touchUpInside)
         self.view.addSubview(button)

@@ -203,7 +203,7 @@ extension CDViewController {
         print("load data")
         if entitySelection.selectedSegmentIndex == 0 {
             for item in presetExerciseList {
-                addExerciseData(id: generateID(), name: item.name, icon: item.icon, use: item.use, detection: item.detection, rep: 0, rom: 0)
+                addExerciseData(id: generateID(), name: item.name, icon: item.icon, use: item.use, detection: item.detection, rep: 100, rom: 100)
             }
             reloadAllExerciseData()
         } else if entitySelection.selectedSegmentIndex == 1 {

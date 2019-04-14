@@ -53,7 +53,8 @@ class Header: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
-        label.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20).isActive = true
+        label.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
     }
     
     func updateHeader(text: String, color: UIColor, fsize: CGFloat) {

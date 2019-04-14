@@ -98,7 +98,7 @@ extension SettingsViewController {
     }
 }
 
-extension SettingsViewController: ViewConstraintProtocol, UITextFieldDelegate {
+extension SettingsViewController: ViewConstraintProtocol {
     func setupViews() {
         headerView.updateHeader(text: "Settings", color: .white, fsize: 30)
         self.view.addSubview(headerView)
@@ -141,18 +141,19 @@ extension SettingsViewController: ViewConstraintProtocol, UITextFieldDelegate {
         }
         
         userFields[3].inputView = datePicker
+        
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM dd, yyyy"
         datePicker.date = dateFormatter.date(from: userFields[3].text ?? "Jun 09, 1900")!
         
-        exerciseLabel.setLabelParams(color: .gray, string: "Exercise Picker", ftype: "Montserrat-Regular", fsize: 20, align: .left)
+        exerciseLabel.setLabelParams(color: .gray, string: "Exercise Selection", ftype: "Montserrat-Regular", fsize: 20, align: .left)
         self.view.addSubview(exerciseLabel)
         
         exerciseTableView.frame = .zero
         exerciseTableView.backgroundColor = .clear
-        exerciseTableView.rowHeight = 80
+        exerciseTableView.rowHeight = 120
         exerciseTableView.register(PickerTableViewCell.self, forCellReuseIdentifier: self.cellIdentifier)
 //        exerciseTableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         self.view.addSubview(exerciseTableView)
@@ -237,11 +238,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectedBackgroundView = colorView
         cell.pickerCellDelegate = self
         cell.useButton.tag = indexPath.row
-        cell.updatePickerCell(name: exercises[indexPath.row].name, icon: UIImage(named: exercises[indexPath.row].icon)!, use: exercises[indexPath.row].use)
-        
+        cell.romField.tag = indexPath.row
+        cell.repField.tag = indexPath.row
+        cell.updatePickerCell(name: exercises[indexPath.row].name, icon: UIImage(named: exercises[indexPath.row].icon)!, use: exercises[indexPath.row].use, rom: exercises[indexPath.row].baselineRom, rep: exercises[indexPath.row].baselineRep)
+
         return cell
     }
-    
+}
+
+extension SettingsViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -252,6 +257,36 @@ extension SettingsViewController: PickerTableViewCellDelegate {
     func useButtonPressed(_ tag: Int) {
         print("pressed use button")
         exercises[tag].use = !exercises[tag].use
+        
+        do {
+            try context.save()
+            print("Exercise data updated")
+        } catch {
+            print("Failed saving")
+        }
+        
+        exerciseTableView.reloadData()
+    }
+    
+    func setRom(_ tag: Int, _ rom: Float) {
+        print("set rom")
+        reloadAllExerciseData()
+        exercises[tag].baselineRom = rom
+        
+        do {
+            try context.save()
+            print("Exercise data updated")
+        } catch {
+            print("Failed saving")
+        }
+        
+        exerciseTableView.reloadData()
+    }
+    
+    func setRep(_ tag: Int, _ rep: Int16) {
+        print("set rep")
+        reloadAllExerciseData()
+        exercises[tag].baselineRep = rep
         
         do {
             try context.save()

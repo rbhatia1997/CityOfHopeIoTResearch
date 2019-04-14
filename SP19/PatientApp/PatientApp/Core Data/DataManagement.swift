@@ -19,9 +19,14 @@ let largeNumber: Int = 10000
 func generateID() -> String {
     let date = Date()
     let formatter = DateFormatter()
-    formatter.timeZone = TimeZone(abbreviation: "PST")
     formatter.dateFormat = "yyyyMMddhhmmssSSS"
     return formatter.string(from: date)
+}
+
+func getDate(_ string: String) -> Date {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyyMMddhhmmssSSS"
+    return formatter.date(from: string)!
 }
 
 func saveContext() {

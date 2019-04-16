@@ -39,7 +39,7 @@ class Header: UIView {
     private func setupViews() {
         self.backgroundColor = headerColor
         label.frame = .zero
-        label.font = UIFont(name: "MontserratAlternates-ExtraLight", size: fontSize)
+        label.font = UIFont(name: altFontExtraLight, size: fontSize)
         label.textColor = .black
         label.text = headerString
 //        label.sizeToFit()

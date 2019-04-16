@@ -6,7 +6,6 @@
         <attribute name="detection" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="use" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="meta" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Meta" inverseName="exercise" inverseEntity="Meta" syncable="YES"/>
@@ -56,7 +55,7 @@
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Exercise" positionX="-396.26171875" positionY="-89.921875" width="128" height="180"/>
+        <element name="Exercise" positionX="-396.26171875" positionY="-89.921875" width="128" height="165"/>
         <element name="Goal" positionX="-396.59765625" positionY="129.88671875" width="125.80859375" height="88"/>
         <element name="Meta" positionX="-211.6484375" positionY="-119.76953125" width="128" height="193"/>
         <element name="Processed" positionX="-25.32421875" positionY="-90.0625" width="128" height="148"/>

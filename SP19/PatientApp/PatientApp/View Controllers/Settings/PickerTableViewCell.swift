@@ -21,13 +21,13 @@ class PickerTableViewCell: UITableViewCell {
     private let nameLabel = UILabel()
     let useButton = UIButton()
     private let romTitle = UILabel()
-    let romField = UITextField()
+    private let romField = UITextField()
     private let repTitle = UILabel()
-    let repField = UITextField()
+    private let repField = UITextField()
     
-    private var romPicker = UIPickerView()
+    var romPicker = UIPickerView()
     private var romValues = [Float]()
-    private var repPicker = UIPickerView()
+    var repPicker = UIPickerView()
     private var repValues = [Int16]()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -60,37 +60,37 @@ extension PickerTableViewCell: ViewConstraintProtocol, UITextFieldDelegate {
         iconView.image = icon
         self.addSubview(iconView)
         
-        nameLabel.setLabelParams(color: .gray, string: name, ftype: "Montserrat-Regular", fsize: 16, align: .left)
+        nameLabel.setLabelParams(color: .gray, string: name, ftype: defFont, fsize: 16, align: .left)
         self.addSubview(nameLabel)
         
-        useButton.setButtonParams(color: use ? .gray : .white, string: "use: \(use!)", ftype: "Montserrat-Regular", fsize: 14, align: .center)
+        useButton.setButtonParams(color: use ? .gray : .white, string: "use: \(use!)", ftype: defFont, fsize: 14, align: .center)
         useButton.titleLabel?.numberOfLines = 2
         useButton.setButtonFrame(borderWidth: 1.0, borderColor: use ? .white : .gray, cornerRadius: useButton.frame.height/2, fillColor: use ? .white : .gray, inset: 5)
         useButton.addTarget(self, action: #selector(useButtonTapped), for: .touchUpInside)
         self.addSubview(useButton)
         
-        romTitle.setLabelParams(color: .gray, string: " max ROM:", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+        romTitle.setLabelParams(color: .gray, string: " max ROM:", ftype: defFont, fsize: 14, align: .left)
         romTitle.backgroundColor = .white
         self.addSubview(romTitle)
         
         romField.frame = .zero
         romField.backgroundColor = .white
         romField.text = "\(rom!)º"
-        romField.font = UIFont(name: "Montserrat-Regular", size: 14)!
+        romField.font = UIFont(name: defFont, size: 14)!
         romField.textColor = .gray
         romField.textAlignment = .left
         self.addSubview(romField)
         romField.delegate = self
         romField.inputView = romPicker
         
-        repTitle.setLabelParams(color: .gray, string: " rep count:", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+        repTitle.setLabelParams(color: .gray, string: " rep count:", ftype: defFont, fsize: 14, align: .left)
         repTitle.backgroundColor = .white
         self.addSubview(repTitle)
         
         repField.frame = .zero
         repField.backgroundColor = .white
         repField.text = rep == 1 ? "\(rep!) rep" : "\(rep!) reps"
-        repField.font = UIFont(name: "Montserrat-Regular", size: 14)!
+        repField.font = UIFont(name: defFont, size: 14)!
         repField.textColor = .gray
         repField.textAlignment = .left
         self.addSubview(repField)
@@ -181,7 +181,6 @@ extension PickerTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
             break
         }
         updatePickerCell(name: name, icon: icon, use: use, rom: rom, rep: rep)
-        print(pickerView.tag)
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {

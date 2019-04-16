@@ -37,17 +37,17 @@ class BTConn: UIView {
     }
     
     private func setupViews() {
-        statusLabel.setLabelParams(color: .black, string: "Device Status :  ", ftype: "Montserrat-Light",
+        statusLabel.setLabelParams(color: .black, string: "Device Status :  ", ftype: defFontLight,
                                    fsize: 14, align: .center)
         
         connectLabel.setLabelParams(color: .black, string: didConnect ? "Connected" : "Disconnected",
-                                    ftype: "Montserrat-Regular", fsize: 14, align: .center)
+                                    ftype: defFont, fsize: 14, align: .center)
         
         deviceLabel.setLabelParams(color: .black, string: "Service UUID :  ",
-                                    ftype: "Montserrat-Light", fsize: 14, align: .center)
+                                    ftype: defFontLight, fsize: 14, align: .center)
         
         deviceNameLabel.setLabelParams(color: .black, string: didConnect ? serviceString : "N/A",
-                                 ftype: "Montserrat-Regular", fsize: 14, align: .center)
+                                 ftype: defFont, fsize: 14, align: .center)
         
         self.addSubview(statusLabel)
         self.addSubview(connectLabel)

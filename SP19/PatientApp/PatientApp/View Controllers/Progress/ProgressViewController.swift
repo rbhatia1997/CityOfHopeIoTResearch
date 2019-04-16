@@ -9,22 +9,29 @@
 import UIKit
 import Charts
 
-class ProgressViewController: UIViewController {
+class ProgressViewController: UIViewController, ChartViewDelegate {
 
     let colorTheme = UIColor(named: "green")!
     
     // Subviews
     let headerView = Header()
-    let progressGraph = LineChartView()
-    let exerciseProgressList = UITableView()
+    let progressGraph = CombinedChartView()
+    let exerciseTitle = UILabel()
+    let exerciseField = UITextField()
+    let exercisePicker = UIPickerView()
+    
+    let romView = MetricView()
+    let repView = MetricView()
+    let slouchView = MetricView()
+    let compView = MetricView()
     
     // chart setup variables
-    var lineChartEntry = [ChartDataEntry]()
-    var x_axis = [Float]()
-    var y_prog = [Float]()
-    
-    // load these variables with core data
-    var exerciseNames = [String]()
+    var sessions = [Float]()
+    var romValues = [Float]()
+    var repValues = [Int16]()
+    var romChartEntry = [ChartDataEntry]()
+    var repChartEntry = [BarChartDataEntry]()
+
     let progressCellIdentifier = "progressCell"
     
     override func viewDidLoad() {
@@ -33,131 +40,138 @@ class ProgressViewController: UIViewController {
         self.tabBarItem.selectedImage = UIImage(named: "progress")!
         self.tabBarItem.title = "Progress"
         
-        exerciseProgressList.delegate = self
-        exerciseProgressList.dataSource = self
+        reloadExerciseData()
+        
+        updateMetricViews(exercise: exercises[0])
         
         setupViews()
         setupConstraints()
         
-        self.view.layoutIfNeeded()
-//        showBorder(view: progressGraph)
-//        showBorder(view: exerciseProgressList)
-        
-        for _ in 0..<200 {
-            x_axis.append(Float.random(in: 0...200))
-            y_prog.append(Float.random(in: 0...1))
+        for i in 0..<20 {
+            sessions.append(Float(i))
+            romValues.append(Float.random(in: 0...100))
+            repValues.append(Int16.random(in: 0...20))
         }
-        x_axis.sort()
-//        y_prog.sort()
+        sessions.sort()
+        romValues.sort()
+        repValues.sort()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        self.view.addGestureRecognizer(tapGesture)
+        
+        progressGraph.delegate = self
+        progressGraph.noDataText = "You need to provide data for the chart."
+        progressGraph.drawBarShadowEnabled = false
+        
+        // x axis
+        progressGraph.xAxis.labelPosition = .bottom
+        progressGraph.xAxis.drawAxisLineEnabled = false
+        progressGraph.xAxis.drawGridLinesEnabled = false
+        progressGraph.xAxis.drawLimitLinesBehindDataEnabled = false
+        progressGraph.xAxis.drawLabelsEnabled = true
+        progressGraph.xAxis.avoidFirstLastClippingEnabled = true
+        
+        // left axis
+        progressGraph.leftAxis.labelPosition = .outsideChart
+        progressGraph.leftAxis.axisMinimum = 0.0
+        progressGraph.leftAxis.axisMaximum = 105.0
+        progressGraph.leftAxis.drawAxisLineEnabled = false
+        progressGraph.leftAxis.drawGridLinesEnabled = true
+        progressGraph.leftAxis.granularityEnabled = true
+        progressGraph.leftAxis.granularity = 100/(5-1)
+        
+        // right axis
+        progressGraph.rightAxis.labelPosition = .outsideChart
+        progressGraph.rightAxis.axisMinimum = 0.0
+        progressGraph.rightAxis.axisMaximum = 21.0
+        progressGraph.rightAxis.drawAxisLineEnabled = false
+        progressGraph.rightAxis.drawGridLinesEnabled = false
+        progressGraph.rightAxis.granularityEnabled = true
+        progressGraph.rightAxis.granularity = 20/(5-1)
+        
+        progressGraph.scaleYEnabled = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        exerciseNames.removeAll()
-        
         reloadExerciseData()
         
-        for exercise in exercises {
-            exerciseNames.append(exercise.name)
-        }
-        
-        exerciseProgressList.reloadData()
-        
-        updateGraph()
+        updateGraph(exercises[0])
     }
     
     @IBAction func unwindToProgressVC(segue: UIStoryboardSegue) {}
 }
 
-extension ProgressViewController: UITableViewDelegate, UITableViewDataSource {
-    // required for table: number pof sections in table
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+// MARK: button actions
+extension ProgressViewController {
+    @objc func handleTap() {
+        self.view.endEditing(true)
     }
-    
-    // required for table: number of cells in table
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return exerciseNames.count
-    }
-    
-    // required for table: sets up dequeue for cell, fills each cell with information
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.progressCellIdentifier, for: indexPath) as! ProgressTableViewCell
-        
-        let colorView = UIView()
-        colorView.frame = .zero
-        colorView.backgroundColor = .clear
-        cell.selectedBackgroundView = colorView
-        cell.updateProgressCell(name: exerciseNames[indexPath.row])
-        
-        return cell
-    }
-    
-//    // sends user to the exercise guide when cell is tapped
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.performSegue(withIdentifier: "toExerciseGuide", sender: indexPath.row)
-//    }
-//
-//    // fills exercise guide view controller with information before user is sent there
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-//    {
-//        if let destination = segue.destination as? ExerciseGuideViewController {
-//            if let selectedRow = sender as? Int {
-//                destination.colorTheme = colorTheme
-//                destination.exerciseName = exerciseNames[selectedRow]
-//                destination.exerciseImage = exerciseImages[selectedRow]
-//            }
-//        }
-//    }
 }
 
 // MARK: Line chart setup
 extension ProgressViewController {
-    func updateGraph() {
-        for i in 0..<y_prog.count {
-            let value = ChartDataEntry(x: Double(x_axis[i]), y: Double(y_prog[i]))
-            lineChartEntry.append(value)
+    func updateGraph(_ exercise: Exercise) {
+        // update historical data for displayExercise
+        
+        for i in 0..<sessions.count {
+            romChartEntry.append( ChartDataEntry(x: Double(sessions[i]), y: Double(romValues[i])) )
+            repChartEntry.append( BarChartDataEntry(x: Double(sessions[i]), y: Double(repValues[i])) )
         }
         
-        let line = LineChartDataSet(values: lineChartEntry, label: "Overall Progress per Session")
-        line.colors = [colorTheme.hsbSat(1.0).hsbBrt(0.80)]
-        line.circleColors = [colorTheme.hsbSat(1.0).hsbBrt(0.80)]
-        line.circleRadius = 3.5
-        line.circleHoleRadius = 2
-//        line.cubicIntensity = 0.15
-        line.mode = .linear//.cubicBezier
+        let romSet = LineChartDataSet(values: romChartEntry, label: "Maximum Range of Motion")
+        romSet.axisDependency = .left
+        romSet.colors = [colorTheme.hsbSat(1.0).hsbBrt(0.80)]
+        romSet.circleColors = [colorTheme.hsbSat(1.0).hsbBrt(0.50)]
+        romSet.circleRadius = 2
+        romSet.drawCircleHoleEnabled = false
+        romSet.mode = .linear
+        romSet.drawValuesEnabled = true
 
-        let data = LineChartData()
-        data.addDataSet(line)
+        let lineData = LineChartData(dataSets: [romSet])
+        
+        let repSet = BarChartDataSet(values: repChartEntry, label: "Number of Repetitions")
+        repSet.axisDependency = .right
+        repSet.colors = [colorTheme.hsbSat(1.0).hsbBrt(1.0)]
+        repSet.drawValuesEnabled = true
+        
+        let barData = BarChartData(dataSets: [repSet])
+        
+        let data = CombinedChartData()
+        data.lineData = lineData
+        data.barData = barData
         
         progressGraph.data = data
-        progressGraph.xAxis.labelPosition = .bottom
-        progressGraph.scaleYEnabled = false
+        progressGraph.moveViewToX(Double(sessions.count))
         progressGraph.animate(yAxisDuration: 2.0, easingOption: .easeOutCubic)
-        progressGraph.xAxis.drawAxisLineEnabled = true
-        progressGraph.xAxis.drawGridLinesEnabled = false
-        progressGraph.xAxis.drawLimitLinesBehindDataEnabled = false
-        progressGraph.xAxis.drawLabelsEnabled = true
-        progressGraph.xAxis.avoidFirstLastClippingEnabled = true
         progressGraph.zoom(scaleX: 0, scaleY: 0, x: 0, y: 0)
-        progressGraph.zoom(scaleX: CGFloat(y_prog.count) / 10, scaleY: 1.0, x: 0, y: 0)
-        progressGraph.moveViewToX(Double(y_prog.count))
+        progressGraph.zoom(scaleX: CGFloat(sessions.count) / 10, scaleY: 1.0, x: 0, y: 0)
     }
 }
 
-extension ProgressViewController: ViewConstraintProtocol {
+extension ProgressViewController: ViewConstraintProtocol, UITextFieldDelegate {
     internal func setupViews() {
         headerView.updateHeader(text: "Progress", color: colorTheme, fsize: 30)
         self.view.addSubview(headerView)
         
+        exerciseTitle.setLabelParams(color: .gray, string: "Pick exercise:", ftype: defFont, fsize: 14, align: .center)
+        self.view.addSubview(exerciseTitle)
+        
+        exerciseField.setTextFieldParams(color: .gray, bgColor: .clear, string: exercises[0].name, ftype: defFont, fsize: 24, align: .right)
+        exerciseField.inputView = exercisePicker
+        exerciseField.delegate = self
+        self.view.addSubview(exerciseField)
+        
+        exercisePicker.delegate = self
+        exercisePicker.dataSource = self
+        
         self.view.addSubview(progressGraph)
         
-        exerciseProgressList.frame = .zero
-        exerciseProgressList.backgroundColor = .clear
-        exerciseProgressList.rowHeight = 50
-        exerciseProgressList.register(ProgressTableViewCell.self, forCellReuseIdentifier: self.progressCellIdentifier)
-        self.view.addSubview(exerciseProgressList)
+        self.view.addSubview(romView)
+        self.view.addSubview(repView)
+        self.view.addSubview(slouchView)
+        self.view.addSubview(compView)
     }
     
     internal func setupConstraints() {
@@ -167,16 +181,90 @@ extension ProgressViewController: ViewConstraintProtocol {
         headerView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         headerView.heightAnchor.constraint(equalToConstant: 140.0).isActive = true
         
+        exerciseField.translatesAutoresizingMaskIntoConstraints = false
+        exerciseField.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 20).isActive = true
+        exerciseField.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 120).isActive = true
+        exerciseField.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
+        exerciseField.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        exerciseTitle.translatesAutoresizingMaskIntoConstraints = false
+        exerciseTitle.centerYAnchor.constraint(equalTo: exerciseField.centerYAnchor).isActive = true
+        exerciseTitle.heightAnchor.constraint(equalTo: exerciseField.heightAnchor).isActive = true
+        exerciseTitle.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        exerciseTitle.trailingAnchor.constraint(equalTo: exerciseField.leadingAnchor).isActive = true
+        
         progressGraph.translatesAutoresizingMaskIntoConstraints = false
-        progressGraph.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 20).isActive = true
+        progressGraph.topAnchor.constraint(equalTo: exerciseField.bottomAnchor, constant: 20).isActive = true
         progressGraph.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.25).isActive = true
         progressGraph.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
         progressGraph.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20).isActive = true
         
-        exerciseProgressList.translatesAutoresizingMaskIntoConstraints = false
-        exerciseProgressList.topAnchor.constraint(equalTo: progressGraph.bottomAnchor, constant: 20).isActive = true
-        exerciseProgressList.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        exerciseProgressList.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0).isActive = true
-        exerciseProgressList.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0).isActive = true
+        romView.translatesAutoresizingMaskIntoConstraints = false
+        romView.topAnchor.constraint(equalTo: progressGraph.bottomAnchor, constant: 20).isActive = true
+        romView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20).isActive = true
+        romView.trailingAnchor.constraint(equalTo: self.view.centerXAnchor, constant: -10).isActive = true
+        romView.heightAnchor.constraint(equalTo: slouchView.heightAnchor).isActive = true
+        
+        repView.translatesAutoresizingMaskIntoConstraints = false
+        repView.centerYAnchor.constraint(equalTo: romView.centerYAnchor).isActive = true
+        repView.leadingAnchor.constraint(equalTo: romView.trailingAnchor, constant: 20).isActive = true
+        repView.widthAnchor.constraint(equalTo: romView.widthAnchor).isActive = true
+        repView.heightAnchor.constraint(equalTo: romView.heightAnchor).isActive = true
+        
+        slouchView.translatesAutoresizingMaskIntoConstraints = false
+        slouchView.leadingAnchor.constraint(equalTo: romView.leadingAnchor).isActive = true
+        slouchView.trailingAnchor.constraint(equalTo: romView.trailingAnchor).isActive = true
+        slouchView.topAnchor.constraint(equalTo: romView.bottomAnchor, constant: 20).isActive = true
+        slouchView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -100).isActive = true
+        
+        compView.translatesAutoresizingMaskIntoConstraints = false
+        compView.centerYAnchor.constraint(equalTo: slouchView.centerYAnchor).isActive = true
+        compView.leadingAnchor.constraint(equalTo: slouchView.trailingAnchor, constant: 20).isActive = true
+        compView.widthAnchor.constraint(equalTo: slouchView.widthAnchor).isActive = true
+        compView.heightAnchor.constraint(equalTo: slouchView.heightAnchor).isActive = true
+    }
+}
+
+extension ProgressViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return exercises.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return exercises[row].name
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        exerciseField.text = exercises[row].name
+        updateGraph(exercises[row])
+        updateMetricViews(exercise: exercises[row])
+    }
+    
+    func updateMetricViews(exercise: Exercise) {
+        var metaArray = Array(exercise.meta)
+        if metaArray.count > 1 {
+            metaArray.sort(by: { $0.max > $1.max })
+            romView.updateView(top: "Widest range of motion:", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "")
+            metaArray.sort(by: { $0.reps > $1.reps })
+            repView.updateView(top: "In a single session, you can do", metric: "\(metaArray[0].reps) reps", bottom: "")
+            metaArray.sort(by: { $0.slouch > $1.slouch })
+            slouchView.updateView(top: "Posture", metric: "\(String(format: "%.0f", metaArray[0].slouch * 100))º", bottom: "")
+            metaArray.sort(by: { $0.comp > $1.comp })
+            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
+        } else if metaArray.count == 1 {
+            romView.updateView(top: "You can move your arm", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "since you've started")
+            repView.updateView(top: "You can already do", metric: "\(metaArray[0].reps) reps", bottom: "in a single session")
+            slouchView.updateView(top: "Your posture has improved by", metric: "\(String(format: "%.0f", metaArray[0].slouch * 100))º", bottom: "")
+            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
+        } else {
+            romView.updateView(top: "", metric: "No data", bottom: "")
+            repView.updateView(top: "", metric: "No data", bottom: "")
+            slouchView.updateView(top: "", metric: "No data", bottom: "")
+            compView.updateView(top: "", metric: "No data", bottom: "")
+        }
     }
 }

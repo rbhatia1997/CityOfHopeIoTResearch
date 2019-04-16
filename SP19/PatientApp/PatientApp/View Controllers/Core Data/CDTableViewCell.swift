@@ -29,10 +29,10 @@ class CDTableViewCell: UITableViewCell, ViewConstraintProtocol {
     }
     
     func setupViews() {
-        dateLabel.setLabelParams(color: .gray, string: dateString, ftype: "Montserrat-Regular", fsize: 12, align: .left)
-        data0Label.setLabelParams(color: .gray, string: data0String, ftype: "Montserrat-Regular", fsize: 16, align: .left)
-        data1Label.setLabelParams(color: .gray, string: data1String, ftype: "Montserrat-Regular", fsize: 16, align: .left)
-        data2Label.setLabelParams(color: .gray, string: data2String, ftype: "Montserrat-Regular", fsize: 16, align: .left)
+        dateLabel.setLabelParams(color: .gray, string: dateString, ftype: defFont, fsize: 12, align: .left)
+        data0Label.setLabelParams(color: .gray, string: data0String, ftype: defFont, fsize: 16, align: .left)
+        data1Label.setLabelParams(color: .gray, string: data1String, ftype: defFont, fsize: 16, align: .left)
+        data2Label.setLabelParams(color: .gray, string: data2String, ftype: defFont, fsize: 16, align: .left)
         
         self.addSubview(dateLabel)
         self.addSubview(data0Label)

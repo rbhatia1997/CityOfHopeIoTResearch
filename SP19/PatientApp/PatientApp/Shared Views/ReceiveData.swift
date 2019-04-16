@@ -188,20 +188,20 @@
 //
 //extension ReceiveData: ViewConstraintProtocol {
 //    func setupViews() {
-//        startButton.setButtonParams(color: .white, string: "  Start exercise  ", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+//        startButton.setButtonParams(color: .white, string: "  Start exercise  ", ftype: defFont, fsize: 20, align: .center)
 //        startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 5, fillColor: UIColor(white: 0, alpha: 0.20))
 //        startButton.addTarget(self, action: #selector(startTapped), for: .touchUpInside)
 //        self.addSubview(startButton)
 //
-//        submitButton.setButtonParams(color: .gray, string: "  Submit session  ", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+//        submitButton.setButtonParams(color: .gray, string: "  Submit session  ", ftype: defFont, fsize: 20, align: .center)
 //        submitButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 5, fillColor: .clear)
 ////        submitButton.addTarget(self, action: #selector(submitTapped), for: .touchUpInside)
 //        self.addSubview(submitButton)
 //
-//        countLabel.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+//        countLabel.setLabelParams(color: .black, string: "--", ftype: defFont, fsize: 14, align: .left)
 //        self.addSubview(countLabel)
 //
-//        valueLabel.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+//        valueLabel.setLabelParams(color: .black, string: "--", ftype: defFont, fsize: 14, align: .left)
 //        self.addSubview(valueLabel)
 //    }
 //

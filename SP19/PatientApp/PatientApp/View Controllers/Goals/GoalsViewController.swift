@@ -80,12 +80,12 @@ extension GoalsViewController: ViewConstraintProtocol {
         headerView.updateHeader(text: "Goals", color: hsbShadeTint(color: colorTheme, sat: 0.25), fsize: 30)
         self.view.addSubview(headerView)
         
-        addButton.setButtonParams(color: .gray, string: "Add", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        addButton.setButtonParams(color: .gray, string: "Add", ftype: defFont, fsize: 20, align: .center)
         addButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 15, fillColor: .clear, inset: 10)
         addButton.addTarget(self, action: #selector(addGoalsCell), for: .touchUpInside)
         self.view.addSubview(addButton)
         
-        removeButton.setButtonParams(color: .gray, string: "Delete", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        removeButton.setButtonParams(color: .gray, string: "Delete", ftype: defFont, fsize: 20, align: .center)
         removeButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 15, fillColor: .clear, inset: 10)
         removeButton.addTarget(self, action: #selector(removeGoalsCell), for: .touchUpInside)
         self.view.addSubview(removeButton)

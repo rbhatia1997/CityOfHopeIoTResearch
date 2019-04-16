@@ -31,7 +31,7 @@ class ProgressTableViewCell: UITableViewCell {
 
 extension ProgressTableViewCell: ViewConstraintProtocol {
     func setupViews() {
-        nameLabel.setLabelParams(color: .gray, string: name, ftype: "Montserrat-Regular", fsize: 16, align: .left)
+        nameLabel.setLabelParams(color: .gray, string: name, ftype: defFont, fsize: 16, align: .left)
         self.addSubview(nameLabel)
     }
     

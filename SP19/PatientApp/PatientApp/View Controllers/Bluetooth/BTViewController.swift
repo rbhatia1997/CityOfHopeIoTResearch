@@ -157,7 +157,7 @@ extension BTViewController: ViewConstraintProtocol {
                    title2: char0ValTitle, title2Val: char0Val, title2String: "Characteristic 0 Data:",
                    titleSize: titleSize, valSize: valSize)
 
-        homeButton.setButtonParams(color: .gray, string: "Back", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        homeButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
         homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
         self.view.addSubview(homeButton)
     }
@@ -189,13 +189,13 @@ extension BTViewController: ViewConstraintProtocol {
     }
     
     private func groupSetup(title1: UILabel, title1Val: UILabel, title1String: String, title2: UILabel, title2Val: UILabel, title2String: String, titleSize: CGFloat, valSize: CGFloat) {
-        title1.setLabelParams(color: colorTheme, string: title1String, ftype: "Montserrat-Regular", fsize: titleSize, align: .left)
-        title1Val.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: valSize, align: .left)
+        title1.setLabelParams(color: colorTheme, string: title1String, ftype: defFont, fsize: titleSize, align: .left)
+        title1Val.setLabelParams(color: .black, string: "--", ftype: defFont, fsize: valSize, align: .left)
         self.view.addSubview(title1)
         self.view.addSubview(title1Val)
         
-        title2.setLabelParams(color: colorTheme, string: title2String, ftype: "Montserrat-Regular", fsize: titleSize, align: .left)
-        title2Val.setLabelParams(color: .black, string: "--", ftype: "Montserrat-Regular", fsize: valSize, align: .left)
+        title2.setLabelParams(color: colorTheme, string: title2String, ftype: defFont, fsize: titleSize, align: .left)
+        title2Val.setLabelParams(color: .black, string: "--", ftype: defFont, fsize: valSize, align: .left)
         self.view.addSubview(title2)
         self.view.addSubview(title2Val)
     }

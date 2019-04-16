@@ -46,13 +46,13 @@ extension GoalsTableViewCell {
 // MARK: create UI
 extension GoalsTableViewCell: ViewConstraintProtocol {
     internal func setupViews() {
-        numberLabel.setLabelParams(color: .black, string: "\(number).", ftype: "Montserrat-Regular", fsize: 16, align: .left)
+        numberLabel.setLabelParams(color: .black, string: "\(number).", ftype: defFont, fsize: 16, align: .left)
         self.addSubview(numberLabel)
         
-        goalLabel.setLabelParams(color: .black, string: goalString, ftype: "Montserrat-Regular", fsize: 16, align: .left)
+        goalLabel.setLabelParams(color: .black, string: goalString, ftype: defFont, fsize: 16, align: .left)
         self.addSubview(goalLabel)
         
-        doneButton.setButtonParams(color: .gray, string: achieved ? "Complete: ✅" : "Complete: ❌", ftype: "Montserrat-Regular", fsize: 12, align: .center)
+        doneButton.setButtonParams(color: .gray, string: achieved ? "Complete: ✅" : "Complete: ❌", ftype: defFont, fsize: 12, align: .center)
         doneButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: doneButton.frame.height/2, fillColor: .clear, inset: 5)
         doneButton.addTarget(self, action: #selector(tapCompleteButton), for: .touchUpInside)
         self.addSubview(doneButton)

@@ -59,8 +59,9 @@ class SweepGraph: UIView {
         setupConstraints()
     }
     
-    func setSweepGraphValue(value: CGFloat) {
+    func setSweepGraphValue(value: CGFloat, count: Int) {
         currPos = value
+        repCount = count
         
         if let viewWithTag = self.viewWithTag(103) {
             viewWithTag.removeFromSuperview()
@@ -86,10 +87,12 @@ class SweepGraph: UIView {
             }
         }
         
-        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: "Montserrat-ExtraLight", fsize: innerDia/4, align: .center, tag: 103)
+        let center = CGPoint(x: 90, y: valueLabel.frame.height/2)
+        
+        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: defFontExtraLight, fsize: innerDia/4, align: .center, tag: 103)
         self.addSubview(valueLabel)
         
-        drawActiveLayer(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height/2),
+        drawActiveLayer(center: center,
                         color: colorTheme,
                         start: startAngle,
                         value: currPos,
@@ -99,7 +102,7 @@ class SweepGraph: UIView {
                         innerDia: innerDia,
                         view: valueLabel)
         
-        drawTicks(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height/2), color: colorTheme,
+        drawTicks(center: center, color: colorTheme,
                   leftArm: leftArm, outerDia: outerDia, innerDia: innerDia, view: valueLabel)
         
         setupConstraints()
@@ -259,10 +262,12 @@ extension SweepGraph: ViewConstraintProtocol {
         let outerDia: CGFloat = 200
         let innerDia: CGFloat = outerDia * 0.75
         
-        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: "Montserrat-ExtraLight", fsize: innerDia/4, align: .center, tag: 103)
+        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: defFontExtraLight, fsize: innerDia/4, align: .center, tag: 103)
         self.addSubview(valueLabel)
         
-        drawBackgroundLayer(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height/2),
+        let center = CGPoint(x: 90, y: valueLabel.frame.height/2)
+        
+        drawBackgroundLayer(center: center,
                        color: colorTheme,
                        start: startAngle,
                        value: currPos,
@@ -272,7 +277,7 @@ extension SweepGraph: ViewConstraintProtocol {
                        innerDia: innerDia,
                        view: valueLabel)
         
-        drawActiveLayer(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height/2),
+        drawActiveLayer(center: center,
                         color: colorTheme,
                         start: startAngle,
                         value: currPos,
@@ -282,7 +287,7 @@ extension SweepGraph: ViewConstraintProtocol {
                         innerDia: innerDia,
                         view: valueLabel)
         
-        drawTicks(center: CGPoint(x: valueLabel.frame.width/2, y: valueLabel.frame.height/2), color: colorTheme,
+        drawTicks(center: center, color: colorTheme,
                   leftArm: leftArm, outerDia: outerDia, innerDia: innerDia, view: valueLabel)
     }
     
@@ -300,16 +305,17 @@ extension SweepGraph: ViewConstraintProtocol {
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         valueLabel.centerYAnchor.constraint(equalTo: leftButton.centerYAnchor, constant: -130).isActive = true
+        valueLabel.widthAnchor.constraint(equalToConstant: 180).isActive = true
     }
     
     private func setupCustomButtons(_ leftColor: UIColor, _ rightColor: UIColor) {
-        leftButton.setButtonParams(color: leftColor, string: "Left-arm\nexercise", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        leftButton.setButtonParams(color: leftColor, string: "Left-arm\nexercise", ftype: defFont, fsize: 16, align: .center)
         leftButton.titleLabel?.numberOfLines = 2
         leftButton.titleLabel?.textAlignment = .center
         leftButton.setButtonFrame(borderWidth: 1.0, borderColor: leftColor, cornerRadius: leftButton.frame.height/2, fillColor: .clear, inset: 10)
         leftButton.addTarget(self, action: #selector(leftButtonPressed), for: .touchUpInside)
         
-        rightButton.setButtonParams(color: rightColor, string: "Right-arm\nexercise", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        rightButton.setButtonParams(color: rightColor, string: "Right-arm\nexercise", ftype: defFont, fsize: 16, align: .center)
         rightButton.titleLabel?.numberOfLines = 2
         rightButton.titleLabel?.textAlignment = .center
         rightButton.setButtonFrame(borderWidth: 1.0, borderColor: rightColor, cornerRadius: rightButton.frame.height/2, fillColor: .clear, inset: 10)

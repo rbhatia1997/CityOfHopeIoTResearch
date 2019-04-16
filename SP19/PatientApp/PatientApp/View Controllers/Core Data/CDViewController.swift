@@ -111,7 +111,7 @@ extension CDViewController: UITableViewDelegate, UITableViewDataSource {
         } else if entitySelection.selectedSegmentIndex == 1 {
 
             dateString = "id: \(exerciseMetas[indexPath.section][indexPath.row].id)"
-            data0String = "max rom: \(exerciseMetas[indexPath.section][indexPath.row].rom.max() ?? 0)"
+            data0String = "max rom: \(exerciseMetas[indexPath.section][indexPath.row].max), reps: \(exerciseMetas[indexPath.section][indexPath.row].reps)"
             data1String = "processed id: \(exerciseMetas[indexPath.section][indexPath.row].processed?.id ?? "no processed")"
             data2String = "exercise name: \(exerciseMetas[indexPath.section][indexPath.row].exercise?.name ?? "no exercise")"
             
@@ -362,7 +362,7 @@ extension CDViewController {
 
             let string = self.tableView(tableView, titleForHeaderInSection: section)!
             let headerLabel = UILabel()
-            headerLabel.setLabelParams(color: .gray, string: string, ftype: "MontserratAlternates-Regular", fsize: 15, align: .left)
+            headerLabel.setLabelParams(color: .gray, string: string, ftype: altFontExtraLight, fsize: 15, align: .left)
             headerView.addSubview(headerLabel)
 
             headerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -421,7 +421,7 @@ extension CDViewController: ViewConstraintProtocol {
         headerView.updateHeader(text: "Core Data", color: hsbShadeTint(color: colorTheme, sat: 0.20), fsize: 30)
         self.view.addSubview(headerView)
         
-        homeButton.setButtonParams(color: .gray, string: "Back", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        homeButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
         homeButton.addTarget(self, action: #selector(homeButtonPressed), for: .touchUpInside)
         self.view.addSubview(homeButton)
         
@@ -496,7 +496,7 @@ extension CDViewController: ViewConstraintProtocol {
     }
     
     func groupButtonSetup(button: UIButton, text: String, action: Selector) {
-        button.setButtonParams(color: .white, string: text, ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        button.setButtonParams(color: .white, string: text, ftype: defFont, fsize: 16, align: .center)
         button.setButtonFrame(borderWidth: 1.5, borderColor: colorTheme, cornerRadius: 20, fillColor: colorTheme, inset: 0)
         button.setTitleColor(.darkGray, for: .highlighted)
         button.addTarget(self, action: action, for: .touchUpInside)

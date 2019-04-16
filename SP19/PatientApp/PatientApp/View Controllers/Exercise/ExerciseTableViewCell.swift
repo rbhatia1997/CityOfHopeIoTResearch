@@ -43,11 +43,11 @@ class ExerciseTableViewCell: UITableViewCell, ViewConstraintProtocol {
         exerciseImage.image = exerciseIcon
         
         // setup exercise label view
-        exerciseLabel.setLabelParams(color: .gray, string: exerciseName, ftype: "Montserrat-Regular",
+        exerciseLabel.setLabelParams(color: .gray, string: exerciseName, ftype: defFont,
                                      fsize: 16, align: .left)
         
         // setup arrow label view
-        arrowLabel.setLabelParams(color: .lightGray, string: ">", ftype: "Montserrat-Regular",
+        arrowLabel.setLabelParams(color: .lightGray, string: ">", ftype: defFont,
                                   fsize: 20, align: .center)
         
         // add cell view to self
@@ -62,7 +62,7 @@ class ExerciseTableViewCell: UITableViewCell, ViewConstraintProtocol {
 //        checkButton.frame = .zero
 //        checkButton.setTitle("⭕️", for: .normal)
 //        checkButton.setTitleColor(.gray, for: .normal)
-//        checkButton.titleLabel?.font = UIFont(name: "Montserrat-Regular", size: 16)!
+//        checkButton.titleLabel?.font = UIFont(name: defFont, size: 16)!
 //        checkButton.sizeToFit()
 //        checkButton.titleLabel?.textAlignment = .center
 //        checkButton.addTarget(self, action: #selector(checkButtonPressed), for: .touchUpInside)

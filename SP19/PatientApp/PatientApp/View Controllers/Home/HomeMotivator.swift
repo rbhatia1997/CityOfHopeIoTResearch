@@ -37,13 +37,13 @@ class HomeMotivator: UIView {
         goalNum = goalNum > 5 ? 5 : goals.count
         
         goalTitle.setLabelParams(color: .gray, string: goalNum == 1 ? "Your Top \(goalNum) Goal" : "Your Top \(goalNum) Goals",
-            ftype: "Montserrat-Regular", fsize: 14, align: .center)
+            ftype: defFont, fsize: 14, align: .center)
         
         for i in 0..<goalNum {
             goalList.append(UILabel())
             
             goalList[i].setLabelParams(color: .black, string: "\(i+1). \(goals[i])",
-                ftype: "Montserrat-Light", fsize: 18, align: .left, tag: 101)
+                ftype: defFontLight, fsize: 18, align: .left, tag: 101)
             
             self.addSubview(goalList[i])
             

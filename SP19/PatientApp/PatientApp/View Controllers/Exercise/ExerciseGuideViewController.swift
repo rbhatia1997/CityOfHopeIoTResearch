@@ -11,11 +11,19 @@ import CoreBluetooth
 
 class ExerciseGuideViewController: UIViewController {
     
-    var deg = Double()
-    var up = true
-    let delay: Double = 50
-    var step: Double = 0
-    let stepMax: Double = 250
+    var ti: Float = 0
+    let refresh: Float = 1/10 // period
+    
+    let largeNumber: Float = 1000000000
+    var minPitch: Float = 1000000000
+    var maxPitch: Float = -1000000000
+    let threshold: Float = 20 / 180 * Float.pi
+    var zeniths = [Float]()
+    var nidirs = [Float]()
+    var checkZenith = true
+    
+    var offset = [Float]()
+    let posture_angle: Float = 70
     
     // global variables
     var colorTheme: UIColor!
@@ -78,6 +86,8 @@ class ExerciseGuideViewController: UIViewController {
         
         onVC = true
         centralManager.scanForPeripherals(withServices: [serviceUUID])
+        
+        offset = create_quaternion(theta: posture_angle * Float.pi/180, euler_axis: [0,1,0])
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -166,38 +176,64 @@ extension ExerciseGuideViewController: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         
-        if step > stepMax {
-            step = 0
-
-            if up && deg >= 150 {
-                up = false
-            } else if !up && deg <= 0 {
-                up = true
-            } else {
-                if up {
-                    deg += 0.06 * stepMax
-                } else {
-                    deg -= 0.06 * stepMax
-                }
-            }
-
-            activeGraph.setSweepGraphValue(value: degToRad(deg: deg))
-
-        } else {
-            step += delay
-        }
-        
         switch characteristic.uuid {
         case char0UUID:
             let data = characteristic.value!
-            let farr: [Float] = dataToFloats(data: data, numFloats: 17)
+            var farr: [Float] = dataToFloats(data: data, numFloats: 18)
+            
+//            let q_g_b = getBodyFrame(offset: offset, q_imu0: [farr[0], farr[1], farr[2], farr[3]])
+//            farr[0] = q_g_b[0]
+//            farr[1] = q_g_b[1]
+//            farr[2] = q_g_b[2]
+//            farr[3] = q_g_b[3]
+//
+//            for i in 0..<3 {
+//                let q_b_i = convertToBody(q_g_b: q_g_b, q_imu: [farr[4*i+4], farr[4*i+5], farr[4*i+6], farr[4*i+7]])
+//                farr[4*i+4] = q_b_i[0]
+//                farr[4*i+5] = q_b_i[1]
+//                farr[4*i+6] = q_b_i[2]
+//                farr[4*i+7] = q_b_i[3]
+//            }
+            
+            var pitch: Float = 0
+            for i in 0..<3 {
+                pitch += Float( get_pitch(q: [farr[4*i+4], farr[4*i+5], farr[4*i+6], farr[4*i+7]]) )
+            }
+            pitch /= 3
+            pitch = Float.pi/2 - pitch
+            
+            if pitch > maxPitch { maxPitch = pitch }
+            
+            if pitch < minPitch { minPitch = pitch }
+            
+            if checkZenith && pitch < (maxPitch - threshold) {
+                zeniths.append(maxPitch)
+                minPitch = pitch
+                checkZenith = false
+                maxPitch = -largeNumber
+            }
+            
+            if !checkZenith && pitch > (minPitch + threshold) {
+                nidirs.append(minPitch)
+                maxPitch = pitch
+                checkZenith = true
+                minPitch = largeNumber
+            }
+            
+            if farr[16] - ti > refresh {
+                ti = farr[16]
+                activeGraph.setSweepGraphValue(value: CGFloat(pitch), count: zeniths.count)
+            }
+            
+//            print("\(zeniths.count) reps")
 
             if storingData {
-                timestep.append(farr[0])
-                q0.append([farr[1], farr[2], farr[3], farr[4]])
-                q1.append([farr[5], farr[6], farr[7], farr[8]])
-                q2.append([farr[9], farr[10], farr[11], farr[12]])
-                q3.append([farr[13], farr[14], farr[15], farr[16]])
+                
+                timestep.append(farr[16])
+                q0.append([farr[0], farr[1], farr[2], farr[3]])
+                q1.append([farr[4], farr[5], farr[6], farr[7]])
+                q2.append([farr[8], farr[9], farr[10], farr[11]])
+                q3.append([farr[12], farr[13], farr[14], farr[15]])
 
                 countLabel.text = ""//"number of entries: \(timestep.count)"
 
@@ -221,6 +257,10 @@ extension ExerciseGuideViewController: CBPeripheralDelegate {
             break
         }
     }
+}
+
+extension ExerciseGuideViewController {
+    
 }
 
 // MARK: button actions
@@ -277,11 +317,11 @@ extension ExerciseGuideViewController {
         if running {
             startButton.setTitle("Exercise running... click to pause", for: .normal)
             startButton.setTitleColor(.white, for: .normal)
-            startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: hsbShadeTint(color: colorTheme, sat: 0.50))
+            startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: hsbShadeTint(color: colorTheme, sat: 0.50), inset: 0)
         } else {
             startButton.setTitle("Click to start exercise", for: .normal)
             startButton.setTitleColor(.white, for: .normal)
-            startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: UIColor(white: 0, alpha: 0.20))
+            startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: UIColor(white: 0, alpha: 0.20), inset: 0)
         }
         self.view.addSubview(startButton)
     }
@@ -292,18 +332,18 @@ extension ExerciseGuideViewController: ViewConstraintProtocol {
         headerView.updateHeader(text: exerciseName, color: colorTheme.hsbSat(0.40), fsize: 30)
         self.view.addSubview(headerView)
         
-        backButton.setButtonParams(color: .gray, string: "Back", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        backButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
         backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         self.view.addSubview(backButton)
         
         // setup back button
-        backButton.setButtonParams(color: .gray, string: "Back", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        backButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
         backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         self.view.addSubview(backButton)
         
         // setup exercise label
 //        exLabel.setLabelParams(color: .white, string: exerciseName,
-//                               ftype: "Montserrat-Regular", fsize: 30, align: .center)
+//                               ftype: defFont, fsize: 30, align: .center)
 //        self.view.addSubview(exLabel)
         
         // setup image view
@@ -313,23 +353,22 @@ extension ExerciseGuideViewController: ViewConstraintProtocol {
         
         
         // setup instruction label
-        instrLabel.setLabelParams(color: .gray, string: "Instructions: Replace me with a proper description if needed",
-                                  ftype: "Montserrat-Regular", fsize: 14, align: .left)
+        instrLabel.setLabelParams(color: .gray, string: "Instructions: Replace me with a proper description if needed", ftype: defFont, fsize: 14, align: .left)
         self.view.addSubview(instrLabel)
         
         // setup button labels
-        startButton.setButtonParams(color: .white, string: "Click to start exercise", ftype: "Montserrat-Regular", fsize: 20, align: .center)
-        startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: UIColor(white: 0, alpha: 0.20))
+        startButton.setButtonParams(color: .white, string: "Click to start exercise", ftype: defFont, fsize: 20, align: .center)
+        startButton.setButtonFrame(borderWidth: 1.0, borderColor: .clear, cornerRadius: 15, fillColor: UIColor(white: 0, alpha: 0.20), inset: 0)
         startButton.addTarget(self, action: #selector(startTapped), for: .touchUpInside)
         self.view.addSubview(startButton)
         
         // setup graph
-        activeGraph.updateSweepGraph(color: colorTheme, start: degToRad(deg: 0), max: degToRad(deg: 150), left: true, value: degToRad(deg: 60))
+        activeGraph.updateSweepGraph(color: colorTheme, start: degToRad(deg: 0), max: degToRad(deg: 90), left: true, value: degToRad(deg: 60))
         self.view.addSubview(activeGraph)
         
-        countLabel.setLabelParams(color: .black, string: "-", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+        countLabel.setLabelParams(color: .black, string: "", ftype: defFont, fsize: 14, align: .left)
         self.view.addSubview(countLabel)
-        valueLabel.setLabelParams(color: .black, string: "-", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+        valueLabel.setLabelParams(color: .black, string: "", ftype: defFont, fsize: 14, align: .left)
         self.view.addSubview(valueLabel)
     }
     

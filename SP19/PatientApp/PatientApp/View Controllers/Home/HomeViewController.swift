@@ -221,7 +221,7 @@ extension HomeViewController: ViewConstraintProtocol {
         self.view.addSubview(circleGraph)
         self.view.addSubview(BTView)
         
-        settingsButton.setButtonParams(color: .gray, string: "Settings", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        settingsButton.setButtonParams(color: .gray, string: "Settings", ftype: defFont, fsize: 16, align: .center)
         settingsButton.addTarget(self, action: #selector(SettingsButtonPressed), for: .touchUpInside)
         self.view.addSubview(settingsButton)
 }
@@ -263,12 +263,12 @@ extension HomeViewController: ViewConstraintProtocol {
     }
     
     func devButtonSetup() {
-        BTButton.setButtonParams(color: .gray, string: "BT", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        BTButton.setButtonParams(color: .gray, string: "BT", ftype: defFont, fsize: 16, align: .center)
         BTButton.addTarget(self, action: #selector(BTButtonPressed), for: .touchUpInside)
         BTButton.tag = 104
         self.view.addSubview(BTButton)
         
-        CDButton.setButtonParams(color: .gray, string: "CD", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        CDButton.setButtonParams(color: .gray, string: "CD", ftype: defFont, fsize: 16, align: .center)
         CDButton.addTarget(self, action: #selector(CDButtonPressed), for: .touchUpInside)
         CDButton.tag = 104
         self.view.addSubview(CDButton)

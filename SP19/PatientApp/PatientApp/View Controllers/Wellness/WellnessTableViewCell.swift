@@ -67,8 +67,8 @@ extension WellnessTableViewCell {
 extension WellnessTableViewCell: ViewConstraintProtocol {
     internal func setupViews() {
         
-        numberLabel.setLabelParams(color: .gray, string: "\(questionNumber ?? 99).", ftype: "MontserratAlternates-Regular", fsize: 16, align: .left)
-        questionLabel.setLabelParams(color: .gray, string: question, ftype: "MontserratAlternates-Regular", fsize: 16, align: .left)
+        numberLabel.setLabelParams(color: .gray, string: "\(questionNumber ?? 99).", ftype: altFont, fsize: 16, align: .left)
+        questionLabel.setLabelParams(color: .gray, string: question, ftype: altFont, fsize: 16, align: .left)
         
         setButtonColors(bool: boolResult)
 
@@ -85,9 +85,9 @@ extension WellnessTableViewCell: ViewConstraintProtocol {
             slider.setValue(sliderResult, animated: false)
             slider.addTarget(self, action: #selector(sliderSlide), for: .valueChanged)
             
-            minLabel.setLabelParams(color: .gray, string: "0", ftype: "Montserrat-Regular", fsize: 14, align: .center)
-            midLabel.setLabelParams(color: .gray, string: "5", ftype: "Montserrat-Regular", fsize: 14, align: .center)
-            maxLabel.setLabelParams(color: .gray, string: "10", ftype: "Montserrat-Regular", fsize: 14, align: .center)
+            minLabel.setLabelParams(color: .gray, string: "0", ftype: defFont, fsize: 14, align: .center)
+            midLabel.setLabelParams(color: .gray, string: "5", ftype: defFont, fsize: 14, align: .center)
+            maxLabel.setLabelParams(color: .gray, string: "10", ftype: defFont, fsize: 14, align: .center)
             
             self.addSubview(slider)
             self.addSubview(minLabel)
@@ -124,11 +124,11 @@ extension WellnessTableViewCell: ViewConstraintProtocol {
     }
     
     private func setupCustomButtons(_ yesColor: UIColor, _ noColor: UIColor) {
-        yesButton.setButtonParams(color: yesColor, string: "Yes", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        yesButton.setButtonParams(color: yesColor, string: "Yes", ftype: defFont, fsize: 16, align: .center)
         yesButton.setButtonFrame(borderWidth: 1.0, borderColor: yesColor, cornerRadius: yesButton.frame.height/2, fillColor: .clear, inset: 5)
         yesButton.addTarget(self, action: #selector(yesPressed), for: .touchUpInside)
         
-        noButton.setButtonParams(color: noColor, string: "No", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        noButton.setButtonParams(color: noColor, string: "No", ftype: defFont, fsize: 16, align: .center)
         noButton.setButtonFrame(borderWidth: 1.0, borderColor: noColor, cornerRadius: noButton.frame.height/2, fillColor: .clear, inset: 5)
         noButton.addTarget(self, action: #selector(noPressed), for: .touchUpInside)
     }

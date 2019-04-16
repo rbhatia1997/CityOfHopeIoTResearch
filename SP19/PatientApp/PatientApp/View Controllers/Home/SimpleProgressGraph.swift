@@ -39,7 +39,7 @@ class SimpleProgressGraph: UIView {
     }
     
     private func setupViews() {
-        title.setLabelParams(color: .gray, string: "Exercise Progress", ftype: "Montserrat-Regular",
+        title.setLabelParams(color: .gray, string: "Exercise Progress", ftype: defFont,
                              fsize: 14, align: .center)
         
         progressAverage = 0.0
@@ -74,10 +74,10 @@ class SimpleProgressGraph: UIView {
     
     private func drawFullCircleGraph(value: CGFloat, exName: String, outerDia: CGFloat, innerDia: CGFloat, color: UIColor, view: UIView) {
         valueLabel.setLabelParams(color: .black, string: "\((value * 1000).rounded()/10)%",
-            ftype: "Montserrat-ExtraLight", fsize: innerDia / 4, align: .center, tag: 102)
+            ftype: defFontExtraLight, fsize: innerDia / 4, align: .center, tag: 102)
         valueLabel.frame = CGRect(x: -50, y: -25, width: 150, height: 50)
 
-        exLabel.setLabelParams(color: .black, string: exName, ftype: "Montserrat-ExtraLight",
+        exLabel.setLabelParams(color: .black, string: exName, ftype: defFontExtraLight,
                                fsize: innerDia / 6, align: .center, tag: 102)
         
         view.addSubview(valueLabel)
@@ -108,10 +108,10 @@ class SimpleProgressGraph: UIView {
         
         let valueLabel = UILabel()
         valueLabel.setLabelParams(color: .black, string: " \((value * 1000).rounded()/10)%",
-            ftype: "Montserrat-ExtraLight", fsize: innerDia / 6, align: .center, tag: 102)
+            ftype: defFontExtraLight, fsize: innerDia / 6, align: .center, tag: 102)
         
         let exLabel = UILabel()
-        exLabel.setLabelParams(color: .black, string: exName, ftype: "Montserrat-ExtraLight",
+        exLabel.setLabelParams(color: .black, string: exName, ftype: defFontExtraLight,
                                fsize: innerDia / 6, align: .center, tag: 102)
         
         view.addSubview(valueLabel)

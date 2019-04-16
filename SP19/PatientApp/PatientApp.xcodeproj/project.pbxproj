@@ -13,6 +13,9 @@
 		F801AABD2260842F00D8EE52 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABB2260842F00D8EE52 /* User+CoreDataClass.swift */; };
 		F801AABE2260842F00D8EE52 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABC2260842F00D8EE52 /* User+CoreDataProperties.swift */; };
 		F801AAC022611DBB00D8EE52 /* PickerTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AABF22611DBB00D8EE52 /* PickerTableViewCellDelegate.swift */; };
+		F801AAC22263E2DA00D8EE52 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC12263E2DA00D8EE52 /* UITextField+Extensions.swift */; };
+		F801AAC42263E3E100D8EE52 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC32263E3E100D8EE52 /* GlobalVariables.swift */; };
+		F801AACA2264086A00D8EE52 /* MetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC92264086A00D8EE52 /* MetricView.swift */; };
 		F818717C222F3C630043DCBE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F818717B222F3C630043DCBE /* AppDelegate.swift */; };
 		F8187183222F3C630043DCBE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8187181222F3C630043DCBE /* Main.storyboard */; };
 		F8187185222F3C640043DCBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8187184222F3C640043DCBE /* Assets.xcassets */; };
@@ -91,6 +94,9 @@
 		F801AABB2260842F00D8EE52 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
 		F801AABC2260842F00D8EE52 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F801AABF22611DBB00D8EE52 /* PickerTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerTableViewCellDelegate.swift; sourceTree = "<group>"; };
+		F801AAC12263E2DA00D8EE52 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
+		F801AAC32263E3E100D8EE52 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
+		F801AAC92264086A00D8EE52 /* MetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricView.swift; sourceTree = "<group>"; };
 		F8187178222F3C630043DCBE /* PatientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PatientApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F818717B222F3C630043DCBE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8187182222F3C630043DCBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -222,6 +228,7 @@
 		F818717A222F3C630043DCBE /* PatientApp */ = {
 			isa = PBXGroup;
 			children = (
+				F801AAC32263E3E100D8EE52 /* GlobalVariables.swift */,
 				F8471B422248928E00960B8C /* Resources */,
 				F8187189222F3C640043DCBE /* Info.plist */,
 				F829C99822370EE100D1E57B /* Data Processing */,
@@ -276,6 +283,7 @@
 				F83702AF222F4EA300AC753C /* ProgressViewController.swift */,
 				F8FEE010223F72A6005ECB35 /* OverallProgressView.swift */,
 				F850383B22388679009B79A0 /* SingleProgressViewController.swift */,
+				F801AAC92264086A00D8EE52 /* MetricView.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -364,7 +372,7 @@
 			children = (
 				F801AAB2225ED20800D8EE52 /* Settings */,
 				F86AB2032256F29500C4F95E /* Bluetooth */,
-				F86AB1BB2255AB9700C4F95E /* CD */,
+				F86AB1BB2255AB9700C4F95E /* Core Data */,
 				F8280CC12254159B0067E2F7 /* Home */,
 				F8280CC2225415AC0067E2F7 /* Exercise */,
 				F8280CC3225415B20067E2F7 /* Progress */,
@@ -384,17 +392,18 @@
 				F8280CAD224E15C30067E2F7 /* Data+Extensions.swift */,
 				F86AB1BD2255D1B200C4F95E /* Range+Extensions.swift */,
 				F86AB1C02255D1F200C4F95E /* ClosedRange+Extensions.swift */,
+				F801AAC12263E2DA00D8EE52 /* UITextField+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		F86AB1BB2255AB9700C4F95E /* CD */ = {
+		F86AB1BB2255AB9700C4F95E /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
 				F8FEE01A2246FCC7005ECB35 /* CDViewController.swift */,
 				F8471B522249373200960B8C /* CDTableViewCell.swift */,
 			);
-			path = CD;
+			path = "Core Data";
 			sourceTree = "<group>";
 		};
 		F86AB1F82256074300C4F95E /* Exercise Data */ = {
@@ -610,6 +619,7 @@
 				F8471B532249373200960B8C /* CDTableViewCell.swift in Sources */,
 				F86AB1D52255EF5800C4F95E /* Question+CoreDataProperties.swift in Sources */,
 				F818717C222F3C630043DCBE /* AppDelegate.swift in Sources */,
+				F801AAC42263E3E100D8EE52 /* GlobalVariables.swift in Sources */,
 				F86AB1D32255EF5800C4F95E /* Goal+CoreDataProperties.swift in Sources */,
 				F86AB1D22255EF5800C4F95E /* Goal+CoreDataClass.swift in Sources */,
 				F83702AE222F4E9A00AC753C /* ExerciseViewController.swift in Sources */,
@@ -629,6 +639,7 @@
 				F83702B7222F4ED000AC753C /* Header.swift in Sources */,
 				F8EC34F72237B2A30054B30D /* BTViewController.swift in Sources */,
 				F86AB1C12255D1F200C4F95E /* ClosedRange+Extensions.swift in Sources */,
+				F801AACA2264086A00D8EE52 /* MetricView.swift in Sources */,
 				F86AB2002256087500C4F95E /* UserDataManagement.swift in Sources */,
 				F8280CAC224E117F0067E2F7 /* String+Extensions.swift in Sources */,
 				F83702D12230A72800AC753C /* BTConn.swift in Sources */,
@@ -663,6 +674,7 @@
 				F86AB15E22541FBC00C4F95E /* DataProcessing.swift in Sources */,
 				F8280CA9224ABA950067E2F7 /* PresetData.swift in Sources */,
 				F801AABD2260842F00D8EE52 /* User+CoreDataClass.swift in Sources */,
+				F801AAC22263E2DA00D8EE52 /* UITextField+Extensions.swift in Sources */,
 				F8471B5522498B3800960B8C /* GoalsTableViewCell.swift in Sources */,
 				F850383E22388699009B79A0 /* ProgressTableViewCell.swift in Sources */,
 				F83702B2222F4EAC00AC753C /* GoalsViewController.swift in Sources */,

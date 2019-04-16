@@ -161,7 +161,7 @@ extension WellnessViewController: ViewConstraintProtocol {
         self.view.addSubview(wellnessTableView)
         
         // setup the submit button
-        submitButton.setButtonParams(color: .gray, string: "Submit Responses", ftype: "MontserratAlternates-Regular", fsize: 20, align: .center)
+        submitButton.setButtonParams(color: .gray, string: "Submit Responses", ftype: altFontExtraLight, fsize: 20, align: .center)
         submitButton.setButtonFrame(borderWidth: 1.0, borderColor: .gray, cornerRadius: 15, fillColor: .clear)
         submitButton.addTarget(self, action: #selector(submitButtonTapped), for: .touchUpInside)
         self.view.addSubview(submitButton)

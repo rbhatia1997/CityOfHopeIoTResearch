@@ -64,7 +64,7 @@ extension SettingsViewController {
     
     @objc func devButtonTapped(_ sender: UIButton) {
         devMode = !devMode
-        devButton.setButtonParams(color: devMode ? .gray : .white, string: "Developer Mode is \(devMode ? "On": "Off")", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        devButton.setButtonParams(color: devMode ? .gray : .white, string: "Developer Mode is \(devMode ? "On": "Off")", ftype: defFont, fsize: 20, align: .center)
         devButton.setButtonFrame(borderWidth: 1.0, borderColor: devMode ? .white : .gray, cornerRadius: devButton.frame.height/2, fillColor: devMode ? .white : .gray)
         self.view.addSubview(backButton)
     }
@@ -103,26 +103,26 @@ extension SettingsViewController: ViewConstraintProtocol {
         headerView.updateHeader(text: "Settings", color: .white, fsize: 30)
         self.view.addSubview(headerView)
         
-        backButton.setButtonParams(color: .gray, string: "Back", ftype: "Montserrat-Regular", fsize: 16, align: .center)
+        backButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
         backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         self.view.addSubview(backButton)
         
-        devButton.setButtonParams(color: devMode ? .gray : .white, string: "Developer Mode is \(devMode ? "On": "Off")", ftype: "Montserrat-Regular", fsize: 20, align: .center)
+        devButton.setButtonParams(color: devMode ? .gray : .white, string: "Developer Mode is \(devMode ? "On": "Off")", ftype: defFont, fsize: 20, align: .center)
         devButton.setButtonFrame(borderWidth: 1.0, borderColor: devMode ? .white : .gray, cornerRadius: devButton.frame.height/2, fillColor: devMode ? .white : .gray)
         devButton.addTarget(self, action: #selector(devButtonTapped), for: .touchUpInside)
         self.view.addSubview(devButton)
         
-        userTitle.setLabelParams(color: .gray, string: "User Info", ftype: "Montserrat-Regular", fsize: 20, align: .left)
+        userTitle.setLabelParams(color: .gray, string: "User Info", ftype: defFont, fsize: 20, align: .left)
         self.view.addSubview(userTitle)
         
-        updateButton.setButtonParams(color: .gray, string: "Update", ftype: "Montserrat-Regular", fsize: 14, align: .center)
+        updateButton.setButtonParams(color: .gray, string: "Update", ftype: defFont, fsize: 14, align: .center)
         updateButton.setButtonFrame(borderWidth: 1.0, borderColor: .white, cornerRadius: updateButton.frame.height/2, fillColor: .white, inset: 5)
         updateButton.addTarget(self, action: #selector(updateButtonTapped), for: .touchUpInside)
         self.view.addSubview(updateButton)
         
         for i in 0..<userCategories.count {
             let label = UILabel()
-            label.setLabelParams(color: .gray, string: "\(userCategories[i]): ", ftype: "Montserrat-Regular", fsize: 14, align: .left)
+            label.setLabelParams(color: .gray, string: "\(userCategories[i]): ", ftype: defFont, fsize: 14, align: .left)
             userLabels.append(label)
             self.view.addSubview(userLabels[i])
         }
@@ -132,7 +132,7 @@ extension SettingsViewController: ViewConstraintProtocol {
             field.frame = .zero
             field.backgroundColor = .white
             field.text = userValues[i]
-            field.font = UIFont(name: "Montserrat-Regular", size: 14)!
+            field.font = UIFont(name: defFont, size: 14)!
             field.textColor = .gray
             userFields.append(field)
             self.view.addSubview(userFields[i])
@@ -148,7 +148,7 @@ extension SettingsViewController: ViewConstraintProtocol {
         dateFormatter.dateFormat = "MMM dd, yyyy"
         datePicker.date = dateFormatter.date(from: userFields[3].text ?? "Jun 09, 1900")!
         
-        exerciseLabel.setLabelParams(color: .gray, string: "Exercise Selection", ftype: "Montserrat-Regular", fsize: 20, align: .left)
+        exerciseLabel.setLabelParams(color: .gray, string: "Exercise Selection", ftype: defFont, fsize: 20, align: .left)
         self.view.addSubview(exerciseLabel)
         
         exerciseTableView.frame = .zero
@@ -238,8 +238,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectedBackgroundView = colorView
         cell.pickerCellDelegate = self
         cell.useButton.tag = indexPath.row
-        cell.romField.tag = indexPath.row
-        cell.repField.tag = indexPath.row
+        cell.romPicker.tag = indexPath.row
+        cell.repPicker.tag = indexPath.row
         cell.updatePickerCell(name: exercises[indexPath.row].name, icon: UIImage(named: exercises[indexPath.row].icon)!, use: exercises[indexPath.row].use, rom: exercises[indexPath.row].baselineRom, rep: exercises[indexPath.row].baselineRep)
 
         return cell

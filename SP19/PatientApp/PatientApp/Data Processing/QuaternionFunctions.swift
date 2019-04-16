@@ -107,6 +107,15 @@ func get_yaw(q: [Float]) -> Float {
     return atan2( num, den )
 }
 
+// higher level functions
+func getBodyFrame(offset: [Float], q_imu0: [Float]) -> [Float] {
+    return multiply(q1: q_imu0, q2: offset)
+}
+
+func convertToBody(q_g_b: [Float], q_imu: [Float]) -> [Float] {
+    return multiply(q1: q_imu, q2: inverse(q_in: q_g_b))
+}
+
 // Struct
 //struct Quaternion {
 //    func quatMultiply(_ quat1: [Float], _ quat2: [Float]) -> [Float] {

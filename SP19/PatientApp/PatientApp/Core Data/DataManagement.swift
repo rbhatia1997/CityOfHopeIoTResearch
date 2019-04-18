@@ -14,19 +14,26 @@ let appDelegate = UIApplication.shared.delegate as! AppDelegate
 let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
 // just a large number used to set the values of the 
-let largeNumber: Int = 10000
+let largeNumber: Int = 1000000000
 
 func generateID() -> String {
     let date = Date()
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyyMMddhhmmssSSS"
+    formatter.dateFormat = "yyyyMMddHHmmssSSS"
     return formatter.string(from: date)
 }
 
 func getDate(_ string: String) -> Date {
     let formatter = DateFormatter()
-    formatter.dateFormat = "yyyyMMddhhmmssSSS"
+    formatter.dateFormat = "yyyyMMddHHmmssSSS"
     return formatter.date(from: string)!
+}
+
+func convertFormatFromID(id: String, format: String) -> String {
+    let date = getDate(id)
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = format
+    return dateFormatter.string(from: date)
 }
 
 func saveContext() {

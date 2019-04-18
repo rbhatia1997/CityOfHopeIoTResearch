@@ -13,7 +13,6 @@
         <!--Home-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
                 <viewController id="9pv-A4-QxB" customClass="HomeViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -28,8 +27,9 @@
                         <segue destination="Yo6-Ig-l22" kind="show" identifier="toSettingsVC" id="hwR-N0-q8y"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-717" y="360"/>
+            <point key="canvasLocation" x="16" y="360"/>
         </scene>
         <!--Exercise-->
         <scene sceneID="wg7-f3-ORb">
@@ -62,12 +62,32 @@
                     </view>
                     <connections>
                         <segue destination="Uok-6W-NSd" kind="unwind" identifier="toExerciseVCfromGuideVC" unwindAction="unwindToExerciseVCWithSegue:" id="1eV-2z-K8q"/>
+                        <segue destination="YWa-s5-hV0" kind="show" identifier="toSessionVC" id="0dH-4k-HKJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63B-uh-o29" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Uok-6W-NSd" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="749" y="1107"/>
+            <point key="canvasLocation" x="748" y="1108"/>
+        </scene>
+        <!--Session Stats View Controller-->
+        <scene sceneID="eMx-4d-Spu">
+            <objects>
+                <viewController id="YWa-s5-hV0" customClass="SessionStatsViewController" customModule="PatientApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8gE-ab-0ed">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="ep9-Hh-cZu"/>
+                    </view>
+                    <connections>
+                        <segue destination="mu3-8d-uQt" kind="unwind" identifier="toExerciseVCfromSessionVC" unwindAction="unwindToExerciseVCWithSegue:" id="lsc-5J-IYO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="J5Q-nw-4Or" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="mu3-8d-uQt" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="748" y="1838"/>
         </scene>
         <!--Single Progress View Controller-->
         <scene sceneID="X4m-Pu-fdc">

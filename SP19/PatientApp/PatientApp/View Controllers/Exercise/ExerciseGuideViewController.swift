@@ -10,25 +10,31 @@ import UIKit
 import CoreBluetooth
 
 class ExerciseGuideViewController: UIViewController {
-    
     var ti: Float = 0
     let refresh: Float = 1/10 // period
     
-    let largeNumber: Float = 1000000000
     var minPitch: Float = 1000000000
     var maxPitch: Float = -1000000000
     let threshold: Float = 20 / 180 * Float.pi
     var zeniths = [Float]()
     var nidirs = [Float]()
     var checkZenith = true
+    var slouch: Float = 0
+    var compensation: Float = 0
+    
+    var index: Float!
+    var pitchSamples: Int!
+    
+    var compZero: Float = 0
     
     var offset = [Float]()
-    let posture_angle: Float = 70
+    var posture_angle: Float = 0
     
     // global variables
     var colorTheme: UIColor!
-    var exerciseName: String!
-    var exerciseImage: UIImage!
+    var exercise: Exercise!
+//    var exerciseName: String!
+//    var exerciseImage: UIImage!
     
     // subviews
     let headerView = Header()
@@ -83,6 +89,15 @@ class ExerciseGuideViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        minPitch = Float(largeNumber)
+        maxPitch = Float(-largeNumber)
+        zeniths.removeAll()
+        nidirs.removeAll()
+        checkZenith = true
+        
+        index = 0
+        pitchSamples = 200
         
         onVC = true
         centralManager.scanForPeripherals(withServices: [serviceUUID])
@@ -195,6 +210,23 @@ extension ExerciseGuideViewController: CBPeripheralDelegate {
 //                farr[4*i+7] = q_b_i[3]
 //            }
             
+            let q_g_b = [farr[0], farr[1], farr[2], farr[3]]
+            
+//            index += 1
+//
+//            if pitchSamples > 0 {
+//                posture_angle = ( posture_angle + (index - 1) + get_pitch(q: q_g_b) ) / index
+//                pitchSamples -= 1
+//            }
+//
+//            if pitchSamples == 0 {
+//                offset = create_quaternion(theta: posture_angle * 180 / Float.pi, euler_axis: [0,1,0])
+//            }
+            
+            slouch = ( slouch * (index - 1) + get_pitch(q: q_g_b) ) / index
+            
+            compensation = ( compensation * (index - 1) + get_roll(q: q_g_b) ) / index
+            
             var pitch: Float = 0
             for i in 0..<3 {
                 pitch += Float( get_pitch(q: [farr[4*i+4], farr[4*i+5], farr[4*i+6], farr[4*i+7]]) )
@@ -210,14 +242,14 @@ extension ExerciseGuideViewController: CBPeripheralDelegate {
                 zeniths.append(maxPitch)
                 minPitch = pitch
                 checkZenith = false
-                maxPitch = -largeNumber
+                maxPitch = Float(-largeNumber)
             }
             
             if !checkZenith && pitch > (minPitch + threshold) {
                 nidirs.append(minPitch)
                 maxPitch = pitch
                 checkZenith = true
-                minPitch = largeNumber
+                minPitch = Float(largeNumber)
             }
             
             if farr[16] - ti > refresh {
@@ -259,10 +291,6 @@ extension ExerciseGuideViewController: CBPeripheralDelegate {
     }
 }
 
-extension ExerciseGuideViewController {
-    
-}
-
 // MARK: button actions
 extension ExerciseGuideViewController {
     @objc func startTapped(_ sender: UIButton) {
@@ -271,9 +299,17 @@ extension ExerciseGuideViewController {
             
             let alert = UIAlertController(title: "Exercise paused", message: "\nSubmit to upload the data from your current session.\nRestart to clear the data from your current session.\nResume to continue where you left off.", preferredStyle: .actionSheet)
             // submit
-            alert.addAction(UIAlertAction(title: "Submit", style: .destructive, handler: { [] (_) in
+            alert.addAction(UIAlertAction(title: "Submit", style: .default, handler: { [] (_) in
                 // if submit, add data, clear local variables, turn off receiving, and toggle button
-                // add data
+                let id: String = generateID()
+                reloadAllExerciseData()
+                var floatArray = [Float]()
+                for _ in 0..<5 {
+                    floatArray.append(Float.random(in: 0...120))
+                }
+                addMetaData(id: id, rom: self.zeniths, slouch: self.slouch, comp: self.compensation, exercise: self.exercise, processed: nil)
+                reloadMetaData()
+                addProcessedData(id: id, timestep: self.timestep, q_gb: self.q0, q_b1: self.q1, q_b2: self.q2, q_b3: self.q3, meta: metas.last!)
 
                 self.timestep.removeAll()
                 self.q0.removeAll()
@@ -284,6 +320,9 @@ extension ExerciseGuideViewController {
                 let dismissAlert = UIAlertController(title: "Great job!", message: "Data submitted!", preferredStyle: .alert)
                 dismissAlert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: { [] (_) in
                     self.toggleStartButton(running: self.storingData)
+                }))
+                dismissAlert.addAction(UIAlertAction(title: "See stats", style: .default, handler: { [] (_) in
+                    self.performSegue(withIdentifier: "toSessionVC", sender: self)
                 }))
                 self.present(dismissAlert, animated: true, completion: nil)
             }))
@@ -329,7 +368,7 @@ extension ExerciseGuideViewController {
 
 extension ExerciseGuideViewController: ViewConstraintProtocol {
     internal func setupViews() {
-        headerView.updateHeader(text: exerciseName, color: colorTheme.hsbSat(0.40), fsize: 30)
+        headerView.updateHeader(text: exercise.name, color: colorTheme.hsbSat(0.40), fsize: 30)
         self.view.addSubview(headerView)
         
         backButton.setButtonParams(color: .gray, string: "Back", ftype: defFont, fsize: 16, align: .center)
@@ -348,7 +387,7 @@ extension ExerciseGuideViewController: ViewConstraintProtocol {
         
         // setup image view
         exImageView.frame = .zero
-        exImageView.image = exerciseImage
+        exImageView.image = UIImage(named: exercise.icon)
         self.view.addSubview(exImageView)
         
         
@@ -363,7 +402,7 @@ extension ExerciseGuideViewController: ViewConstraintProtocol {
         self.view.addSubview(startButton)
         
         // setup graph
-        activeGraph.updateSweepGraph(color: colorTheme, start: degToRad(deg: 0), max: degToRad(deg: 90), left: true, value: degToRad(deg: 60))
+        activeGraph.updateSweepGraph(color: colorTheme, start: degToRad(deg: 0), max: degToRad(deg: 90), left: true, value: degToRad(deg: 60), reps: exercise.baselineRep)
         self.view.addSubview(activeGraph)
         
         countLabel.setLabelParams(color: .black, string: "", ftype: defFont, fsize: 14, align: .left)
@@ -431,6 +470,16 @@ extension ExerciseGuideViewController: ViewConstraintProtocol {
         valueLabel.topAnchor.constraint(equalTo: countLabel.bottomAnchor, constant: 20).isActive = true
         valueLabel.leadingAnchor.constraint(equalTo: countLabel.leadingAnchor).isActive = true
         valueLabel.trailingAnchor.constraint(equalTo: countLabel.trailingAnchor).isActive = true
+    }
+}
+
+extension ExerciseGuideViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        reloadMetaData()
+        if let destination = segue.destination as? SessionStatsViewController {
+            destination.sessionMeta = metas.last!
+        }
     }
 }
 

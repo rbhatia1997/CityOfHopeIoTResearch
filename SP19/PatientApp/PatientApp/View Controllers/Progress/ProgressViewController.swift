@@ -47,10 +47,10 @@ class ProgressViewController: UIViewController, ChartViewDelegate {
         setupViews()
         setupConstraints()
         
-        for i in 0..<20 {
+        for i in 0..<10 {
             sessions.append(Float(i))
-            romValues.append(Float.random(in: 0...100))
-            repValues.append(Int16.random(in: 0...20))
+            romValues.append(Float.random(in: 0...75))
+            repValues.append(Int16.random(in: 0...10))
         }
         sessions.sort()
         romValues.sort()
@@ -245,26 +245,30 @@ extension ProgressViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func updateMetricViews(exercise: Exercise) {
-        var metaArray = Array(exercise.meta)
-        if metaArray.count > 1 {
-            metaArray.sort(by: { $0.max > $1.max })
-            romView.updateView(top: "Widest range of motion:", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "")
-            metaArray.sort(by: { $0.reps > $1.reps })
-            repView.updateView(top: "In a single session, you can do", metric: "\(metaArray[0].reps) reps", bottom: "")
-            metaArray.sort(by: { $0.slouch > $1.slouch })
-            slouchView.updateView(top: "Posture", metric: "\(String(format: "%.0f", metaArray[0].slouch * 100))º", bottom: "")
-            metaArray.sort(by: { $0.comp > $1.comp })
-            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
-        } else if metaArray.count == 1 {
-            romView.updateView(top: "You can move your arm", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "since you've started")
-            repView.updateView(top: "You can already do", metric: "\(metaArray[0].reps) reps", bottom: "in a single session")
-            slouchView.updateView(top: "Your posture has improved by", metric: "\(String(format: "%.0f", metaArray[0].slouch * 100))º", bottom: "")
-            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
-        } else {
-            romView.updateView(top: "", metric: "No data", bottom: "")
-            repView.updateView(top: "", metric: "No data", bottom: "")
-            slouchView.updateView(top: "", metric: "No data", bottom: "")
-            compView.updateView(top: "", metric: "No data", bottom: "")
-        }
+//        var metaArray = Array(exercise.meta)
+//        if metaArray.count > 1 {
+//            metaArray.sort(by: { $0.max > $1.max })
+//            romView.updateView(top: "Widest range of motion:", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "")
+//            metaArray.sort(by: { $0.reps > $1.reps })
+//            repView.updateView(top: "In a single session, you can do", metric: "\(metaArray[0].reps) reps", bottom: "")
+//            metaArray.sort(by: { $0.slouch > $1.slouch })
+//            slouchView.updateView(top: "Your posture has improved by", metric: "\(String(format: "%.2f", metaArray[0].slouch * 100))%", bottom: "")
+//            metaArray.sort(by: { $0.comp > $1.comp })
+//            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
+//        } else if metaArray.count == 1 {
+//            romView.updateView(top: "You can move your arm", metric: "\(String(format: "%.0f", metaArray[0].max))º", bottom: "since you've started")
+//            repView.updateView(top: "You can already do", metric: "\(metaArray[0].reps) reps", bottom: "in a single session")
+//            slouchView.updateView(top: "Your posture has improved by", metric: "\(String(format: "%.0f", metaArray[0].slouch * 100))%", bottom: "")
+//            compView.updateView(top: "You are as strong as", metric: "\(String(format: "%.0f", metaArray[0].comp * 100)) ducks", bottom: "")
+//        } else {
+//            romView.updateView(top: "", metric: "No data", bottom: "")
+//            repView.updateView(top: "", metric: "No data", bottom: "")
+//            slouchView.updateView(top: "", metric: "No data", bottom: "")
+//            compView.updateView(top: "", metric: "No data", bottom: "")
+//        }
+        romView.updateView(top: "Widest range of motion:", metric: "75º", bottom: "since you've started")
+        repView.updateView(top: "You can already do", metric: "10 reps", bottom: "in a single session")
+        slouchView.updateView(top: "Your posture has improved by", metric: "25%", bottom: "")
+        compView.updateView(top: "You are as strong as", metric: "95 ducks", bottom: "")
     }
 }

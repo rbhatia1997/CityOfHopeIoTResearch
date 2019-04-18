@@ -124,11 +124,11 @@ extension ExerciseViewController: UITableViewDataSource, UITableViewDelegate {
     // fills exercise guide view controller with information before user is sent there
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
+        reloadExerciseData()
         if let destination = segue.destination as? ExerciseGuideViewController {
             if let selectedRow = sender as? Int {
                 destination.colorTheme = colorTheme
-                destination.exerciseName = exerciseNames[selectedRow]
-                destination.exerciseImage = exerciseIcons[selectedRow]
+                destination.exercise = exercises[selectedRow]
             }
         }
     }

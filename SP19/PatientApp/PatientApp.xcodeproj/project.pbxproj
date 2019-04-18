@@ -16,6 +16,7 @@
 		F801AAC22263E2DA00D8EE52 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC12263E2DA00D8EE52 /* UITextField+Extensions.swift */; };
 		F801AAC42263E3E100D8EE52 /* GlobalVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC32263E3E100D8EE52 /* GlobalVariables.swift */; };
 		F801AACA2264086A00D8EE52 /* MetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AAC92264086A00D8EE52 /* MetricView.swift */; };
+		F801AACC22665AED00D8EE52 /* SessionStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F801AACB22665AED00D8EE52 /* SessionStatsViewController.swift */; };
 		F818717C222F3C630043DCBE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F818717B222F3C630043DCBE /* AppDelegate.swift */; };
 		F8187183222F3C630043DCBE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8187181222F3C630043DCBE /* Main.storyboard */; };
 		F8187185222F3C640043DCBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8187184222F3C640043DCBE /* Assets.xcassets */; };
@@ -97,6 +98,7 @@
 		F801AAC12263E2DA00D8EE52 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
 		F801AAC32263E3E100D8EE52 /* GlobalVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalVariables.swift; sourceTree = "<group>"; };
 		F801AAC92264086A00D8EE52 /* MetricView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricView.swift; sourceTree = "<group>"; };
+		F801AACB22665AED00D8EE52 /* SessionStatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStatsViewController.swift; sourceTree = "<group>"; };
 		F8187178222F3C630043DCBE /* PatientApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PatientApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F818717B222F3C630043DCBE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8187182222F3C630043DCBE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				F8EC34FC22382E190054B30D /* ExerciseGuideViewController.swift */,
 				F829C9952236FC5200D1E57B /* ExerciseTableViewCell.swift */,
 				F8503840223B62DB009B79A0 /* SweepGraph.swift */,
+				F801AACB22665AED00D8EE52 /* SessionStatsViewController.swift */,
 			);
 			path = Exercise;
 			sourceTree = "<group>";
@@ -674,6 +677,7 @@
 				F86AB15E22541FBC00C4F95E /* DataProcessing.swift in Sources */,
 				F8280CA9224ABA950067E2F7 /* PresetData.swift in Sources */,
 				F801AABD2260842F00D8EE52 /* User+CoreDataClass.swift in Sources */,
+				F801AACC22665AED00D8EE52 /* SessionStatsViewController.swift in Sources */,
 				F801AAC22263E2DA00D8EE52 /* UITextField+Extensions.swift in Sources */,
 				F8471B5522498B3800960B8C /* GoalsTableViewCell.swift in Sources */,
 				F850383E22388699009B79A0 /* ProgressTableViewCell.swift in Sources */,

@@ -16,12 +16,14 @@ class SweepGraph: UIView {
     var leftArm: Bool!
     var currPos: CGFloat! // in radians
     var repCount: Int = 0
+    var maxReps: Int = 0
     
     // construction variables
     private let leftButton = UIButton()
     private let rightButton = UIButton()
     private let valueLabel = UILabel()
     private let lineCap = CAShapeLayerLineCap.butt
+    private let labelWidth: CGFloat = 140
     
     init() {
         super.init(frame: .zero)
@@ -44,12 +46,13 @@ class SweepGraph: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func updateSweepGraph(color: UIColor, start: CGFloat, max: CGFloat, left: Bool, value: CGFloat) {
+    func updateSweepGraph(color: UIColor, start: CGFloat, max: CGFloat, left: Bool, value: CGFloat, reps: Int) {
         colorTheme = color
         startAngle = start
         maxAngle = max
         leftArm = left
         currPos = value
+        maxReps = reps
         
         if let viewWithTag = self.viewWithTag(103) {
             viewWithTag.removeFromSuperview()
@@ -87,9 +90,11 @@ class SweepGraph: UIView {
             }
         }
         
-        let center = CGPoint(x: 90, y: valueLabel.frame.height/2)
+        let center = CGPoint(x: labelWidth/2, y: valueLabel.frame.height/2)
         
-        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: defFontExtraLight, fsize: innerDia/4, align: .center, tag: 103)
+        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount)/\(maxReps) rep " : "\(repCount)/\(maxReps) reps ", ftype: defFontExtraLight, fsize: 30, align: .center, tag: 103)
+        valueLabel.numberOfLines = 1
+        valueLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(valueLabel)
         
         drawActiveLayer(center: center,
@@ -153,7 +158,7 @@ extension SweepGraph {
         var angle: CGFloat = 0
         
         
-        let tickCount: Int = 150/10
+        let tickCount: Int = 180/10
         
         for i in 0...tickCount {
             angle = degToRad(deg: 90 - Double(10*i))
@@ -262,10 +267,10 @@ extension SweepGraph: ViewConstraintProtocol {
         let outerDia: CGFloat = 200
         let innerDia: CGFloat = outerDia * 0.75
         
-        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount) rep " : "\(repCount) reps ", ftype: defFontExtraLight, fsize: innerDia/4, align: .center, tag: 103)
+        valueLabel.setLabelParams(color: .black, string: repCount == 1 ? "\(repCount)/10 rep " : "\(repCount)/10 reps ", ftype: defFontExtraLight, fsize: 30, align: .center, tag: 103)
         self.addSubview(valueLabel)
         
-        let center = CGPoint(x: 90, y: valueLabel.frame.height/2)
+        let center = CGPoint(x: labelWidth/2, y: valueLabel.frame.height/2)
         
         drawBackgroundLayer(center: center,
                        color: colorTheme,
@@ -305,7 +310,7 @@ extension SweepGraph: ViewConstraintProtocol {
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         valueLabel.centerYAnchor.constraint(equalTo: leftButton.centerYAnchor, constant: -130).isActive = true
-        valueLabel.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        valueLabel.widthAnchor.constraint(equalToConstant: labelWidth).isActive = true
     }
     
     private func setupCustomButtons(_ leftColor: UIColor, _ rightColor: UIColor) {

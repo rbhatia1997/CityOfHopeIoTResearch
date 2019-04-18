@@ -3,7 +3,7 @@
 % last edited: 2/7/19
 %
 % Instructions:
-% 1. Make sure Mag_Calibration_MPU9250.ino is running of the Teensy
+% 1. Make sure Mag_Calibration.ino is running of the Teensy
 %    and the serial monitor is closed.
 % 2. Once this script is run, magnetometer data will be collected
 %    for approximately 50 seconds. During this time the IMU should
@@ -43,7 +43,7 @@ disp(string)
 %% Initialize Serial Port
 % Modify first argument to match the Teensy port under Tools tab of Arduino IDE
 % same baudrate as Teensy
-s = serial('/dev/cu.usbmodem40133301','BaudRate',115200);
+s = serial('/dev/cu.usbmodem52122201','BaudRate',115200);
 set(s,'InputBufferSize',bytesPerSample*numSamples);
 
 %% Read Data from IMU

@@ -29,6 +29,11 @@ void setup() {
   Serial.println("Serial Rxd is on pin: " + String(RXD2));
 }
 
+union {
+  byte b[4];
+  float fval;
+} byteAsFloat;
+
 void loop() { //Choose Serial1 or Serial2 as required
   while (Serial2.available()) {
     byte checkByte = byte(Serial2.read());
@@ -41,7 +46,8 @@ void loop() { //Choose Serial1 or Serial2 as required
           searching = false;
         }
       }
-    } else {
+    }
+    else {
       byteArray[arrayCounter] = checkByte;
       arrayCounter++;
       if (arrayCounter == 68) {
@@ -58,8 +64,22 @@ void loop() { //Choose Serial1 or Serial2 as required
           }
           s += String(val, HEX);
         }
-
         s.toCharArray(charArray, 137);
+//        Serial.println(s);
+        
+        for (int i = 0; i < 17; i++)
+        {
+          byteAsFloat.b[0] = byteArray[4 * i];
+          byteAsFloat.b[1] = byteArray[4 * i + 1];
+          byteAsFloat.b[2] = byteArray[4 * i + 2];
+          byteAsFloat.b[3] = byteArray[4 * i + 3];
+          float value  = byteAsFloat.fval;
+          Serial.print(value,4);
+          Serial.print(" ");
+        }
+        Serial.println();
+        
+        
       }
     }
   }

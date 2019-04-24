@@ -1,13 +1,13 @@
 % Magnetometer Calibration
-% author: Wilson Ives, wives@hmc.edu
-% last edited: 2/7/19
+% last edited: 4/24/19
 %
 % Instructions:
 % 1. Make sure Mag_Calibration.ino is running of the Teensy
 %    and the serial monitor is closed.
 % 2. Once this script is run, magnetometer data will be collected
-%    for approximately 50 seconds. During this time the IMU should
-%    be rotated and tilted into as many orientations as possible.
+%    for a duration determined by numSamples and numAquisitions.
+%    During this time the IMU should be rotated and tilted into as 
+%    many orientations as possible.
 % 3. Once the script has run three graphs will appear. The graph in
 %    figure 1 plots the raw data sent from the IMU. It should appear
 %    spherical but is usually not centered on the origin. The graph
@@ -27,9 +27,9 @@ clf
 %% Setup
 % number of samples [mx,my,mz] to request from Teensy
 % Max of ~4000 (Teensy doesn't have enough memory to save more)
-numSamples = 10; % 100 recommended
+numSamples = 1000; % 1000 recommended
 % number of times matlab requests additional data from the Teensy
-numAquisitions = 20; % 50 is plenty
+numAquisitions = 3; % 5 is plenty
 % initailize vectors to hold magnetometer data
 mx = zeros(numSamples*numAquisitions,1);
 my = zeros(numSamples*numAquisitions,1);
@@ -37,14 +37,15 @@ mz = zeros(numSamples*numAquisitions,1);
 % three four-byte floats per sample
 bytesPerSample = 12; 
 disp("Rotate IMU into as many orientations as possible")
-string = strcat("This should take ~",num2str(numAquisitions)," seconds");
+string = strcat("This should take ~",num2str(numAquisitions*numSamples/100)," seconds");
 disp(string)
 
 %% Initialize Serial Port
 % Modify first argument to match the Teensy port under Tools tab of Arduino IDE
 % same baudrate as Teensy
-s = serial('/dev/cu.usbmodem52122201','BaudRate',115200);
+s = serial('/dev/cu.usbmodem40143501','BaudRate',115200);
 set(s,'InputBufferSize',bytesPerSample*numSamples);
+set(s,'timeout',30);
 
 %% Read Data from IMU
 for aquisition = 1:numAquisitions
@@ -69,17 +70,23 @@ max_my = max(my); min_my = min(my);
 max_mz = max(mz); min_mz = min(mz);
 
 figure(1)
+plot3([min_mx,max_mx],[0,0],[0,0],'k-','LineWidth',2);
+hold on
+plot3([0,0],[min_my,max_my],[0,0],'k-','LineWidth',2);
+plot3([0,0],[0,0],[min_mz,max_mz],'k-','LineWidth',2);
 scatter3(mx,my,mz,'b.');
+hold off
 ah = gca;
 title('Raw Magnetometer Data');
-xlabel('X Magnetic Flux [uT]');
-ylabel('Y Magnetic Flux [uT]');
-zlabel('Z Magnetic Flux [uT]');
-set(ah,'FontSize',12);
+xlabel('X Magnetic Flux [Gauss]');
+ylabel('Y Magnetic Flux [Gauss]');
+zlabel('Z Magnetic Flux [Gauss]');
+set(ah,'FontSize',14);
 set(ah,'TitleFontSizeMultiplier',1.2);
 set(ah,'LineWidth',1);
 axis equal
 grid on
+%print(gcf,'raw_mag.png','-dpng','-r500');
 
 %% Method #1:
 % Calculate Offsets and Soft Iron Matrix Using Elipsoidal Fitting
@@ -139,34 +146,37 @@ max_my_cal2 = max(my_cal2); min_my_cal2 = min(my_cal2);
 max_mz_cal2 = max(mz_cal2); min_mz_cal2 = min(mz_cal2);
 
 figure(2)
-plot3([min_mx_cal1,max_mx_cal1],[0,0],[0,0],'r-','LineWidth',2);
+plot3([min_mx_cal1,max_mx_cal1],[0,0],[0,0],'k-','LineWidth',2);
 hold on
-plot3([0,0],[min_my_cal1,max_my_cal1],[0,0],'r-','LineWidth',2);
-plot3([0,0],[0,0],[min_mz_cal1,max_mz_cal1],'r-','LineWidth',2);
-sh1 = scatter3(mx_cal1,my_cal1,mz_cal1,'b.');
+plot3([0,0],[min_my_cal1,max_my_cal1],[0,0],'k-','LineWidth',2);
+plot3([0,0],[0,0],[min_mz_cal1,max_mz_cal1],'k-','LineWidth',2);
+scatter3(mx_cal1,my_cal1,mz_cal1,'b.');
+hold off
 ah = gca;
-title('Calibrated Magnetometer Data (Method #1)');
+title('Calibrated Magnetometer Data');
 xlabel('X Magnetic Flux [Normalized]');
 ylabel('Y Magnetic Flux [Normalized]');
 zlabel('Z Magnetic Flux [Normalized]');
-set(ah,'FontSize',12);
+set(ah,'FontSize',14);
 set(ah,'TitleFontSizeMultiplier',1.2);
 set(ah,'LineWidth',1);
 axis equal
 grid on
+%print(gcf,'cal_mag.png','-dpng','-r500');
 
 figure(3)
-plot3([min_mx_cal2,max_mx_cal2],[0,0],[0,0],'r-','LineWidth',2);
+plot3([min_mx_cal2,max_mx_cal2],[0,0],[0,0],'k-','LineWidth',2);
 hold on
-plot3([0,0],[min_my_cal2,max_my_cal2],[0,0],'r-','LineWidth',2);
-plot3([0,0],[0,0],[min_mz_cal2,max_mz_cal2],'r-','LineWidth',2);
-sh1 = scatter3(mx_cal2,my_cal2,mz_cal2,'b.');
+plot3([0,0],[min_my_cal2,max_my_cal2],[0,0],'k-','LineWidth',2);
+plot3([0,0],[0,0],[min_mz_cal2,max_mz_cal2],'k-','LineWidth',2);
+scatter3(mx_cal2,my_cal2,mz_cal2,'b.');
+hold off
 ah = gca;
 title('Calibrated Magnetometer Data (Method #2)');
 xlabel('X Magnetic Flux [Normalized]');
 ylabel('Y Magnetic Flux [Normalized]');
 zlabel('Z Magnetic Flux [Normalized]');
-set(ah,'FontSize',12);
+set(ah,'FontSize',14);
 set(ah,'TitleFontSizeMultiplier',1.2);
 set(ah,'LineWidth',1);
 axis equal
